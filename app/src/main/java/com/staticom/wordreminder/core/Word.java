@@ -9,11 +9,10 @@ public class Word {
 
     private Vocabulary vocabulary = null;
     private String word;
-    private final List<Meaning> meanings;
+    private final List<Meaning> meanings = new ArrayList<>();
 
     public Word(String word) {
         this.word = word;
-        meanings = new ArrayList<>();
     }
 
     public Vocabulary getVocabulary() {
@@ -46,6 +45,10 @@ public class Word {
         meanings.add(meaning);
     }
 
+    public void removeMeaning(int index) {
+        meanings.remove(index).setWord(null);
+    }
+
     public void removeMeaning(Meaning meaning) {
         meaning.setWord(null);
 
@@ -53,7 +56,7 @@ public class Word {
     }
 
     public boolean hasExample() {
-        for (Meaning meaning : meanings) {
+        for (final Meaning meaning : meanings) {
             if (meaning.hasExample()) return true;
         }
 
@@ -66,7 +69,7 @@ public class Word {
         final List<String> meanings = new ArrayList<>();
         final List<String> pronunciations = new ArrayList<>();
 
-        for (Meaning meaning : this.meanings) {
+        for (final Meaning meaning : this.meanings) {
             meanings.add(meaning.getMeaning());
 
             if (meaning.hasPronunciation()) {
