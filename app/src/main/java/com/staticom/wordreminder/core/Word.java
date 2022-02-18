@@ -76,7 +76,6 @@ public class Word {
 
         final String mergedMeanings = String.join(", ", meanings);
         final String mergedPronunciations = String.join(", ", makeUnique(pronunciations));
-        final Meaning mergedMeaning = new Meaning(mergedMeanings, mergedPronunciations);
 
         return new Meaning(this, mergedMeanings, mergedPronunciations);
     }
