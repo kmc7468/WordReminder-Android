@@ -2,6 +2,8 @@ package com.staticom.wordreminder.adapter;
 
 import android.content.Context;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -21,22 +23,41 @@ public class VocabularyListAdapter extends SelectableAdapter {
         private final TextView time;
         private final ImageButton edit;
 
+        private final Animation editOpenAnimation, editCloseAnimation;
+
         public ViewHolder(Context applicationContext, View view) {
             super(view);
 
             name = view.findViewById(R.id.name);
             time = view.findViewById(R.id.time);
             edit = view.findViewById(R.id.edit);
+
+            edit.setOnClickListener(v -> {
+                if (onEditButtonClickListener != null) {
+                    onEditButtonClickListener.onEditButtonClick(getSelectedIndex());
+                }
+            });
+
+            editOpenAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_open);
+            editCloseAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_close);
         }
 
         @Override
         public void onHolderActivated(boolean requiredAnimation) {
+            if (requiredAnimation) {
+                edit.startAnimation(editOpenAnimation);
+            }
+
             edit.setVisibility(View.VISIBLE);
             edit.setClickable(true);
         }
 
         @Override
         public void onHolderDeactivated(boolean requiredAnimation) {
+            if (requiredAnimation) {
+                edit.startAnimation(editCloseAnimation);
+            }
+
             edit.setVisibility(View.GONE);
             edit.setClickable(false);
         }

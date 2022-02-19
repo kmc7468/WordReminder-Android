@@ -62,7 +62,6 @@
             android:id="@+id/add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
             android:contentDescription="@string/main_activity_add_vocabulary"
             android:onClick="onAddClick"
             app:fabSize="normal"
