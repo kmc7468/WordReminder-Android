@@ -9,6 +9,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="ripple">#1F000000</color>
-    <color name="divider">#1F000000</color>
+    <color name="ripple">#33FFFFFF</color>
+    <color name="divider">#33FFFFFF</color>
 </resources>
