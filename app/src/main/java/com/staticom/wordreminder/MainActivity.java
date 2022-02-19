@@ -29,6 +29,7 @@ import com.staticom.wordreminder.core.VocabularyList;
 import com.staticom.wordreminder.core.VocabularyMetadata;
 import com.staticom.wordreminder.utility.AlertDialog;
 import com.staticom.wordreminder.utility.CustomDialog;
+import com.staticom.wordreminder.utility.RecyclerViewEmptyObserver;
 
 import org.json.JSONArray;
 
@@ -200,6 +201,9 @@ public class MainActivity extends AppCompatActivity {
 
             vocabularyList.setLayoutManager(new LinearLayoutManager(this));
             vocabularyList.setAdapter(vocabularyListAdapter);
+            
+            vocabularyListAdapter.registerAdapterDataObserver(
+                    new RecyclerViewEmptyObserver(vocabularyList, findViewById(R.id.emptyVocabularyListText)));
         }
 
         create = findViewById(R.id.create);

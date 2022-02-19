@@ -24,6 +24,7 @@
     <string name="main_activity_developer_blog">개발자 블로그</string>
     <string name="main_activity_error_read_vocabulary_list">오류가 발생해 단어장 목록을 불러오지 못했습니다.</string>
     <string name="main_activity_error_write_vocabulary_list">오류가 발생해 단어장 목록을 저장하지 못했습니다.</string>
+    <string name="main_activity_empty_vocabulary_list">단어장이 없습니다.</string>
     <string name="main_activity_add_vocabulary">단어장 추가하기</string>
     <string name="main_activity_require_vocabulary_name">단어장의 이름을 입력해 주세요.</string>
     <string name="main_activity_error_empty_vocabulary_name">이름은 비어있을 수 없습니다.</string>
