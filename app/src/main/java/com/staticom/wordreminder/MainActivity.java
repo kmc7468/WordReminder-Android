@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.provider.OpenableColumns;
+import android.view.Menu;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private interface OnVocabularyNameInputted {
         void onVocabularyNameInputted(String name);
     }
+
+    private Menu menu;
 
     private Path rootPath;
 
@@ -75,7 +78,9 @@ public class MainActivity extends AppCompatActivity {
     private void setSelectedVocabulary(VocabularyMetadata vocabulary) {
         selectedVocabulary = vocabulary;
 
-        // TODO
+        if (menu != null) {
+            menu.setGroupVisible(R.id.editMenus, true);
+        }
     }
 
     private String getFilenameFromUri(Uri uri) {
@@ -189,6 +194,19 @@ public class MainActivity extends AppCompatActivity {
         if (vocabularyListAdapter != null) {
             savedInstanceState.putInt("selectedVocabulary", vocabularyListAdapter.getSelectedIndex());
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main_activity, menu);
+
+        this.menu = menu;
+
+        if (selectedVocabulary != null) {
+            menu.setGroupVisible(R.id.editMenus, true);
+        }
+
+        return true;
     }
 
     private void writeVocabularyList() {

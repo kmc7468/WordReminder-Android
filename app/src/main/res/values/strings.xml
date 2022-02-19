@@ -10,6 +10,10 @@
     <string name="question_type_meaning_to_word_message">다음 뜻을 가진 단어는?</string>
 
     <string name="main_activity_title">단어장 만들기</string>
+    <string name="main_activity_menu_delete">단어장 삭제하기</string>
+    <string name="main_activity_menu_rename">단어장 이름 바꾸기</string>
+    <string name="main_activity_menu_export">단어장 내보내기</string>
+    <string name="main_activity_menu_about">앱 정보</string>
     <string name="main_activity_error_read_vocabulary_list">오류가 발생해 단어장 목록을 불러오지 못했습니다.</string>
     <string name="main_activity_error_write_vocabulary_list">오류가 발생해 단어장 목록을 저장하지 못했습니다.</string>
     <string name="main_activity_add_vocabulary">단어장 추가하기</string>

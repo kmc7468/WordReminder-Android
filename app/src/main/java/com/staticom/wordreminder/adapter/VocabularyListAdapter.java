@@ -58,7 +58,7 @@ public class VocabularyListAdapter extends SelectableAdapter {
                 edit.startAnimation(editCloseAnimation);
             }
 
-            edit.setVisibility(View.GONE);
+            edit.setVisibility(View.INVISIBLE);
             edit.setClickable(false);
         }
     }
