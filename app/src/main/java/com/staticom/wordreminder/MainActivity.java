@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +33,10 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
+
+    private interface OnVocabularyNameInputted {
+        void onVocabularyNameInputted(String name);
+    }
 
     private Path rootPath;
 
@@ -83,29 +88,38 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadVocabulary(Uri uri) {
-        final String filename = getFilenameFromUri(uri).replaceFirst("[.][^.]+$", "");
-        final AlertDialog dialog = new AlertDialog(this,
-                R.string.main_activity_load_vocabulary,
+    private void requireVocabularyName(@StringRes int messageId, String defaultName, OnVocabularyNameInputted onVocabularyNameInputted) {
+        final AlertDialog dialog = new AlertDialog(this, messageId,
                 R.string.main_activity_require_vocabulary_name);
 
-        dialog.addEdit(filename);
+        dialog.addEdit(defaultName);
         dialog.setPositiveButton(R.string.add, false, () -> {
             final String name = dialog.getEditText().trim();
-            final Path path = rootPath.resolve(UUID.randomUUID().toString() + ".kv");
-            final LocalDateTime time = LocalDateTime.now();
-
             if (name.isEmpty()) {
                 Toast.makeText(getApplicationContext(),
-                        R.string.main_activity_error_empty_vocabulary_name, Toast.LENGTH_LONG).show();
+                        R.string.main_activity_error_empty_vocabulary_name, Toast.LENGTH_SHORT).show();
 
                 return;
             } else if (vocabularyList.containsVocabulary(name)) {
                 Toast.makeText(getApplicationContext(),
-                        R.string.main_activity_error_duplicated_vocabulary_name, Toast.LENGTH_LONG).show();
+                        R.string.main_activity_error_duplicated_vocabulary_name, Toast.LENGTH_SHORT).show();
 
                 return;
             }
+
+            onVocabularyNameInputted.onVocabularyNameInputted(name);
+
+            dialog.dismiss();
+        }).setNegativeButton(R.string.cancel).show();
+
+    }
+
+    private void loadVocabulary(Uri uri) {
+        final String filename = getFilenameFromUri(uri).replaceFirst("[.][^.]+$", "");
+
+        requireVocabularyName(R.string.main_activity_load_vocabulary, filename, name -> {
+            final Path path = rootPath.resolve(UUID.randomUUID().toString() + ".kv");
+            final LocalDateTime time = LocalDateTime.now();
 
             try {
                 try (final ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(uri, "r");
@@ -118,14 +132,12 @@ public class MainActivity extends AppCompatActivity {
                     vocabularyList.addVocabulary(vocabulary);
                     vocabularyListAdapter.notifyItemInserted(vocabularyListAdapter.getItemCount());
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 Toast.makeText(getApplicationContext(), R.string.main_activity_load_vocabulary_error, Toast.LENGTH_LONG).show();
 
                 e.printStackTrace();
             }
-
-            dialog.dismiss();
-        }).setNegativeButton(R.string.cancel).show();
+        });
     }
 
     @Override
@@ -222,7 +234,18 @@ public class MainActivity extends AppCompatActivity {
     public void onCreateClick(View view) {
         toggleAddButtons();
 
-        // TODO
+        requireVocabularyName(R.string.main_activity_create_vocabulary, "", name -> {
+            final Path path = rootPath.resolve(UUID.randomUUID().toString() + ".kv");
+            final LocalDateTime time = LocalDateTime.now();
+
+            final VocabularyMetadata vocabulary = new VocabularyMetadata(name, path, time);
+
+            vocabulary.setVocabulary(new Vocabulary());
+            vocabulary.setShouldSave(true);
+
+            vocabularyList.addVocabulary(vocabulary);
+            vocabularyListAdapter.notifyItemInserted(vocabularyListAdapter.getItemCount());
+        });
     }
 
     public void onLoadClick(View view) {
