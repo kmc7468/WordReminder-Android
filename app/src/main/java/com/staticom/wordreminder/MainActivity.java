@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.provider.OpenableColumns;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -28,6 +29,7 @@ import com.staticom.wordreminder.utility.AlertDialog;
 import org.json.JSONArray;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Menu menu;
+    private ActivityResultLauncher<String> exportVocabularyResult;
 
     private Path rootPath;
 
@@ -51,6 +54,25 @@ public class MainActivity extends AppCompatActivity {
     private boolean isOpenAddButtons = false;
     private Animation fabOpen, fabClose;
     private ActivityResultLauncher<String[]> loadVocabularyResult;
+
+    private void exportVocabulary(Uri uri) {
+        if (uri == null) return;
+
+        try {
+            if (!selectedVocabulary.hasVocabulary()) {
+                selectedVocabulary.loadVocabulary();
+            }
+
+            try (final ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(uri, "w");
+                 final FileOutputStream outputStream = new FileOutputStream(pfd.getFileDescriptor())) {
+                selectedVocabulary.getVocabulary().writeToFileStream(outputStream);
+            }
+
+            Toast.makeText(getApplicationContext(), R.string.main_activity_success_export_vocabulary, Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), R.string.main_activity_error_export_vocabulary, Toast.LENGTH_LONG).show();
+        }
+    }
 
     private boolean readVocabularyList() {
         try {
@@ -79,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         selectedVocabulary = vocabulary;
 
         if (menu != null) {
-            menu.setGroupVisible(R.id.editMenus, true);
+            menu.setGroupVisible(R.id.editMenus, vocabulary != null);
         }
     }
 
@@ -93,19 +115,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void requireVocabularyName(@StringRes int messageId, String defaultName, OnVocabularyNameInputted onVocabularyNameInputted) {
+    private void requireVocabularyName(@StringRes int messageId, @StringRes int positiveButtonTextId, boolean allowDuplicatedWithSelectedVocabulary,
+                                       String defaultName, OnVocabularyNameInputted onVocabularyNameInputted) {
         final AlertDialog dialog = new AlertDialog(this, messageId,
                 R.string.main_activity_require_vocabulary_name);
 
         dialog.addEdit(defaultName);
-        dialog.setPositiveButton(R.string.add, false, () -> {
+        dialog.setPositiveButton(positiveButtonTextId, false, () -> {
             final String name = dialog.getEditText().trim();
             if (name.isEmpty()) {
                 Toast.makeText(getApplicationContext(),
                         R.string.main_activity_error_empty_vocabulary_name, Toast.LENGTH_SHORT).show();
 
                 return;
-            } else if (vocabularyList.containsVocabulary(name)) {
+            } else if (vocabularyList.containsVocabulary(name) &&
+                    (!allowDuplicatedWithSelectedVocabulary || !selectedVocabulary.getName().equals(name))) {
                 Toast.makeText(getApplicationContext(),
                         R.string.main_activity_error_duplicated_vocabulary_name, Toast.LENGTH_SHORT).show();
 
@@ -116,13 +140,14 @@ public class MainActivity extends AppCompatActivity {
 
             dialog.dismiss();
         }).setNegativeButton(R.string.cancel).show();
-
     }
 
     private void loadVocabulary(Uri uri) {
+        if (uri == null) return;
+
         final String filename = getFilenameFromUri(uri).replaceFirst("[.][^.]+$", "");
 
-        requireVocabularyName(R.string.main_activity_load_vocabulary, filename, name -> {
+        requireVocabularyName(R.string.main_activity_load_vocabulary, R.string.add, false, filename, name -> {
             final Path path = rootPath.resolve(UUID.randomUUID().toString() + ".kv");
             final LocalDateTime time = LocalDateTime.now();
 
@@ -150,6 +175,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle(R.string.main_activity_title);
+
+        exportVocabularyResult = registerForActivityResult(new ActivityResultContracts.CreateDocument(), this::exportVocabulary);
 
         rootPath = getFilesDir().toPath();
 
@@ -209,9 +236,58 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    private void deleteVocabulary() {
+        final AlertDialog dialog = new AlertDialog(this,
+                R.string.main_activity_menu_delete,
+                R.string.main_activity_ask_delete_vocabulary);
+
+        dialog.setPositiveButton(R.string.delete, true, () -> {
+            vocabularyList.removeVocabulary(selectedVocabulary);
+            vocabularyListAdapter.notifyItemRemoved(vocabularyListAdapter.getSelectedIndex());
+
+            setSelectedVocabulary(null);
+        }).setNegativeButton(R.string.cancel).show();
+    }
+
+    private void renameVocabulary() {
+        requireVocabularyName(R.string.main_activity_menu_rename, R.string.change, true, selectedVocabulary.getName(), name -> {
+            selectedVocabulary.setName(name);
+            vocabularyListAdapter.notifyItemChanged(vocabularyListAdapter.getSelectedIndex());
+        });
+    }
+
+    private void exportVocabulary() {
+        exportVocabularyResult.launch(selectedVocabulary.getName() + ".kv");
+    }
+
+    private void showAboutDialog() {
+        // TODO
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.delete) {
+            deleteVocabulary();
+
+            return true;
+        } else if (item.getItemId() == R.id.rename) {
+            renameVocabulary();
+
+            return true;
+        } else if (item.getItemId() == R.id.export) {
+            exportVocabulary();
+
+            return true;
+        } else if (item.getItemId() == R.id.about) {
+            showAboutDialog();
+
+            return true;
+        } else return super.onOptionsItemSelected(item);
+    }
+
     private void writeVocabularyList() {
         try {
-            vocabularyList.saveVocabulary();
+            vocabularyList.saveOrDeleteVocabulary();
 
             final Path path = rootPath.resolve("vocabularyList.json");
             final JSONArray array = vocabularyList.saveToJSONArray();
@@ -252,7 +328,7 @@ public class MainActivity extends AppCompatActivity {
     public void onCreateClick(View view) {
         toggleAddButtons();
 
-        requireVocabularyName(R.string.main_activity_create_vocabulary, "", name -> {
+        requireVocabularyName(R.string.main_activity_create_vocabulary, R.string.add, false, "", name -> {
             final Path path = rootPath.resolve(UUID.randomUUID().toString() + ".kv");
             final LocalDateTime time = LocalDateTime.now();
 

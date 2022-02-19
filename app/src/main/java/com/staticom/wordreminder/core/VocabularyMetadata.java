@@ -57,14 +57,10 @@ public class VocabularyMetadata {
         this.vocabulary = vocabulary;
     }
 
-    public void exportVocabulary(Path path) throws IOException {
+    public void saveVocabulary() throws IOException {
         try (final FileOutputStream stream = new FileOutputStream(path.toFile())) {
             vocabulary.writeToFileStream(stream);
         }
-    }
-
-    public void saveVocabulary() throws IOException {
-        exportVocabulary(path);
     }
 
     public void loadVocabulary() throws IOException {

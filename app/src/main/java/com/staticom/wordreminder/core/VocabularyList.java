@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.List;
 public class VocabularyList {
 
     private final List<VocabularyMetadata> vocabularyList = new ArrayList<>();
+    private final List<VocabularyMetadata> deletedVocabularyList = new ArrayList<>();
 
     public List<VocabularyMetadata> getVocabularyList() {
         return Collections.unmodifiableList(vocabularyList);
@@ -37,9 +39,15 @@ public class VocabularyList {
 
     public void removeVocabulary(VocabularyMetadata vocabulary) {
         vocabularyList.remove(vocabulary);
+
+        deletedVocabularyList.add(vocabulary);
     }
 
-    public void saveVocabulary() throws IOException {
+    public void saveOrDeleteVocabulary() throws IOException {
+        for (final VocabularyMetadata vocabulary : deletedVocabularyList) {
+            Files.delete(vocabulary.getPath());
+        }
+
         for (final VocabularyMetadata vocabulary : vocabularyList) {
             if (vocabulary.shouldSave()) {
                 vocabulary.saveVocabulary();

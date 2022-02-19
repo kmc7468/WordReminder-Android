@@ -2,6 +2,8 @@
     <string name="app_name">WordReminder</string>
 
     <string name="add">추가</string>
+    <string name="delete">삭제</string>
+    <string name="change">변경</string>
     <string name="cancel">취소</string>
 
     <string name="vocabulary_list_adapter_edit">단어장 수정하기</string>
@@ -11,8 +13,11 @@
 
     <string name="main_activity_title">단어장 만들기</string>
     <string name="main_activity_menu_delete">단어장 삭제하기</string>
+    <string name="main_activity_ask_delete_vocabulary">단어장을 정말 삭제할까요? 삭제한 단어장은 복구할 수 없습니다.</string>
     <string name="main_activity_menu_rename">단어장 이름 바꾸기</string>
     <string name="main_activity_menu_export">단어장 내보내기</string>
+    <string name="main_activity_success_export_vocabulary">단어장을 내보냈습니다.</string>
+    <string name="main_activity_error_export_vocabulary">오류가 발생해 단어장을 내보내지 못했습니다.</string>
     <string name="main_activity_menu_about">앱 정보</string>
     <string name="main_activity_error_read_vocabulary_list">오류가 발생해 단어장 목록을 불러오지 못했습니다.</string>
     <string name="main_activity_error_write_vocabulary_list">오류가 발생해 단어장 목록을 저장하지 못했습니다.</string>
