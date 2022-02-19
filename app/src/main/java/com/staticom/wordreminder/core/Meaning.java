@@ -9,7 +9,7 @@ public class Meaning {
         EXAMPLE,
     }
 
-    private Word word = null;
+    private Word word;
     private String meaning;
     private String pronunciation;
     private String example = "";

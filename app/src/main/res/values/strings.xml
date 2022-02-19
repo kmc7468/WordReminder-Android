@@ -1,6 +1,14 @@
 <resources>
     <string name="app_name">WordReminder</string>
 
+    <string name="vocabulary_list_adapter_edit">단어장 수정하기</string>
+
     <string name="question_type_word_to_meaning_message">다음 단어의 뜻은?</string>
     <string name="question_type_meaning_to_word_message">다음 뜻을 가진 단어는?</string>
+
+    <string name="main_activity_title">단어장 만들기</string>
+    <string name="main_activity_error_read_vocabulary_list">오류가 발생해 단어장 목록을 불러오지 못했습니다.</string>
+    <string name="main_activity_add_vocabulary">단어장 추가하기</string>
+    <string name="main_activity_create_vocabulary">단어장 만들기</string>
+    <string name="main_activity_load_vocabulary">단어장 불러오기</string>
 </resources>

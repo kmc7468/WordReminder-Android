@@ -38,7 +38,7 @@ public abstract class SelectableAdapter extends RecyclerView.Adapter<SelectableA
     private final List<ViewHolder> viewHolders = new ArrayList<>();
 
     private int selectedIndex = -1;
-    private OnItemSelectedListener onItemSelectedListener = null;
+    private OnItemSelectedListener onItemSelectedListener;
 
     public SelectableAdapter(int itemId) {
         this.itemId = itemId;
@@ -71,7 +71,7 @@ public abstract class SelectableAdapter extends RecyclerView.Adapter<SelectableA
                 viewHolder.onHolderDeactivated(true);
             }
         }
-        
+
         if (index != -1) {
             callOnItemSelected(selectedViewHolder);
         }

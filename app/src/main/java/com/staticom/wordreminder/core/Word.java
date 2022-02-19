@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public class Word {
 
-    private Vocabulary vocabulary = null;
+    private Vocabulary vocabulary;
     private String word;
     private final List<Meaning> meanings = new ArrayList<>();
 

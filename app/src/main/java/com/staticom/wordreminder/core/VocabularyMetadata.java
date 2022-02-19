@@ -12,7 +12,7 @@ public class VocabularyMetadata {
     private Path path;
     private LocalDateTime time;
 
-    private Vocabulary vocabulary = null;
+    private Vocabulary vocabulary;
 
     public VocabularyMetadata(String name, Path path, LocalDateTime time) {
         this.name = name;
