@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,7 +41,7 @@ public abstract class SelectableAdapter extends RecyclerView.Adapter<SelectableA
     private int selectedIndex = -1;
     private OnItemSelectedListener onItemSelectedListener;
 
-    public SelectableAdapter(int itemId) {
+    public SelectableAdapter(@LayoutRes int itemId) {
         this.itemId = itemId;
     }
 
@@ -83,7 +84,7 @@ public abstract class SelectableAdapter extends RecyclerView.Adapter<SelectableA
 
     private void callOnItemSelected(ViewHolder viewHolder) {
         if (onItemSelectedListener != null) {
-            onItemSelectedListener.onItemSelected(viewHolder.itemView, selectedIndex);
+            onItemSelectedListener.onItemSelected(viewHolder != null ? viewHolder.itemView : null, selectedIndex);
         }
     }
 

@@ -156,7 +156,7 @@ public class Vocabulary {
         int containerCount;
 
         try {
-            containerCount = stream.read();
+            containerCount = fileStream.readInt();
         } catch (Exception e) {
             return vocabulary;
         }

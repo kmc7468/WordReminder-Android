@@ -31,7 +31,8 @@ public class BinaryStream {
     public int readInt() throws IOException {
         final byte[] bytes = read(4);
 
-        return bytes[0] & 0xFF | bytes[1] & (0xFF << 8) | bytes[2] & (0xFF << 16) | bytes[3] & (0xFF << 24);
+        return bytes[0] & 0xFF | (bytes[1] << 8) & (0xFF << 8) |
+                (bytes[2] << 16) & (0xFF << 16) | (bytes[3] << 16) & (0xFF << 24);
     }
 
     public String readString() throws IOException {

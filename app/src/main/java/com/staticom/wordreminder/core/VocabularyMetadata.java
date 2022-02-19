@@ -13,6 +13,7 @@ public class VocabularyMetadata {
     private LocalDateTime time;
 
     private Vocabulary vocabulary;
+    private boolean shouldSave = false;
 
     public VocabularyMetadata(String name, Path path, LocalDateTime time) {
         this.name = name;
@@ -66,5 +67,13 @@ public class VocabularyMetadata {
         try (final FileInputStream stream = new FileInputStream(path.toFile())) {
             vocabulary = Vocabulary.readFromFileStream(stream);
         }
+    }
+
+    public boolean shouldSave() {
+        return shouldSave;
+    }
+
+    public void setShouldSave(boolean shouldSave) {
+        this.shouldSave = shouldSave;
     }
 }

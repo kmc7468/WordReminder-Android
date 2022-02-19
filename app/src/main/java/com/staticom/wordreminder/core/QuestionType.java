@@ -2,6 +2,8 @@ package com.staticom.wordreminder.core;
 
 import android.content.Context;
 
+import androidx.annotation.StringRes;
+
 import com.staticom.wordreminder.R;
 
 import java.util.EnumSet;
@@ -28,7 +30,7 @@ public class QuestionType {
     private final EnumSet<Meaning.Component> hintsForAnswerComponent;
 
     protected QuestionType(Type type, AnswerType answerType,
-                           int messageId, Meaning.Component mainComponent, EnumSet<Meaning.Component> hintsForMainComponent,
+                           @StringRes int messageId, Meaning.Component mainComponent, EnumSet<Meaning.Component> hintsForMainComponent,
                            Meaning.Component answerComponent, EnumSet<Meaning.Component> hintsForAnswerComponent) {
         this.type = type;
         this.answerType = answerType;

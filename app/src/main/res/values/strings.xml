@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">WordReminder</string>
 
+    <string name="add">추가</string>
+    <string name="cancel">취소</string>
+
     <string name="vocabulary_list_adapter_edit">단어장 수정하기</string>
 
     <string name="question_type_word_to_meaning_message">다음 단어의 뜻은?</string>
@@ -8,7 +11,12 @@
 
     <string name="main_activity_title">단어장 만들기</string>
     <string name="main_activity_error_read_vocabulary_list">오류가 발생해 단어장 목록을 불러오지 못했습니다.</string>
+    <string name="main_activity_error_write_vocabulary_list">오류가 발생해 단어장 목록을 저장하지 못했습니다.</string>
     <string name="main_activity_add_vocabulary">단어장 추가하기</string>
+    <string name="main_activity_require_vocabulary_name">단어장의 이름을 입력해 주세요.</string>
+    <string name="main_activity_error_empty_vocabulary_name">이름은 비어있을 수 없습니다.</string>
+    <string name="main_activity_error_duplicated_vocabulary_name">이미 존재하는 이름입니다.</string>
     <string name="main_activity_create_vocabulary">단어장 만들기</string>
     <string name="main_activity_load_vocabulary">단어장 불러오기</string>
+    <string name="main_activity_load_vocabulary_error">오류가 발생해 단어장을 불러오지 못했습니다.</string>
 </resources>

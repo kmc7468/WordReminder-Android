@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,6 +19,14 @@ public class VocabularyList {
         return Collections.unmodifiableList(vocabularyList);
     }
 
+    public boolean containsVocabulary(String name) {
+        for (final VocabularyMetadata vocabulary : vocabularyList) {
+            if (vocabulary.getName().equals(name)) return true;
+        }
+
+        return false;
+    }
+
     public VocabularyMetadata getVocabulary(int index) {
         return vocabularyList.get(index);
     }
@@ -30,10 +39,19 @@ public class VocabularyList {
         vocabularyList.remove(vocabulary);
     }
 
+    public void saveVocabulary() throws IOException {
+        for (final VocabularyMetadata vocabulary : vocabularyList) {
+            if (vocabulary.shouldSave()) {
+                vocabulary.saveVocabulary();
+                vocabulary.setShouldSave(false);
+            }
+        }
+    }
+
     public JSONArray saveToJSONArray() throws JSONException {
         final JSONArray array = new JSONArray();
 
-        for (VocabularyMetadata vocabulary : vocabularyList) {
+        for (final VocabularyMetadata vocabulary : vocabularyList) {
             final JSONObject object = new JSONObject();
 
             object.put("name", vocabulary.getName());
