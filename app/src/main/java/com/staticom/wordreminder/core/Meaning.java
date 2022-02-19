@@ -2,6 +2,13 @@ package com.staticom.wordreminder.core;
 
 public class Meaning {
 
+    public enum Component {
+        WORD,
+        MEANING,
+        PRONUNCIATION,
+        EXAMPLE,
+    }
+
     private Word word = null;
     private String meaning;
     private String pronunciation;
@@ -62,5 +69,24 @@ public class Meaning {
 
     public void setExample(String example) {
         this.example = example;
+    }
+
+    public String getComponent(Component component) {
+        switch (component) {
+            case WORD:
+                return word.getWord();
+
+            case MEANING:
+                return meaning;
+
+            case PRONUNCIATION:
+                return pronunciation;
+
+            case EXAMPLE:
+                return example;
+
+            default:
+                return null;
+        }
     }
 }
