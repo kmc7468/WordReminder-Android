@@ -68,6 +68,10 @@ public class QuestionType {
         return meaning.hasPronunciation() && hintsForAnswerComponent.contains(Meaning.Component.PRONUNCIATION);
     }
 
+    public String getAnswerComponent(Meaning meaning) {
+        return meaning.getComponent(answerComponent);
+    }
+
     public boolean shouldDisplayExampleForAnswerComponent(Meaning meaning) {
         return meaning.hasExample() && hintsForAnswerComponent.contains(Meaning.Component.EXAMPLE);
     }
