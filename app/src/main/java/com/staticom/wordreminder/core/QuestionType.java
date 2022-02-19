@@ -1,5 +1,9 @@
 package com.staticom.wordreminder.core;
 
+import android.content.Context;
+
+import com.staticom.wordreminder.R;
+
 import java.util.EnumSet;
 
 public class QuestionType {
@@ -17,19 +21,19 @@ public class QuestionType {
     private final Type type;
     private final AnswerType answerType;
 
-    private final String message;
+    private final int messageId;
     private final Meaning.Component mainComponent;
     private final EnumSet<Meaning.Component> hintsForMainComponent;
     private final Meaning.Component answerComponent;
     private final EnumSet<Meaning.Component> hintsForAnswerComponent;
 
     protected QuestionType(Type type, AnswerType answerType,
-                           String message, Meaning.Component mainComponent, EnumSet<Meaning.Component> hintsForMainComponent,
+                           int messageId, Meaning.Component mainComponent, EnumSet<Meaning.Component> hintsForMainComponent,
                            Meaning.Component answerComponent, EnumSet<Meaning.Component> hintsForAnswerComponent) {
         this.type = type;
         this.answerType = answerType;
 
-        this.message = message;
+        this.messageId = messageId;
         this.mainComponent = mainComponent;
         this.hintsForMainComponent = hintsForMainComponent;
         this.answerComponent = answerComponent;
@@ -44,8 +48,8 @@ public class QuestionType {
         return answerType;
     }
 
-    public String getMessage() {
-        return message;
+    public String getMessage(Context context) {
+        return context.getString(messageId);
     }
 
     public String getMainComponent(Meaning meaning) {
@@ -81,7 +85,7 @@ public class QuestionType {
 
         private WordToMeaning(AnswerType answerType) {
             super(Type.WORD_TO_MEANING, answerType,
-                    "TODO", Meaning.Component.WORD, EnumSet.of(Meaning.Component.PRONUNCIATION, Meaning.Component.EXAMPLE),
+                    R.string.question_type_word_to_meaning_message, Meaning.Component.WORD, EnumSet.of(Meaning.Component.PRONUNCIATION, Meaning.Component.EXAMPLE),
                     Meaning.Component.MEANING, EnumSet.noneOf(Meaning.Component.class));
         }
 
@@ -98,7 +102,7 @@ public class QuestionType {
 
         private MeaningToWord(AnswerType answerType) {
             super(Type.MEANING_TO_WORD, answerType,
-                    "TODO", Meaning.Component.MEANING, EnumSet.noneOf(Meaning.Component.class),
+                    R.string.question_type_meaning_to_word_message, Meaning.Component.MEANING, EnumSet.noneOf(Meaning.Component.class),
                     Meaning.Component.WORD, EnumSet.of(Meaning.Component.PRONUNCIATION, Meaning.Component.EXAMPLE));
         }
 
