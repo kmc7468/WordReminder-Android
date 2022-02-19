@@ -1,5 +1,6 @@
 package com.staticom.wordreminder;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -25,6 +28,7 @@ import com.staticom.wordreminder.core.Vocabulary;
 import com.staticom.wordreminder.core.VocabularyList;
 import com.staticom.wordreminder.core.VocabularyMetadata;
 import com.staticom.wordreminder.utility.AlertDialog;
+import com.staticom.wordreminder.utility.CustomDialog;
 
 import org.json.JSONArray;
 
@@ -69,8 +73,10 @@ public class MainActivity extends AppCompatActivity {
             }
 
             Toast.makeText(getApplicationContext(), R.string.main_activity_success_export_vocabulary, Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             Toast.makeText(getApplicationContext(), R.string.main_activity_error_export_vocabulary, Toast.LENGTH_LONG).show();
+
+            e.printStackTrace();
         }
     }
 
@@ -261,7 +267,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showAboutDialog() {
-        // TODO
+        final CustomDialog dialog = new CustomDialog(this, R.layout.dialog_about);
+
+        final TextView version = dialog.findViewById(R.id.version);
+        final StringBuilder versionStringBuilder = new StringBuilder();
+
+        versionStringBuilder.append(getString(R.string.main_activity_current_version));
+        versionStringBuilder.append(": ");
+        versionStringBuilder.append(BuildConfig.VERSION_NAME);
+        versionStringBuilder.append(' ');
+        versionStringBuilder.append(BuildConfig.BUILD_TYPE);
+
+        version.setText(versionStringBuilder.toString());
+
+        final Button developerBlog = dialog.findViewById(R.id.developerBlog);
+        final Button close = dialog.findViewById(R.id.close);
+
+        developerBlog.setOnClickListener(view -> {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://blog.naver.com/kmc7468")));
+
+            dialog.dismiss();
+        });
+        close.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 
     @Override

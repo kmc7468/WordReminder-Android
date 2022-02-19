@@ -5,6 +5,7 @@
     <string name="delete">삭제</string>
     <string name="change">변경</string>
     <string name="cancel">취소</string>
+    <string name="close">닫기</string>
 
     <string name="vocabulary_list_adapter_edit">단어장 수정하기</string>
 
@@ -19,6 +20,8 @@
     <string name="main_activity_success_export_vocabulary">단어장을 내보냈습니다.</string>
     <string name="main_activity_error_export_vocabulary">오류가 발생해 단어장을 내보내지 못했습니다.</string>
     <string name="main_activity_menu_about">앱 정보</string>
+    <string name="main_activity_current_version">현재 버전</string>
+    <string name="main_activity_developer_blog">개발자 블로그</string>
     <string name="main_activity_error_read_vocabulary_list">오류가 발생해 단어장 목록을 불러오지 못했습니다.</string>
     <string name="main_activity_error_write_vocabulary_list">오류가 발생해 단어장 목록을 저장하지 못했습니다.</string>
     <string name="main_activity_add_vocabulary">단어장 추가하기</string>
