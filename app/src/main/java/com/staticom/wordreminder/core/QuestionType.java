@@ -67,4 +67,47 @@ public class QuestionType {
     public boolean shouldDisplayExampleForAnswerComponent(Meaning meaning) {
         return meaning.hasExample() && hintsForAnswerComponent.contains(Meaning.Component.EXAMPLE);
     }
+
+    public boolean isUsableForAnswer(Meaning meaning) {
+        return true;
+    }
+
+    public boolean isDuplicatedForAnswer(Meaning fixedMeaning, Meaning meaning) {
+        return fixedMeaning.getWord().getWord().equals(meaning.getWord().getWord()) ||
+                fixedMeaning.getMeaning().equals(meaning.getMeaning());
+    }
+
+    public static class WordToMeaning extends QuestionType {
+
+        private WordToMeaning(AnswerType answerType) {
+            super(Type.WORD_TO_MEANING, answerType,
+                    "TODO", Meaning.Component.WORD, EnumSet.of(Meaning.Component.PRONUNCIATION, Meaning.Component.EXAMPLE),
+                    Meaning.Component.MEANING, EnumSet.noneOf(Meaning.Component.class));
+        }
+
+        public static WordToMeaning multipleChoice() {
+            return new WordToMeaning(AnswerType.MULTIPLE_CHOICE);
+        }
+
+        public static WordToMeaning shortAnswer() {
+            return new WordToMeaning(AnswerType.SHORT_ANSWER);
+        }
+    }
+
+    public static class MeaningToWord extends QuestionType {
+
+        private MeaningToWord(AnswerType answerType) {
+            super(Type.MEANING_TO_WORD, answerType,
+                    "TODO", Meaning.Component.MEANING, EnumSet.noneOf(Meaning.Component.class),
+                    Meaning.Component.WORD, EnumSet.of(Meaning.Component.PRONUNCIATION, Meaning.Component.EXAMPLE));
+        }
+
+        public static MeaningToWord multipleChoice() {
+            return new MeaningToWord(AnswerType.MULTIPLE_CHOICE);
+        }
+
+        public static MeaningToWord shortAnswer() {
+            return new MeaningToWord(AnswerType.SHORT_ANSWER);
+        }
+    }
 }
