@@ -27,47 +27,7 @@ public class Vocabulary {
         void write(BinaryStream containerStream) throws IOException;
     }
 
-    private String name;
-    private String path;
-    private LocalDateTime time;
-
     private final List<Word> words = new ArrayList<>();
-
-    public Vocabulary(String name) {
-        this.name = name;
-        this.path = UUID.randomUUID().toString() + ".kv";
-        this.time = LocalDateTime.now();
-    }
-
-    private Vocabulary(String name, String path, LocalDateTime time) {
-        this.name = name;
-        this.path = path;
-        this.time = time;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public LocalDateTime getTime() {
-        return time;
-    }
-
-    public void setTime(LocalDateTime time) {
-        this.time = time;
-    }
 
     public List<Word> getWords() {
         return Collections.unmodifiableList(words);
@@ -103,13 +63,13 @@ public class Vocabulary {
         words.remove(word);
     }
 
-    private static boolean readContainer(BinaryStream fileStream,
+    private static boolean readContainer(BinaryStream fileStream, boolean read,
                                          ContainerId id, ContainerId realId, ContainerReader reader) throws IOException {
         if (id == realId) {
             reader.read(fileStream);
 
             return true;
-        } else return false;
+        } else return read;
     }
 
     private static void writeContainer(BinaryStream fileStream,
@@ -148,6 +108,7 @@ public class Vocabulary {
                 needHomonymContainer = true;
                 ++containerCount;
             }
+
             if (word.hasExample() && !needExampleContainer) {
                 needExampleContainer = true;
                 ++containerCount;
@@ -178,10 +139,10 @@ public class Vocabulary {
         });
     }
 
-    public static Vocabulary readFromFileStream(String name, String path, LocalDateTime time, FileInputStream stream) throws IOException {
+    public static Vocabulary readFromFileStream(FileInputStream stream) throws IOException {
         final BinaryStream fileStream = new BinaryStream(stream);
 
-        final Vocabulary vocabulary = new Vocabulary(name, path, time);
+        final Vocabulary vocabulary = new Vocabulary();
 
         final int wordCount = fileStream.readInt();
         for (int i = 0; i < wordCount; ++i) {
@@ -207,7 +168,7 @@ public class Vocabulary {
             final int length = fileStream.readInt();
             boolean read = false;
 
-            read = readContainer(fileStream, ContainerId.HOMONYM_CONTAINER, id, containerStream -> {
+            read = readContainer(fileStream, read, ContainerId.HOMONYM_CONTAINER, id, containerStream -> {
                 for (final Word word : vocabulary.words) {
                     word.removeMeaning(0);
 
@@ -221,7 +182,7 @@ public class Vocabulary {
                 }
             });
 
-            read = read || readContainer(fileStream, ContainerId.EXAMPLE_CONTAINER, id, containerStream -> {
+            read = readContainer(fileStream, read, ContainerId.EXAMPLE_CONTAINER, id, containerStream -> {
                 for (final Word word : vocabulary.words) {
                     for (final Meaning meaning : word.getMeanings()) {
                         meaning.setExample(containerStream.readString());
