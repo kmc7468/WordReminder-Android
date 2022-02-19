@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -45,7 +46,10 @@ public class VocabularyList {
 
     public void saveOrDeleteVocabulary() throws IOException {
         for (final VocabularyMetadata vocabulary : deletedVocabularyList) {
-            Files.delete(vocabulary.getPath());
+            try {
+                Files.delete(vocabulary.getPath());
+            } catch (final NoSuchFileException e) {
+            }
         }
 
         for (final VocabularyMetadata vocabulary : vocabularyList) {

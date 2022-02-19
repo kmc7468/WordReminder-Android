@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
 
             vocabularyList.setLayoutManager(new LinearLayoutManager(this));
             vocabularyList.setAdapter(vocabularyListAdapter);
-            
+
             vocabularyListAdapter.registerAdapterDataObserver(
                     new RecyclerViewEmptyObserver(vocabularyList, findViewById(R.id.emptyVocabularyListText)));
         }
@@ -253,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
 
         dialog.setPositiveButton(R.string.delete, true, () -> {
             vocabularyList.removeVocabulary(selectedVocabulary);
+            vocabularyListAdapter.setSelectedIndex(-1);
             vocabularyListAdapter.notifyItemRemoved(vocabularyListAdapter.getSelectedIndex());
 
             setSelectedVocabulary(null);
