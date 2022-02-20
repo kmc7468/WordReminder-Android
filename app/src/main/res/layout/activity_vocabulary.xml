@@ -25,7 +25,7 @@
 
             <TextView
                 android:id="@+id/wordsText"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
@@ -50,10 +50,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/vocabulary_activity_empty_words"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@id/words"
                 app:layout_constraintEnd_toEndOf="@id/words"
                 app:layout_constraintStart_toStartOf="@id/words"
-                app:layout_constraintTop_toTopOf="@id/words" />
+                app:layout_constraintTop_toTopOf="@id/words"
+                tools:visibility="visible" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -65,7 +67,7 @@
 
             <TextView
                 android:id="@+id/meaningsText"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
@@ -90,10 +92,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/vocabulary_activity_empty_meanings"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@id/meanings"
                 app:layout_constraintEnd_toEndOf="@id/meanings"
                 app:layout_constraintStart_toStartOf="@id/meanings"
-                app:layout_constraintTop_toTopOf="@id/meanings" />
+                app:layout_constraintTop_toTopOf="@id/meanings"
+                tools:visibility="visible" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>

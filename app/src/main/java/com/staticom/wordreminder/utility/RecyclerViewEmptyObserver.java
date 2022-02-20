@@ -29,14 +29,17 @@ public class RecyclerViewEmptyObserver extends RecyclerView.AdapterDataObserver 
     private void checkIsEmpty() {
         final boolean isEmpty = recyclerView.getAdapter().getItemCount() == 0;
 
-        if (isEmpty) {
+        if (isEmpty && emptyTextView.getVisibility() == View.GONE) {
             emptyTextView.startAnimation(tvOpen);
-        } else {
-            emptyTextView.startAnimation(tvClose);
-        }
 
-        recyclerView.setVisibility(isEmpty ? View.INVISIBLE : View.VISIBLE);
-        emptyTextView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+            recyclerView.setVisibility(View.INVISIBLE);
+            emptyTextView.setVisibility(View.VISIBLE);
+        } else if (!isEmpty && emptyTextView.getVisibility() == View.VISIBLE) {
+            emptyTextView.startAnimation(tvClose);
+
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyTextView.setVisibility(View.GONE);
+        }
     }
 
     @Override

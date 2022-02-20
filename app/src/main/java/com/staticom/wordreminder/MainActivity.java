@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
         void onVocabularyNameInputted(String name);
     }
 
+    public static VocabularyMetadata SelectedVocabularyForVocabularyActivity;
+
     private Menu menu;
     private ActivityResultLauncher<String> exportVocabularyResult;
 
@@ -194,7 +196,20 @@ public class MainActivity extends AppCompatActivity {
                 setSelectedVocabulary(vocabularyList.getVocabulary(index));
             });
             vocabularyListAdapter.setOnEditButtonClickListener(index -> {
-                // TODO
+                if (!selectedVocabulary.hasVocabulary()) {
+                    try {
+                        selectedVocabulary.loadVocabulary();
+                    } catch (final Exception e) {
+                        Toast.makeText(this, R.string.main_activity_load_vocabulary_error, Toast.LENGTH_LONG).show();
+
+                        e.printStackTrace();
+                        return;
+                    }
+                }
+
+                SelectedVocabularyForVocabularyActivity = selectedVocabulary;
+
+                startActivity(new Intent(this, VocabularyActivity.class));
             });
 
             final RecyclerView vocabularyList = findViewById(R.id.vocabularyList);
@@ -253,8 +268,8 @@ public class MainActivity extends AppCompatActivity {
 
         dialog.setPositiveButton(R.string.delete, true, () -> {
             vocabularyList.removeVocabulary(selectedVocabulary);
-            vocabularyListAdapter.setSelectedIndex(-1);
             vocabularyListAdapter.notifyItemRemoved(vocabularyListAdapter.getSelectedIndex());
+            vocabularyListAdapter.setSelectedIndex(-1);
 
             setSelectedVocabulary(null);
         }).setNegativeButton(R.string.cancel).show();
