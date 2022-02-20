@@ -35,8 +35,6 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -51,6 +49,7 @@
             android:contentDescription="@string/main_activity_create_vocabulary"
             android:onClick="onCreateClick"
             android:visibility="invisible"
+            app:borderWidth="0dp"
             app:fabSize="mini"
             app:srcCompat="@android:drawable/ic_menu_add"
             tools:visibility="visible" />
@@ -66,6 +65,7 @@
             android:contentDescription="@string/main_activity_load_vocabulary"
             android:onClick="onLoadClick"
             android:visibility="invisible"
+            app:borderWidth="0dp"
             app:fabSize="mini"
             app:srcCompat="@android:drawable/ic_menu_gallery"
             tools:visibility="visible" />
@@ -74,6 +74,9 @@
             android:id="@+id/add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:contentDescription="@string/main_activity_add_vocabulary"
             android:onClick="onAddClick"
             app:fabSize="normal"
