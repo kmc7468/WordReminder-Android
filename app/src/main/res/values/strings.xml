@@ -4,6 +4,7 @@
     <string name="add">추가</string>
     <string name="delete">삭제</string>
     <string name="change">변경</string>
+    <string name="set">설정</string>
     <string name="cancel">취소</string>
     <string name="close">닫기</string>
 
@@ -46,9 +47,18 @@
     <string name="vocabulary_activity_ask_delete_meaning">뜻을 정말 삭제할까요?</string>
     <string name="vocabulary_activity_ask_delete_last_meaning">뜻을 정말 삭제할까요? 단어도 함께 삭제됩니다.</string>
     <string name="vocabulary_activity_replace_word">단어 바꾸기</string>
+    <string name="vocabulary_activity_require_word">단어를 입력해 주세요.</string>
+    <string name="vocabulary_activity_error_empty_word">단어는 비어있을 수 없습니다.</string>
+    <string name="vocabulary_activity_error_duplicated_word">이미 존재하는 단어입니다.</string>
     <string name="vocabulary_activity_replace_meaning">뜻 바꾸기</string>
+    <string name="vocabulary_activity_require_meaning">뜻을 입력해 주세요.</string>
+    <string name="vocabulary_activity_error_empty_meaning">뜻은 비어있을 수 없습니다.</string>
+    <string name="vocabulary_activity_error_duplicated_meaning">이미 존재하는 뜻입니다.</string>
     <string name="vocabulary_activity_set_pronunciation">발음 설정하기</string>
+    <string name="vocabulary_activity_require_pronunciation">뜻을 입력해 주세요. 비어있을 수 있습니다.</string>
+    <string name="vocabulary_activity_warning_pronunciation_equals_word">단어와 발음이 같습니다. 호환성을 위해 발음 데이터가 없는 것으로 취급됩니다.</string>
     <string name="vocabulary_activity_set_example">예문 설정하기</string>
+    <string name="vocabulary_activity_require_example">예문을 입력해 주세요. 비어있을 수 있습니다.</string>
     <string name="vocabulary_activity_words"><![CDATA[<b>%1$s의 단어 목록</b> (%2$d개)]]></string>
     <string name="vocabulary_activity_words_search_result"><![CDATA[<b>%1$s의 검색 결과</b> (%2$d개)]]></string>
     <string name="vocabulary_activity_empty_words">단어가 없습니다.</string>

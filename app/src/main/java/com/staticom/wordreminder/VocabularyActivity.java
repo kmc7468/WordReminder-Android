@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.text.HtmlCompat;
@@ -259,10 +260,6 @@ public class VocabularyActivity extends AppCompatActivity {
         }).setNegativeButton(R.string.cancel).show();
     }
 
-    private void replaceWord() {
-        // TODO
-    }
-
     private void deleteMeaning() {
         if (selectedWord.getMeanings().size() == 1) {
             deleteWord(true);
@@ -280,6 +277,98 @@ public class VocabularyActivity extends AppCompatActivity {
             meaningsAdapter.setSelectedIndex(-1);
 
             setSelectedMeaning(null);
+        }).setNegativeButton(R.string.cancel).show();
+    }
+
+    private void replaceWord() {
+        final AlertDialog dialog = new AlertDialog(this,
+                R.string.vocabulary_activity_replace_word,
+                R.string.vocabulary_activity_require_word);
+
+        dialog.addEdit(selectedWord.getWord());
+        dialog.setPositiveButton(R.string.change, false, () -> {
+            final String word = dialog.getEditText().trim();
+            if (word.isEmpty()) {
+                Toast.makeText(getApplicationContext(),
+                        R.string.vocabulary_activity_require_word, Toast.LENGTH_SHORT).show();
+
+                return;
+            } else if (originalVocabulary.getVocabulary().containsWord(word) && !selectedWord.getWord().equals(word)) {
+                Toast.makeText(getApplicationContext(),
+                        R.string.vocabulary_activity_error_duplicated_word, Toast.LENGTH_SHORT).show();
+
+                return;
+            }
+
+            selectedWord.setWord(word);
+            wordsAdapter.notifyItemChanged(wordsAdapter.getSelectedIndex());
+
+            updateCount();
+
+            dialog.dismiss();
+        }).setNegativeButton(R.string.cancel).show();
+    }
+
+    private void replaceMeaning() {
+        final AlertDialog dialog = new AlertDialog(this,
+                R.string.vocabulary_activity_replace_meaning,
+                R.string.vocabulary_activity_require_meaning);
+
+        dialog.addEdit(selectedMeaning.getMeaning());
+        dialog.setPositiveButton(R.string.change, false, () -> {
+            final String meaning = dialog.getEditText().trim();
+            if (meaning.isEmpty()) {
+                Toast.makeText(getApplicationContext(),
+                        R.string.vocabulary_activity_require_meaning, Toast.LENGTH_SHORT).show();
+
+                return;
+            } else if (selectedWord.containsMeaning(meaning) && !selectedMeaning.getMeaning().equals(meaning)) {
+                Toast.makeText(getApplicationContext(),
+                        R.string.vocabulary_activity_error_duplicated_meaning, Toast.LENGTH_SHORT).show();
+
+                return;
+            }
+
+            selectedMeaning.setMeaning(meaning);
+            meaningsAdapter.notifyItemChanged(meaningsAdapter.getSelectedIndex());
+
+            dialog.dismiss();
+        }).setNegativeButton(R.string.cancel).show();
+    }
+
+    private void setPronunciation() {
+        final AlertDialog dialog = new AlertDialog(this,
+                R.string.vocabulary_activity_set_pronunciation,
+                R.string.vocabulary_activity_require_pronunciation);
+
+        dialog.addEdit(selectedMeaning.getPronunciation());
+        dialog.setPositiveButton(R.string.set, false, () -> {
+            final String pronunciation = dialog.getEditText().trim();
+            if (pronunciation.equals(selectedWord.getWord())) {
+                Toast.makeText(getApplicationContext(),
+                        R.string.vocabulary_activity_warning_pronunciation_equals_word, Toast.LENGTH_SHORT).show();
+            }
+
+            selectedMeaning.setPronunciation(pronunciation);
+            meaningsAdapter.notifyItemChanged(meaningsAdapter.getSelectedIndex());
+
+            dialog.dismiss();
+        }).setNegativeButton(R.string.cancel).show();
+    }
+
+    private void setExample() {
+        final AlertDialog dialog = new AlertDialog(this,
+                R.string.vocabulary_activity_set_example,
+                R.string.vocabulary_activity_require_example);
+
+        dialog.addEdit(selectedMeaning.getExample());
+        dialog.setPositiveButton(R.string.set, false, () -> {
+            final String example = dialog.getEditText().trim();
+
+            selectedMeaning.setExample(example);
+            meaningsAdapter.notifyItemChanged(meaningsAdapter.getSelectedIndex());
+
+            dialog.dismiss();
         }).setNegativeButton(R.string.cancel).show();
     }
 
@@ -301,14 +390,22 @@ public class VocabularyActivity extends AppCompatActivity {
             deleteWord(false);
 
             return true;
+        } else if (item.getItemId() == R.id.replaceMeaning) {
+            replaceMeaning();
+
+            return true;
+        } else if (item.getItemId() == R.id.setPronunciation) {
+            setPronunciation();
+
+            return true;
+        } else if (item.getItemId() == R.id.setExample) {
+            setExample();
+
+            return true;
         } else if (item.getItemId() == R.id.deleteMeaning) {
             deleteMeaning();
 
             return true;
-        }
-
-        // TODO
-
-        return super.onOptionsItemSelected(item);
+        } else return super.onOptionsItemSelected(item);
     }
 }

@@ -34,7 +34,7 @@ public class MeaningsAdapter extends SelectableAdapter {
             pronunciation = view.findViewById(R.id.pronunciation);
             example = view.findViewById(R.id.example);
 
-            onHolderDeactivated(false);
+            onHolderDeactivated(true);
         }
 
         private int getPixelsByDIP(int dip) {
@@ -116,5 +116,11 @@ public class MeaningsAdapter extends SelectableAdapter {
                 String.format(
                         viewHolder.itemView.getContext().getString(R.string.meanings_adapter_example),
                         meaning.getExample()), HtmlCompat.FROM_HTML_MODE_LEGACY));
+
+        if (myViewHolder.itemView.isActivated()) {
+            myViewHolder.onHolderActivated(true);
+        } else {
+            myViewHolder.onHolderDeactivated(true);
+        }
     }
 }

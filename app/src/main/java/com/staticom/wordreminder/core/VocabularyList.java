@@ -22,16 +22,16 @@ public class VocabularyList {
         return Collections.unmodifiableList(vocabularyList);
     }
 
+    public VocabularyMetadata getVocabulary(int index) {
+        return vocabularyList.get(index);
+    }
+
     public boolean containsVocabulary(String name) {
         for (final VocabularyMetadata vocabulary : vocabularyList) {
             if (vocabulary.getName().equals(name)) return true;
         }
 
         return false;
-    }
-
-    public VocabularyMetadata getVocabulary(int index) {
-        return vocabularyList.get(index);
     }
 
     public void addVocabulary(VocabularyMetadata vocabulary) {

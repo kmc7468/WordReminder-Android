@@ -40,6 +40,14 @@ public class Word implements Serializable {
         return meanings.get(index);
     }
 
+    public boolean containsMeaning(String meaning) {
+        for (final Meaning m : meanings) {
+            if (m.getMeaning().equals(meaning)) return true;
+        }
+
+        return false;
+    }
+
     public void addMeaning(Meaning meaning) {
         meaning.setWord(this);
 
