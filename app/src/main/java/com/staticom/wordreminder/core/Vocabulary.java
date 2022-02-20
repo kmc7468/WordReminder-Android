@@ -52,6 +52,10 @@ public class Vocabulary implements Serializable {
         return words.contains(word);
     }
 
+    public Word findWord(String word) {
+        return words.get(indexOfWord(word));
+    }
+
     public void addWord(Word word) {
         word.setVocabulary(this);
 

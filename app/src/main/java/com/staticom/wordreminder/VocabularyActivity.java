@@ -167,8 +167,14 @@ public class VocabularyActivity extends AppCompatActivity {
         final boolean isSearched = savedInstanceState.getBoolean("isSearched");
         if (isSearched) {
             final String searchQuery = savedInstanceState.getString("searchQuery");
+            final Vocabulary searchResult = (Vocabulary)savedInstanceState.getSerializable("searchResult");
+            final Vocabulary vocabulary = new Vocabulary();
 
-            searchWord(searchQuery);
+            for (final Word word : searchResult.getWords()) {
+                vocabulary.addWordRef(originalVocabulary.getVocabulary().findWord(word.getWord()));
+            }
+
+            setDisplayedVocabulary(new VocabularyMetadata(searchQuery, vocabulary));
         }
 
         final int selectedWord = savedInstanceState.getInt("selectedWord");
@@ -192,6 +198,7 @@ public class VocabularyActivity extends AppCompatActivity {
 
         if (isSearched) {
             savedInstanceState.putString("searchQuery", displayedVocabulary.getName());
+            savedInstanceState.putSerializable("searchResult", displayedVocabulary.getVocabulary());
         }
 
         savedInstanceState.putInt("selectedWord", wordsAdapter.getSelectedIndex());
