@@ -36,12 +36,20 @@ public class Vocabulary implements Serializable {
         return words.get(index);
     }
 
-    public boolean containsWord(String word) {
-        for (final Word w : words) {
-            if (w.getWord().equals(word)) return true;
+    public int indexOfWord(String word) {
+        for (int i = 0; i < words.size(); ++i) {
+            if (words.get(i).getWord().equals(word)) return i;
         }
 
-        return false;
+        return -1;
+    }
+
+    public boolean containsWord(String word) {
+        return indexOfWord(word) != -1;
+    }
+
+    public boolean containsWord(Word word) {
+        return words.contains(word);
     }
 
     public void addWord(Word word) {

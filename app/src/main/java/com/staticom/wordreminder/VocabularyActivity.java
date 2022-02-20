@@ -4,7 +4,10 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +24,10 @@ import com.staticom.wordreminder.core.Vocabulary;
 import com.staticom.wordreminder.core.VocabularyMetadata;
 import com.staticom.wordreminder.core.Word;
 import com.staticom.wordreminder.utility.AlertDialog;
+import com.staticom.wordreminder.utility.CustomDialog;
 import com.staticom.wordreminder.utility.RecyclerViewEmptyObserver;
+
+import java.util.Locale;
 
 public class VocabularyActivity extends AppCompatActivity {
 
@@ -407,5 +413,92 @@ public class VocabularyActivity extends AppCompatActivity {
 
             return true;
         } else return super.onOptionsItemSelected(item);
+    }
+
+    public void onAddClick(View view) {
+        final CustomDialog dialog = new CustomDialog(this, R.layout.dialog_create_meaning);
+
+        final TextView word = dialog.findViewById(R.id.word);
+        final TextView meaning = dialog.findViewById(R.id.meaning);
+        final TextView pronunciation = dialog.findViewById(R.id.pronunciation);
+        final TextView example = dialog.findViewById(R.id.example);
+
+        if (selectedWord != null) {
+            word.setText(selectedWord.getWord());
+
+            meaning.requestFocus();
+        } else {
+            word.requestFocus();
+        }
+
+        final Button reset = dialog.findViewById(R.id.reset);
+        final Button cancel = dialog.findViewById(R.id.cancel);
+        final Button create = dialog.findViewById(R.id.create);
+
+        reset.setOnClickListener(v -> {
+            word.setText("");
+            meaning.setText("");
+            pronunciation.setText("");
+            example.setText("");
+
+            word.requestFocus();
+        });
+        cancel.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+        create.setOnClickListener(v -> {
+            final String wordStr = word.getText().toString().trim();
+            final String meaningStr = meaning.getText().toString().trim();
+
+            final int targetWordIndex = originalVocabulary.getVocabulary().indexOfWord(wordStr);
+            Word targetWord;
+
+            if (wordStr.isEmpty()) {
+                Toast.makeText(getApplicationContext(),
+                        R.string.vocabulary_activity_error_empty_word, Toast.LENGTH_SHORT).show();
+
+                return;
+            } else if (meaningStr.isEmpty()) {
+                Toast.makeText(getApplicationContext(),
+                        R.string.vocabulary_activity_error_empty_meaning, Toast.LENGTH_SHORT).show();
+
+                return;
+            } else if (targetWordIndex != -1) {
+                targetWord = originalVocabulary.getVocabulary().getWord(targetWordIndex);
+                if (targetWord.containsMeaning(meaningStr)) {
+                    Toast.makeText(getApplicationContext(),
+                            R.string.vocabulary_activity_error_duplicated_meaning, Toast.LENGTH_SHORT).show();
+
+                    return;
+                }
+            } else {
+                targetWord = new Word(wordStr);
+
+                originalVocabulary.getVocabulary().addWord(targetWord);
+            }
+
+            final boolean displayed = displayedVocabulary.getVocabulary().containsWord(targetWord);
+            if (!displayed) {
+                displayedVocabulary.getVocabulary().addWord(targetWord);
+            }
+
+            if (!displayed || targetWordIndex == -1) {
+                wordsAdapter.notifyItemInserted(wordsAdapter.getItemCount());
+                wordsAdapter.setSelectedIndex(wordsAdapter.getItemCount() - 1);
+            }
+
+            targetWord.addMeaning(new Meaning(meaningStr,
+                    pronunciation.getText().toString().trim(),
+                    example.getText().toString().trim()));
+
+            meaningsAdapter.notifyItemInserted(meaningsAdapter.getItemCount());
+            meaningsAdapter.setSelectedIndex(meaningsAdapter.getItemCount() - 1);
+
+            updateCount();
+
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 }
