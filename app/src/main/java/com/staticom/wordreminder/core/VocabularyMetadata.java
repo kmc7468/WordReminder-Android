@@ -42,6 +42,11 @@ public class VocabularyMetadata {
         this.time = time;
     }
 
+    public VocabularyMetadata(String name, Vocabulary vocabulary) {
+        this.name = name;
+        this.vocabulary = vocabulary;
+    }
+
     public String getName() {
         return name;
     }

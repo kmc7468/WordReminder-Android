@@ -1,7 +1,11 @@
 package com.staticom.wordreminder;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.staticom.wordreminder.adapter.MeaningsAdapter;
 import com.staticom.wordreminder.adapter.WordsAdapter;
 import com.staticom.wordreminder.core.Meaning;
+import com.staticom.wordreminder.core.Vocabulary;
 import com.staticom.wordreminder.core.VocabularyMetadata;
 import com.staticom.wordreminder.core.Word;
 import com.staticom.wordreminder.utility.RecyclerViewEmptyObserver;
@@ -68,7 +73,7 @@ public class VocabularyActivity extends AppCompatActivity {
         updateCount();
     }
 
-    private void setSelectedWord(Word word, boolean resetSelectedMeaning) {
+    private void setSelectedWord(Word word) {
         selectedWord = word;
 
         if (word != null) {
@@ -88,12 +93,7 @@ public class VocabularyActivity extends AppCompatActivity {
                     new RecyclerViewEmptyObserver(meanings, findViewById(R.id.emptyMeaningsText)));
         }
 
-        if (resetSelectedMeaning) {
-            setSelectedMeaning(null);
-        } else {
-            updateMenusVisibility();
-            updateCount();
-        }
+        setSelectedMeaning(null);
     }
 
     private void setDisplayedVocabulary(VocabularyMetadata vocabulary) {
@@ -101,7 +101,7 @@ public class VocabularyActivity extends AppCompatActivity {
         wordsAdapter = new WordsAdapter(vocabulary);
 
         wordsAdapter.setOnItemSelectedListener((view, index) -> {
-            setSelectedWord(vocabulary.getVocabulary().getWord(index), true);
+            setSelectedWord(vocabulary.getVocabulary().getWord(index));
         });
 
         words.setAdapter(wordsAdapter);
@@ -110,9 +110,13 @@ public class VocabularyActivity extends AppCompatActivity {
                 new RecyclerViewEmptyObserver(words, findViewById(R.id.emptyWordsText)));
 
         if (selectedWord != null && vocabulary.getVocabulary().getWords().contains(selectedWord)) {
-            updateCount();
+            final int selectedWordNewIndex = vocabulary.getVocabulary().getWords().indexOf(selectedWord);
+            final int selectedMeaningIndex = meaningsAdapter.getSelectedIndex();
+
+            wordsAdapter.setSelectedIndex(selectedWordNewIndex);
+            meaningsAdapter.setSelectedIndex(selectedMeaningIndex);
         } else {
-            setSelectedWord(null, true);
+            setSelectedWord(null);
         }
     }
 
@@ -120,6 +124,7 @@ public class VocabularyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vocabulary);
+        setTitle(R.string.vocabulary_activity_title);
 
         originalVocabulary = VocabularyMetadata.deserialize(getIntent().getSerializableExtra("vocabulary"));
 
@@ -132,18 +137,68 @@ public class VocabularyActivity extends AppCompatActivity {
         setDisplayedVocabulary(originalVocabulary);
     }
 
+    private void searchWord(String query) {
+        final String queryLowerCase = query.toLowerCase();
+        final Vocabulary searchResult = new Vocabulary();
+
+        for (final Word word : displayedVocabulary.getVocabulary().getWords()) {
+            if (word.getWord().toLowerCase().contains(queryLowerCase)) {
+                searchResult.addWordRef(word);
+
+                continue;
+            }
+
+            for (final Meaning meaning : word.getMeanings()) {
+                if (meaning.getMeaning().toLowerCase().contains(queryLowerCase) ||
+                        meaning.getPronunciation().toLowerCase().contains(queryLowerCase) ||
+                        meaning.getExample().toLowerCase().contains(queryLowerCase)) {
+                    searchResult.addWordRef(word);
+
+                    break;
+                }
+            }
+        }
+
+        setDisplayedVocabulary(new VocabularyMetadata(query, searchResult));
+    }
+
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        // TODO
+        final boolean isSearched = savedInstanceState.getBoolean("isSearched");
+        if (isSearched) {
+            final String searchQuery = savedInstanceState.getString("searchQuery");
+
+            searchWord(searchQuery);
+        }
+
+        final int selectedWord = savedInstanceState.getInt("selectedWord");
+        if (selectedWord != -1) {
+            wordsAdapter.setSelectedIndex(selectedWord);
+        }
+
+        final int meaningIndex = savedInstanceState.getInt("selectedMeaning");
+        if (meaningIndex != -1) {
+            meaningsAdapter.setSelectedIndex(meaningIndex);
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 
-        // TODO
+        final boolean isSearched = displayedVocabulary != originalVocabulary;
+
+        savedInstanceState.putBoolean("isSearched", isSearched);
+
+        if (isSearched) {
+            savedInstanceState.putString("searchQuery", displayedVocabulary.getName());
+        }
+
+        savedInstanceState.putInt("selectedWord", wordsAdapter.getSelectedIndex());
+        savedInstanceState.putInt("selectedMeaning",
+                meaningsAdapter != null ? meaningsAdapter.getSelectedIndex() : -1);
     }
 
     @Override
@@ -154,6 +209,41 @@ public class VocabularyActivity extends AppCompatActivity {
 
         updateMenusVisibility();
 
+        final SearchView searchWord = (SearchView)menu.findItem(R.id.searchWord).getActionView();
+
+        searchWord.setQueryHint("검색...");
+        searchWord.setMaxWidth(Integer.MAX_VALUE);
+        searchWord.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchWord(query.trim());
+
+                final InputMethodManager manager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                manager.hideSoftInputFromWindow(searchWord.getWindowToken(), 0);
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        searchWord.setOnCloseListener(() -> {
+            setDisplayedVocabulary(originalVocabulary);
+
+            return true;
+        });
+        searchWord.setIconified(false);
+
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // TODO
+
+        return super.onOptionsItemSelected(item);
     }
 }
