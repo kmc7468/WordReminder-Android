@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.SearchView;
@@ -26,8 +25,6 @@ import com.staticom.wordreminder.core.Word;
 import com.staticom.wordreminder.utility.AlertDialog;
 import com.staticom.wordreminder.utility.CustomDialog;
 import com.staticom.wordreminder.utility.RecyclerViewEmptyObserver;
-
-import java.util.Locale;
 
 public class VocabularyActivity extends AppCompatActivity {
 
@@ -84,38 +81,21 @@ public class VocabularyActivity extends AppCompatActivity {
     private void setSelectedWord(Word word) {
         selectedWord = word;
 
-        if (word != null) {
-            meaningsAdapter = new MeaningsAdapter(word);
-
-            meaningsAdapter.setOnItemSelectedListener((view, index) -> {
-                setSelectedMeaning(word.getMeaning(index));
-            });
-        } else {
-            meaningsAdapter = null;
-        }
-
-        meanings.setAdapter(meaningsAdapter);
-
-        if (meaningsAdapter != null) {
-            meaningsAdapter.registerAdapterDataObserver(
-                    new RecyclerViewEmptyObserver(meanings, findViewById(R.id.emptyMeaningsText)));
-        }
+        meaningsAdapter.setWord(word);
+        meaningsAdapter.setOnItemSelectedListener((view, index) -> {
+            setSelectedMeaning(word.getMeaning(index));
+        });
 
         setSelectedMeaning(null);
     }
 
     private void setDisplayedVocabulary(VocabularyMetadata vocabulary) {
         displayedVocabulary = vocabulary;
-        wordsAdapter = new WordsAdapter(vocabulary);
 
+        wordsAdapter.setVocabulary(vocabulary);
         wordsAdapter.setOnItemSelectedListener((view, index) -> {
             setSelectedWord(vocabulary.getVocabulary().getWord(index));
         });
-
-        words.setAdapter(wordsAdapter);
-
-        wordsAdapter.registerAdapterDataObserver(
-                new RecyclerViewEmptyObserver(words, findViewById(R.id.emptyWordsText)));
 
         if (selectedWord != null && vocabulary.getVocabulary().getWords().contains(selectedWord)) {
             final int selectedWordNewIndex = vocabulary.getVocabulary().getWords().indexOf(selectedWord);
@@ -137,10 +117,20 @@ public class VocabularyActivity extends AppCompatActivity {
         originalVocabulary = VocabularyMetadata.deserialize(getIntent().getSerializableExtra("vocabulary"));
 
         words = findViewById(R.id.words);
-        meanings = findViewById(R.id.meanings);
+        wordsAdapter = new WordsAdapter(null);
 
         words.setLayoutManager(new LinearLayoutManager(this));
+        words.setAdapter(wordsAdapter);
+        wordsAdapter.registerAdapterDataObserver(
+                new RecyclerViewEmptyObserver(words, findViewById(R.id.emptyWordsText)));
+
+        meanings = findViewById(R.id.meanings);
+        meaningsAdapter = new MeaningsAdapter(null);
+
         meanings.setLayoutManager(new LinearLayoutManager(this));
+        meanings.setAdapter(meaningsAdapter);
+        meaningsAdapter.registerAdapterDataObserver(
+                new RecyclerViewEmptyObserver(meanings, findViewById(R.id.emptyMeaningsText)));
 
         setDisplayedVocabulary(originalVocabulary);
     }
@@ -254,15 +244,23 @@ public class VocabularyActivity extends AppCompatActivity {
                 fromDeleteMeaning ? R.string.vocabulary_activity_ask_delete_last_meaning : R.string.vocabulary_activity_ask_delete_word);
 
         dialog.setPositiveButton(R.string.delete, true, () -> {
+            final int selectedIndex = wordsAdapter.getSelectedIndex();
+
             displayedVocabulary.getVocabulary().removeWord(selectedWord);
-            wordsAdapter.notifyItemRemoved(wordsAdapter.getSelectedIndex());
+            wordsAdapter.notifyItemRemoved(selectedIndex);
             wordsAdapter.setSelectedIndex(-1);
 
             if (displayedVocabulary != originalVocabulary) {
                 originalVocabulary.getVocabulary().removeWord(selectedWord);
             }
 
-            setSelectedWord(null);
+            if (wordsAdapter.getItemCount() > selectedIndex) {
+                wordsAdapter.setSelectedIndex(selectedIndex);
+            } else if (wordsAdapter.getItemCount() > 0) {
+                wordsAdapter.setSelectedIndex(wordsAdapter.getItemCount() - 1);
+            } else {
+                setSelectedWord(null);
+            }
         }).setNegativeButton(R.string.cancel).show();
     }
 
@@ -278,11 +276,19 @@ public class VocabularyActivity extends AppCompatActivity {
                 R.string.vocabulary_activity_ask_delete_meaning);
 
         dialog.setPositiveButton(R.string.delete, true, () -> {
+            final int selectedIndex = meaningsAdapter.getSelectedIndex();
+
             selectedWord.removeMeaning(selectedMeaning);
-            meaningsAdapter.notifyItemRemoved(meaningsAdapter.getSelectedIndex());
+            meaningsAdapter.notifyItemRemoved(selectedIndex);
             meaningsAdapter.setSelectedIndex(-1);
 
-            setSelectedMeaning(null);
+            if (meaningsAdapter.getItemCount() > selectedIndex) {
+                meaningsAdapter.setSelectedIndex(selectedIndex);
+            } else if (meaningsAdapter.getItemCount() > 0) {
+                meaningsAdapter.setSelectedIndex(meaningsAdapter.getItemCount() - 1);
+            } else {
+                setSelectedMeaning(null);
+            }
         }).setNegativeButton(R.string.cancel).show();
     }
 
@@ -416,7 +422,7 @@ public class VocabularyActivity extends AppCompatActivity {
     }
 
     public void onAddClick(View view) {
-        final CustomDialog dialog = new CustomDialog(this, R.layout.dialog_create_meaning);
+        final CustomDialog dialog = new CustomDialog(this, R.layout.dialog_add_meaning);
 
         final TextView word = dialog.findViewById(R.id.word);
         final TextView meaning = dialog.findViewById(R.id.meaning);
@@ -433,7 +439,7 @@ public class VocabularyActivity extends AppCompatActivity {
 
         final Button reset = dialog.findViewById(R.id.reset);
         final Button cancel = dialog.findViewById(R.id.cancel);
-        final Button create = dialog.findViewById(R.id.create);
+        final Button add = dialog.findViewById(R.id.add);
 
         reset.setOnClickListener(v -> {
             word.setText("");
@@ -446,7 +452,7 @@ public class VocabularyActivity extends AppCompatActivity {
         cancel.setOnClickListener(v -> {
             dialog.dismiss();
         });
-        create.setOnClickListener(v -> {
+        add.setOnClickListener(v -> {
             final String wordStr = word.getText().toString().trim();
             final String meaningStr = meaning.getText().toString().trim();
 

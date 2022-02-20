@@ -1,5 +1,6 @@
 package com.staticom.wordreminder.adapter;
 
+import android.annotation.SuppressLint;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
@@ -82,7 +83,7 @@ public class MeaningsAdapter extends SelectableAdapter {
         }
     }
 
-    private final Word word;
+    private Word word;
 
     public MeaningsAdapter(Word word) {
         super(R.layout.item_meaning);
@@ -90,9 +91,15 @@ public class MeaningsAdapter extends SelectableAdapter {
         this.word = word;
     }
 
+    public void setWord(Word word) {
+        this.word = word;
+
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
-        return word.getMeanings().size();
+        return word != null ? word.getMeanings().size() : 0;
     }
 
     @Override

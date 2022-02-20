@@ -267,11 +267,19 @@ public class MainActivity extends AppCompatActivity {
                 R.string.main_activity_ask_delete_vocabulary);
 
         dialog.setPositiveButton(R.string.delete, true, () -> {
+            final int selectedIndex = vocabularyListAdapter.getSelectedIndex();
+
             vocabularyList.removeVocabulary(selectedVocabulary);
-            vocabularyListAdapter.notifyItemRemoved(vocabularyListAdapter.getSelectedIndex());
+            vocabularyListAdapter.notifyItemRemoved(selectedIndex);
             vocabularyListAdapter.setSelectedIndex(-1);
 
-            setSelectedVocabulary(null);
+            if (vocabularyListAdapter.getItemCount() > selectedIndex) {
+                vocabularyListAdapter.setSelectedIndex(selectedIndex);
+            } else if (vocabularyListAdapter.getItemCount() > 0) {
+                vocabularyListAdapter.setSelectedIndex(vocabularyListAdapter.getItemCount() - 1);
+            } else {
+                setSelectedVocabulary(null);
+            }
         }).setNegativeButton(R.string.cancel).show();
     }
 

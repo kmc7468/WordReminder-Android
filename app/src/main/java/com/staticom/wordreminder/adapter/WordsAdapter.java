@@ -20,7 +20,7 @@ public class WordsAdapter extends SelectableAdapter {
         }
     }
 
-    private final VocabularyMetadata vocabulary;
+    private VocabularyMetadata vocabulary;
 
     public WordsAdapter(VocabularyMetadata vocabulary) {
         super(R.layout.item_word);
@@ -28,9 +28,15 @@ public class WordsAdapter extends SelectableAdapter {
         this.vocabulary = vocabulary;
     }
 
+    public void setVocabulary(VocabularyMetadata vocabulary) {
+        this.vocabulary = vocabulary;
+
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
-        return vocabulary.getVocabulary().getWords().size();
+        return vocabulary != null ? vocabulary.getVocabulary().getWords().size() : 0;
     }
 
     @Override
