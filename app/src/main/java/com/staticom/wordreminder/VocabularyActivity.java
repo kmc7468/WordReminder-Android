@@ -1,6 +1,7 @@
 package com.staticom.wordreminder;
 
 import android.os.Bundle;
+import android.view.Menu;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +17,8 @@ import com.staticom.wordreminder.core.Word;
 import com.staticom.wordreminder.utility.RecyclerViewEmptyObserver;
 
 public class VocabularyActivity extends AppCompatActivity {
+
+    private Menu menu;
 
     private RecyclerView words;
     private VocabularyMetadata originalVocabulary, displayedVocabulary;
@@ -51,11 +54,17 @@ public class VocabularyActivity extends AppCompatActivity {
         }
     }
 
+    private void updateMenusVisibility() {
+        if (menu != null) {
+            menu.setGroupVisible(R.id.wordEditMenus, selectedWord != null);
+            menu.setGroupVisible(R.id.meaningEditMenus, selectedMeaning != null);
+        }
+    }
+
     private void setSelectedMeaning(Meaning meaning) {
         selectedMeaning = meaning;
 
-        // TODO: MENU
-
+        updateMenusVisibility();
         updateCount();
     }
 
@@ -82,6 +91,7 @@ public class VocabularyActivity extends AppCompatActivity {
         if (resetSelectedMeaning) {
             setSelectedMeaning(null);
         } else {
+            updateMenusVisibility();
             updateCount();
         }
     }
@@ -120,5 +130,30 @@ public class VocabularyActivity extends AppCompatActivity {
         meanings.setLayoutManager(new LinearLayoutManager(this));
 
         setDisplayedVocabulary(originalVocabulary);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // TODO
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        // TODO
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_vocabulary_activity, menu);
+
+        this.menu = menu;
+
+        updateMenusVisibility();
+
+        return true;
     }
 }

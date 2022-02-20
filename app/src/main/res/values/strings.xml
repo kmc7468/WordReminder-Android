@@ -33,6 +33,15 @@
     <string name="main_activity_load_vocabulary">단어장 불러오기</string>
     <string name="main_activity_load_vocabulary_error">오류가 발생해 단어장을 불러오지 못했습니다.</string>
 
+    <string name="vocabulary_activity_title">단어장 수정하기</string>
+    <string name="vocabulary_activity_search">단어 검색하기</string>
+    <string name="vocabulary_activity_delete_word_or_meaning">단어 또는 뜻 삭제하기</string>
+    <string name="vocabulary_activity_delete_word">단어 삭제하기</string>
+    <string name="vocabulary_activity_delete_meaning">뜻 삭제하기</string>
+    <string name="vocabulary_activity_replace_word">단어 바꾸기</string>
+    <string name="vocabulary_activity_replace_meaning">뜻 바꾸기</string>
+    <string name="vocabulary_activity_set_pronunciation">발음 설정하기</string>
+    <string name="vocabulary_activity_set_example">예문 설정하기</string>
     <string name="vocabulary_activity_words"><![CDATA[<b>%1$s의 단어 목록</b> (%2$d개)]]></string>
     <string name="vocabulary_activity_words_search_result"><![CDATA[<b>%1$s의 검색 결과</b> (%2$d개)]]></string>
     <string name="vocabulary_activity_empty_words">단어가 없습니다.</string>

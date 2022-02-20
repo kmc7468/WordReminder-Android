@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="@string/vocabulary_activity_search"
+        app:showAsAction="always" />
+    <group
+        android:id="@+id/wordEditMenus"
+        android:visible="false">
+        <item
+            android:icon="@android:drawable/ic_menu_delete"
+            android:title="@string/vocabulary_activity_delete_word_or_meaning"
+            app:showAsAction="always" />
+        <item
+            android:title="@string/vocabulary_activity_replace_word"
+            app:showAsAction="never" />
+        <item
+            android:title="@string/vocabulary_activity_delete_word"
+            app:showAsAction="never" />
+    </group>
+    <group
+        android:id="@+id/meaningEditMenus"
+        android:visible="false">
+        <item
+            android:title="@string/vocabulary_activity_replace_meaning"
+            app:showAsAction="never" />
+        <item
+            android:title="@string/vocabulary_activity_set_pronunciation"
+            app:showAsAction="never" />
+        <item
+            android:title="@string/vocabulary_activity_set_example"
+            app:showAsAction="never" />
+        <item
+            android:title="@string/vocabulary_activity_delete_meaning"
+            app:showAsAction="never" />
+    </group>
+</menu>
