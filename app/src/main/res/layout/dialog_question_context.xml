@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="@string/vocabulary_activity_add_meaning"
+        android:text="@string/main_activity_remind_word"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -32,98 +32,96 @@
             android:layout_marginEnd="16dp">
 
             <TextView
-                android:id="@+id/wordText"
+                android:id="@+id/typesText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/vocabulary_activity_word"
+                android:text="@string/main_activity_question_types"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:id="@+id/word"
+            <Switch
+                android:id="@+id/word_to_meaning"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:ems="10"
-                android:hint="@string/vocabulary_activity_word_hint"
-                android:inputType="text"
                 android:minHeight="48dp"
+                android:text="@string/main_activity_question_type_word_to_meaning"
+                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/wordText" />
+                app:layout_constraintTop_toBottomOf="@+id/typesText" />
 
-            <TextView
-                android:id="@+id/meaningText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/vocabulary_activity_meaning"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/word" />
-
-            <EditText
-                android:id="@+id/meaning"
+            <Switch
+                android:id="@+id/word_to_meaning_sa"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:ems="10"
-                android:hint="@string/vocabulary_activity_meaning_hint"
-                android:inputType="text"
                 android:minHeight="48dp"
+                android:text="@string/main_activity_question_type_word_to_meaning_sa"
+                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/meaningText" />
+                app:layout_constraintTop_toBottomOf="@+id/word_to_meaning" />
 
-            <TextView
-                android:id="@+id/pronunciationText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/vocabulary_activity_pronunciation"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/meaning" />
-
-            <EditText
-                android:id="@+id/pronunciation"
+            <Switch
+                android:id="@+id/meaning_to_word"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:ems="10"
-                android:hint="@string/vocabulary_activity_pronunciation_hint"
-                android:inputType="text"
                 android:minHeight="48dp"
+                android:text="@string/main_activity_question_type_meaning_to_word"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/word_to_meaning_sa" />
+
+            <Switch
+                android:id="@+id/meaning_to_word_sa"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/main_activity_question_type_meaning_to_word_sa"
+                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/pronunciationText" />
+                app:layout_constraintTop_toBottomOf="@+id/meaning_to_word" />
 
             <TextView
-                android:id="@+id/exampleText"
+                android:id="@+id/optionsText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/vocabulary_activity_example"
+                android:text="@string/main_activity_question_options"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/pronunciation" />
+                app:layout_constraintTop_toBottomOf="@+id/meaning_to_word_sa" />
 
-            <EditText
-                android:id="@+id/example"
+            <Switch
+                android:id="@+id/display_pronunciation"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:ems="10"
-                android:hint="@string/vocabulary_activity_example_hint"
-                android:inputType="text"
                 android:minHeight="48dp"
+                android:text="@string/main_activity_question_option_display_pronunciation"
+                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/exampleText" />
+                app:layout_constraintTop_toBottomOf="@+id/optionsText" />
+
+            <Switch
+                android:id="@+id/display_example"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/main_activity_question_option_display_example"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/display_pronunciation" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
     <Button
-        android:id="@+id/reset"
+        android:id="@+id/cancel"
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -131,26 +129,14 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
         android:minWidth="64dp"
-        android:text="@string/reset"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView" />
-
-    <Button
-        android:id="@+id/cancel"
-        style="?android:attr/buttonBarButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        android:minWidth="64dp"
         android:text="@string/cancel"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/add"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
-        android:id="@+id/add"
+        android:id="@+id/start"
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -158,9 +144,9 @@
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="4dp"
         android:minWidth="64dp"
-        android:text="@string/add"
+        android:text="@string/start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView" />
-
+        app:layout_constraintTop_toBottomOf="@+id/scrollView"
+        app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

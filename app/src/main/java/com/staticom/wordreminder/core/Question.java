@@ -1,6 +1,8 @@
 package com.staticom.wordreminder.core;
 
-public class Question {
+import java.io.Serializable;
+
+public class Question implements Serializable {
 
     private final QuestionType type;
     private final Meaning answer;

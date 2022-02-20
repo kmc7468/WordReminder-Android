@@ -6,6 +6,7 @@
     <string name="change">변경</string>
     <string name="set">설정</string>
     <string name="save">저장</string>
+    <string name="start">시작</string>
     <string name="no_save">저장 안함</string>
     <string name="cancel">취소</string>
     <string name="close">닫기</string>
@@ -39,6 +40,16 @@
     <string name="main_activity_create_vocabulary">단어장 만들기</string>
     <string name="main_activity_load_vocabulary">단어장 불러오기</string>
     <string name="main_activity_load_vocabulary_error">오류가 발생해 단어장을 불러오지 못했습니다.</string>
+    <string name="main_activity_remind_word">단어 암기하기</string>
+    <string name="main_activity_question_types">문제 유형</string>
+    <string name="main_activity_question_type_word_to_meaning">단어 보고 뜻 맞히기</string>
+    <string name="main_activity_question_type_word_to_meaning_sa">단어 보고 뜻 맞히기 (단답형)</string>
+    <string name="main_activity_question_type_meaning_to_word">뜻 보고 단어 맞히기</string>
+    <string name="main_activity_question_type_meaning_to_word_sa">뜻 보고 단어 맞히기 (단답형)</string>
+    <string name="main_activity_question_error_not_selected_question_types">문제 유형을 적어도 하나는 선택해야 합니다.</string>
+    <string name="main_activity_question_options">문제 옵션</string>
+    <string name="main_activity_question_option_display_pronunciation">발음 표시하기</string>
+    <string name="main_activity_question_option_display_example">예문 표시하기</string>
 
     <string name="vocabulary_activity_title">단어장 수정하기</string>
     <string name="vocabulary_activity_title_edited">단어장 수정하기 *</string>

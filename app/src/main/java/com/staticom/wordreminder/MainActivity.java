@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,8 +61,13 @@ public class MainActivity extends AppCompatActivity {
 
     private FloatingActionButton create, load;
     private boolean isOpenAddButtons = false;
-    private Animation fabOpen, fabClose;
+    private Animation createOpenAnimation, createCloseAnimation;
     private ActivityResultLauncher<String[]> loadVocabularyResult;
+
+    private FloatingActionButton start;
+    private boolean isOpenStartButton = false;
+    private Animation startOpenAnimation, startCloseAnimation;
+    private ActivityResultLauncher<Intent> startResult;
 
     private void exportVocabulary(Uri uri) {
         if (uri == null) return;
@@ -113,6 +119,19 @@ public class MainActivity extends AppCompatActivity {
         if (menu != null) {
             menu.setGroupVisible(R.id.editMenus, vocabulary != null);
         }
+    }
+
+    private void toggleStartButton() {
+        if (isOpenStartButton) {
+            start.startAnimation(createCloseAnimation);
+        } else {
+            start.startAnimation(createOpenAnimation);
+        }
+
+        isOpenStartButton = !isOpenStartButton;
+
+        start.setVisibility(isOpenStartButton ? View.VISIBLE : View.INVISIBLE);
+        start.setClickable(isOpenStartButton);
     }
 
     private void updateVocabulary(ActivityResult result) {
@@ -188,6 +207,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void addWrongVocabulary(ActivityResult result) {
+        if (result.getResultCode() != RESULT_OK) return;
+
+        final Intent intent = result.getData();
+        final VocabularyMetadata vocabulary = VocabularyMetadata.deserialize(intent.getSerializableExtra("vocabulary"));
+
+        vocabularyList.addVocabulary(vocabulary);
+        vocabularyListAdapter.notifyItemInserted(vocabularyListAdapter.getItemCount());
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -203,6 +232,10 @@ public class MainActivity extends AppCompatActivity {
 
             vocabularyListAdapter.setOnItemSelectedListener((view, index) -> {
                 setSelectedVocabulary(vocabularyList.getVocabulary(index));
+
+                if (!isOpenStartButton) {
+                    toggleStartButton();
+                }
             });
             vocabularyListAdapter.setOnEditButtonClickListener(index -> {
                 if (!selectedVocabulary.hasVocabulary()) {
@@ -236,11 +269,14 @@ public class MainActivity extends AppCompatActivity {
 
         create = findViewById(R.id.create);
         load = findViewById(R.id.load);
-
-        fabOpen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
-        fabClose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
-
+        createOpenAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+        createCloseAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
         loadVocabularyResult = registerForActivityResult(new ActivityResultContracts.OpenDocument(), this::loadVocabulary);
+
+        start = findViewById(R.id.start);
+        startOpenAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+        startCloseAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
+        startResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::addWrongVocabulary);
     }
 
     @Override
@@ -292,6 +328,7 @@ public class MainActivity extends AppCompatActivity {
                 vocabularyListAdapter.setSelectedIndex(vocabularyListAdapter.getItemCount() - 1);
             } else {
                 setSelectedVocabulary(null);
+                toggleStartButton();
             }
         }).setNegativeButton(R.string.cancel).show();
     }
@@ -381,11 +418,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void toggleAddButtons() {
         if (isOpenAddButtons) {
-            load.startAnimation(fabClose);
-            create.startAnimation(fabClose);
+            load.startAnimation(createCloseAnimation);
+            create.startAnimation(createCloseAnimation);
         } else {
-            load.startAnimation(fabOpen);
-            create.startAnimation(fabOpen);
+            load.startAnimation(createOpenAnimation);
+            create.startAnimation(createOpenAnimation);
         }
 
         isOpenAddButtons = !isOpenAddButtons;
@@ -422,5 +459,46 @@ public class MainActivity extends AppCompatActivity {
 
     public void onAddClick(View view) {
         toggleAddButtons();
+    }
+
+    public void onStartClick(View view) {
+        final CustomDialog dialog = new CustomDialog(this, R.layout.dialog_question_context);
+
+        final Switch wordToMeaning = dialog.findViewById(R.id.word_to_meaning);
+        final Switch wordToMeaningSA = dialog.findViewById(R.id.word_to_meaning_sa);
+        final Switch meaningToWord = dialog.findViewById(R.id.meaning_to_word);
+        final Switch meaningToWordSA = dialog.findViewById(R.id.meaning_to_word_sa);
+
+        final Switch displayPronunciation = dialog.findViewById(R.id.display_pronunciation);
+        final Switch displayExample = dialog.findViewById(R.id.display_example);
+
+        final Button cancel = dialog.findViewById(R.id.cancel);
+        final Button start = dialog.findViewById(R.id.start);
+
+        cancel.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+        start.setOnClickListener(v -> {
+            if (!wordToMeaning.isChecked() && !wordToMeaningSA.isChecked() &&
+                    !meaningToWord.isChecked() && !meaningToWordSA.isChecked()) {
+                Toast.makeText(getApplicationContext(),
+                        R.string.main_activity_question_error_not_selected_question_types, Toast.LENGTH_SHORT).show();
+
+                return;
+            }
+
+            final Intent intent = new Intent(this, QuestionActivity.class);
+
+            intent.putExtra("wordToMeaning", wordToMeaning.isChecked());
+            intent.putExtra("wordToMeaningSA", wordToMeaningSA.isChecked());
+            intent.putExtra("meaningToWord", meaningToWord.isChecked());
+            intent.putExtra("meaningToWordSA", wordToMeaningSA.isChecked());
+
+            startResult.launch(intent);
+
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 }

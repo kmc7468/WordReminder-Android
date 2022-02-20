@@ -6,9 +6,10 @@ import androidx.annotation.StringRes;
 
 import com.staticom.wordreminder.R;
 
+import java.io.Serializable;
 import java.util.EnumSet;
 
-public class QuestionType {
+public class QuestionType implements Serializable {
 
     public enum Type {
         WORD_TO_MEANING,

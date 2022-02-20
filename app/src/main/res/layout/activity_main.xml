@@ -31,6 +31,7 @@
         tools:visibility="visible" />
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -80,5 +81,19 @@
             app:fabSize="normal"
             app:srcCompat="@android:drawable/ic_menu_upload" />
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:clickable="false"
+        android:contentDescription="@string/main_activity_remind_word"
+        android:onClick="onStartClick"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout"
+        app:srcCompat="@android:drawable/ic_menu_slideshow"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
