@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.StringRes;
@@ -46,14 +47,16 @@ public class MainActivity extends AppCompatActivity {
         void onVocabularyNameInputted(String name);
     }
 
-    private Menu menu;
     private ActivityResultLauncher<String> exportVocabularyResult;
+
+    private Menu menu;
 
     private Path rootPath;
 
     private VocabularyList vocabularyList;
     private VocabularyListAdapter vocabularyListAdapter;
     private VocabularyMetadata selectedVocabulary;
+    private ActivityResultLauncher<Intent> editVocabularyResult;
 
     private FloatingActionButton create, load;
     private boolean isOpenAddButtons = false;
@@ -110,6 +113,14 @@ public class MainActivity extends AppCompatActivity {
         if (menu != null) {
             menu.setGroupVisible(R.id.editMenus, vocabulary != null);
         }
+    }
+
+    private void updateVocabulary(ActivityResult result) {
+        if (result.getResultCode() != RESULT_OK) return;
+
+        final Intent intent = result.getData();
+
+        selectedVocabulary.setVocabulary((Vocabulary)intent.getSerializableExtra("vocabulary"));
     }
 
     private String getFilenameFromUri(Uri uri) {
@@ -209,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
                 intent.putExtra("vocabulary", selectedVocabulary.serialize());
 
-                startActivity(intent);
+                editVocabularyResult.launch(intent);
             });
 
             final RecyclerView vocabularyList = findViewById(R.id.vocabularyList);
@@ -219,6 +230,8 @@ public class MainActivity extends AppCompatActivity {
 
             vocabularyListAdapter.registerAdapterDataObserver(
                     new RecyclerViewEmptyObserver(vocabularyList, findViewById(R.id.emptyVocabularyListText)));
+
+            editVocabularyResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::updateVocabulary);
         }
 
         create = findViewById(R.id.create);

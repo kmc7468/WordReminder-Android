@@ -1,6 +1,7 @@
 package com.staticom.wordreminder;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,6 +12,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,6 +31,8 @@ import com.staticom.wordreminder.utility.RecyclerViewEmptyObserver;
 public class VocabularyActivity extends AppCompatActivity {
 
     private Menu menu;
+    private MenuItem save;
+    private boolean isEdited = false, isSaved = false;
 
     private RecyclerView words;
     private VocabularyMetadata originalVocabulary, displayedVocabulary;
@@ -38,6 +42,73 @@ public class VocabularyActivity extends AppCompatActivity {
     private RecyclerView meanings;
     private MeaningsAdapter meaningsAdapter;
     private Meaning selectedMeaning;
+
+    private boolean save() {
+        try {
+            originalVocabulary.saveVocabulary();
+
+            setTitle(R.string.vocabulary_activity_title);
+
+            save.setVisible(false);
+            isEdited = false;
+            isSaved = true;
+
+            Toast.makeText(getApplicationContext(),
+                    R.string.vocabulary_activity_success_save_vocabulary, Toast.LENGTH_SHORT).show();
+
+            return true;
+        } catch (final Exception e) {
+            Toast.makeText(getApplicationContext(),
+                    R.string.vocabulary_activity_error_save_vocabulary, Toast.LENGTH_LONG).show();
+
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void setResultAndFinish() {
+        if (isSaved) {
+            if (isEdited) {
+                try {
+                    originalVocabulary.loadVocabulary();
+                } catch (final Exception e) {
+                    Toast.makeText(getApplicationContext(),
+                            R.string.vocabulary_activity_error_restore_vocabulary, Toast.LENGTH_LONG).show();
+
+                    e.printStackTrace();
+                    return;
+                }
+            }
+
+            final Intent intent = new Intent();
+
+            intent.putExtra("vocabulary", originalVocabulary.getVocabulary());
+
+            setResult(RESULT_OK, intent);
+        } else {
+            setResult(RESULT_CANCELED);
+        }
+
+        finish();
+    }
+
+    private void askSaveAndFinish() {
+        final AlertDialog dialog = new AlertDialog(this,
+                R.string.vocabulary_activity_warning_not_saved_vocabulary,
+                R.string.vocabulary_activity_ask_save_vocabulary);
+
+        dialog.setPositiveButton(R.string.save, false, () -> {
+            if (save()) {
+                setResultAndFinish();
+
+                dialog.dismiss();
+            }
+        }).setNegativeButton(R.string.no_save, true, () -> {
+            setResultAndFinish();
+
+            dialog.dismiss();
+        }).setNeutralButton(R.string.cancel).show();
+    }
 
     private void updateCount() {
         final TextView wordsText = findViewById(R.id.wordsText);
@@ -114,6 +185,17 @@ public class VocabularyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_vocabulary);
         setTitle(R.string.vocabulary_activity_title);
 
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (isEdited) {
+                    askSaveAndFinish();
+                } else {
+                    setResultAndFinish();
+                }
+            }
+        });
+
         originalVocabulary = VocabularyMetadata.deserialize(getIntent().getSerializableExtra("vocabulary"));
 
         words = findViewById(R.id.words);
@@ -164,6 +246,9 @@ public class VocabularyActivity extends AppCompatActivity {
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
+        isEdited = savedInstanceState.getBoolean("isEdited");
+        isSaved = savedInstanceState.getBoolean("isSaved");
+
         final boolean isSearched = savedInstanceState.getBoolean("isSearched");
         if (isSearched) {
             final String searchQuery = savedInstanceState.getString("searchQuery");
@@ -192,6 +277,9 @@ public class VocabularyActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 
+        savedInstanceState.putBoolean("isEdited", isEdited);
+        savedInstanceState.putBoolean("isSaved", isSaved);
+
         final boolean isSearched = displayedVocabulary != originalVocabulary;
 
         savedInstanceState.putBoolean("isSearched", isSearched);
@@ -202,8 +290,7 @@ public class VocabularyActivity extends AppCompatActivity {
         }
 
         savedInstanceState.putInt("selectedWord", wordsAdapter.getSelectedIndex());
-        savedInstanceState.putInt("selectedMeaning",
-                meaningsAdapter != null ? meaningsAdapter.getSelectedIndex() : -1);
+        savedInstanceState.putInt("selectedMeaning", meaningsAdapter.getSelectedIndex());
     }
 
     @Override
@@ -211,6 +298,7 @@ public class VocabularyActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_vocabulary_activity, menu);
 
         this.menu = menu;
+        save = menu.findItem(R.id.save);
 
         updateMenusVisibility();
 
@@ -245,6 +333,13 @@ public class VocabularyActivity extends AppCompatActivity {
         return true;
     }
 
+    private void edited() {
+        setTitle(R.string.vocabulary_activity_title_edited);
+
+        save.setVisible(true);
+        isEdited = true;
+    }
+
     private void deleteWord(boolean fromDeleteMeaning) {
         final AlertDialog dialog = new AlertDialog(this,
                 fromDeleteMeaning ? R.string.vocabulary_activity_delete_meaning : R.string.vocabulary_activity_delete_word,
@@ -261,6 +356,8 @@ public class VocabularyActivity extends AppCompatActivity {
                 originalVocabulary.getVocabulary().removeWord(selectedWord);
             }
 
+            meaningsAdapter.setSelectedIndex(-1);
+
             if (wordsAdapter.getItemCount() > selectedIndex) {
                 wordsAdapter.setSelectedIndex(selectedIndex);
             } else if (wordsAdapter.getItemCount() > 0) {
@@ -268,6 +365,8 @@ public class VocabularyActivity extends AppCompatActivity {
             } else {
                 setSelectedWord(null);
             }
+
+            edited();
         }).setNegativeButton(R.string.cancel).show();
     }
 
@@ -296,6 +395,8 @@ public class VocabularyActivity extends AppCompatActivity {
             } else {
                 setSelectedMeaning(null);
             }
+
+            edited();
         }).setNegativeButton(R.string.cancel).show();
     }
 
@@ -323,6 +424,7 @@ public class VocabularyActivity extends AppCompatActivity {
             wordsAdapter.notifyItemChanged(wordsAdapter.getSelectedIndex());
 
             updateCount();
+            edited();
 
             dialog.dismiss();
         }).setNegativeButton(R.string.cancel).show();
@@ -351,6 +453,8 @@ public class VocabularyActivity extends AppCompatActivity {
             selectedMeaning.setMeaning(meaning);
             meaningsAdapter.notifyItemChanged(meaningsAdapter.getSelectedIndex());
 
+            edited();
+
             dialog.dismiss();
         }).setNegativeButton(R.string.cancel).show();
     }
@@ -371,6 +475,8 @@ public class VocabularyActivity extends AppCompatActivity {
             selectedMeaning.setPronunciation(pronunciation);
             meaningsAdapter.notifyItemChanged(meaningsAdapter.getSelectedIndex());
 
+            edited();
+
             dialog.dismiss();
         }).setNegativeButton(R.string.cancel).show();
     }
@@ -387,13 +493,19 @@ public class VocabularyActivity extends AppCompatActivity {
             selectedMeaning.setExample(example);
             meaningsAdapter.notifyItemChanged(meaningsAdapter.getSelectedIndex());
 
+            edited();
+
             dialog.dismiss();
         }).setNegativeButton(R.string.cancel).show();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.deleteWordOrMeaning) {
+        if (item.getItemId() == R.id.save) {
+            save();
+
+            return true;
+        } else if (item.getItemId() == R.id.deleteWordOrMeaning) {
             if (selectedMeaning == null) {
                 deleteWord(false);
             } else {
@@ -508,6 +620,7 @@ public class VocabularyActivity extends AppCompatActivity {
             meaningsAdapter.setSelectedIndex(meaningsAdapter.getItemCount() - 1);
 
             updateCount();
+            edited();
 
             dialog.dismiss();
         });

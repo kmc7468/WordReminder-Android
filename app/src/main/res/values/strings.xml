@@ -5,6 +5,8 @@
     <string name="delete">삭제</string>
     <string name="change">변경</string>
     <string name="set">설정</string>
+    <string name="save">저장</string>
+    <string name="no_save">저장 안함</string>
     <string name="cancel">취소</string>
     <string name="close">닫기</string>
     <string name="reset">초기화</string>
@@ -39,8 +41,15 @@
     <string name="main_activity_load_vocabulary_error">오류가 발생해 단어장을 불러오지 못했습니다.</string>
 
     <string name="vocabulary_activity_title">단어장 수정하기</string>
+    <string name="vocabulary_activity_title_edited">단어장 수정하기 *</string>
+    <string name="vocabulary_activity_warning_not_saved_vocabulary">저장되지 않은 변경 사항이 있습니다.</string>
+    <string name="vocabulary_activity_ask_save_vocabulary">변경 사항을 저장할까요?</string>
+    <string name="vocabulary_activity_error_restore_vocabulary">오류가 발생해 저장되지 않은 변경 사항을 되돌리지 못했습니다.</string>
     <string name="vocabulary_activity_search">단어 검색하기</string>
     <string name="vocabulary_activity_search_hint">검색...</string>
+    <string name="vocabulary_activity_save_vocabulary">단어장 저장하기</string>
+    <string name="vocabulary_activity_success_save_vocabulary">변경 사항을 모두 저장했습니다.</string>
+    <string name="vocabulary_activity_error_save_vocabulary">오류가 발생해 변경 사항을 저장하지 못했습니다.</string>
     <string name="vocabulary_activity_delete_word_or_meaning">단어 또는 뜻 삭제하기</string>
     <string name="vocabulary_activity_delete_word">단어 삭제하기</string>
     <string name="vocabulary_activity_ask_delete_word">단어를 정말 삭제할까요?</string>
