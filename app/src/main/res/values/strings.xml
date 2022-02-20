@@ -32,4 +32,8 @@
     <string name="main_activity_create_vocabulary">단어장 만들기</string>
     <string name="main_activity_load_vocabulary">단어장 불러오기</string>
     <string name="main_activity_load_vocabulary_error">오류가 발생해 단어장을 불러오지 못했습니다.</string>
+
+    <string name="vocabulary_activity_empty_words">단어가 없습니다.</string>
+    <string name="vocabulary_activity_empty_meanings">단어를 선택해 주세요.</string>
+    <string name="vocabulary_activity_add_meaning">단어/뜻 추가하기</string>
 </resources>
