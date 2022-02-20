@@ -3,10 +3,31 @@ package com.staticom.wordreminder.core;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 
 public class VocabularyMetadata {
+
+    private static class SerializableVocabularyMetadata implements Serializable {
+
+        private String name;
+        private String path;
+        private LocalDateTime time;
+
+        private Vocabulary vocabulary;
+        private boolean shouldSave;
+
+        public SerializableVocabularyMetadata(VocabularyMetadata vocabulary) {
+            name = vocabulary.name;
+            path = vocabulary.path.toString();
+            time = vocabulary.time;
+
+            this.vocabulary = vocabulary.vocabulary;
+            shouldSave = vocabulary.shouldSave;
+        }
+    }
 
     private String name;
     private Path path;
@@ -75,5 +96,20 @@ public class VocabularyMetadata {
 
     public void setShouldSave(boolean shouldSave) {
         this.shouldSave = shouldSave;
+    }
+
+    public Serializable serialize() {
+        return new SerializableVocabularyMetadata(this);
+    }
+
+    public static VocabularyMetadata deserialize(Serializable serializable) {
+        final SerializableVocabularyMetadata vocabulary = (SerializableVocabularyMetadata)serializable;
+        final VocabularyMetadata result = new VocabularyMetadata(
+                vocabulary.name, Paths.get(vocabulary.path), vocabulary.time);
+
+        result.vocabulary = vocabulary.vocabulary;
+        result.shouldSave = vocabulary.shouldSave;
+
+        return result;
     }
 }

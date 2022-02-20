@@ -1,6 +1,8 @@
 package com.staticom.wordreminder.core;
 
-public class Meaning {
+import java.io.Serializable;
+
+public class Meaning implements Serializable {
 
     public enum Component {
         WORD,

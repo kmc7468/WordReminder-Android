@@ -1,11 +1,12 @@
 package com.staticom.wordreminder.core;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Word {
+public class Word implements Serializable {
 
     private Vocabulary vocabulary;
     private String word;

@@ -46,8 +46,6 @@ public class MainActivity extends AppCompatActivity {
         void onVocabularyNameInputted(String name);
     }
 
-    public static VocabularyMetadata SelectedVocabularyForVocabularyActivity;
-
     private Menu menu;
     private ActivityResultLauncher<String> exportVocabularyResult;
 
@@ -207,9 +205,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-                SelectedVocabularyForVocabularyActivity = selectedVocabulary;
+                final Intent intent = new Intent(this, VocabularyActivity.class);
 
-                startActivity(new Intent(this, VocabularyActivity.class));
+                intent.putExtra("vocabulary", selectedVocabulary.serialize());
+
+                startActivity(intent);
             });
 
             final RecyclerView vocabularyList = findViewById(R.id.vocabularyList);

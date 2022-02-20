@@ -111,7 +111,7 @@ public class VocabularyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vocabulary);
 
-        originalVocabulary = MainActivity.SelectedVocabularyForVocabularyActivity;
+        originalVocabulary = VocabularyMetadata.deserialize(getIntent().getSerializableExtra("vocabulary"));
 
         words = findViewById(R.id.words);
         meanings = findViewById(R.id.meanings);
