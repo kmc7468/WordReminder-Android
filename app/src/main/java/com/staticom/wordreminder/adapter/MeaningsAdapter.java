@@ -109,10 +109,12 @@ public class MeaningsAdapter extends SelectableAdapter {
 
         myViewHolder.meaning.setText(meaning.getMeaning());
         myViewHolder.pronunciation.setText(HtmlCompat.fromHtml(
-                "<b>발음:</b> " + meaning.getPronunciation(),
-                HtmlCompat.FROM_HTML_MODE_LEGACY));
+                String.format(
+                        viewHolder.itemView.getContext().getString(R.string.meanings_adapter_pronunciation),
+                        meaning.getPronunciation()), HtmlCompat.FROM_HTML_MODE_LEGACY));
         myViewHolder.example.setText(HtmlCompat.fromHtml(
-                "<b>예문:</b> " + meaning.getExample(),
-                HtmlCompat.FROM_HTML_MODE_LEGACY));
+                String.format(
+                        viewHolder.itemView.getContext().getString(R.string.meanings_adapter_example),
+                        meaning.getExample()), HtmlCompat.FROM_HTML_MODE_LEGACY));
     }
 }

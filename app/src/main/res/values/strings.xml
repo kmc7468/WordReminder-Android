@@ -9,12 +9,15 @@
 
     <string name="vocabulary_list_adapter_edit">단어장 수정하기</string>
 
+    <string name="meanings_adapter_pronunciation"><![CDATA[<b>발음:</b> %1$s]]></string>
+    <string name="meanings_adapter_example"><![CDATA[<b>예문:</b> %1$s]]></string>
+
     <string name="question_type_word_to_meaning_message">다음 단어의 뜻은?</string>
     <string name="question_type_meaning_to_word_message">다음 뜻을 가진 단어는?</string>
 
     <string name="main_activity_title">단어장 만들기</string>
     <string name="main_activity_menu_delete">단어장 삭제하기</string>
-    <string name="main_activity_ask_delete_vocabulary">단어장을 정말 삭제할까요? 삭제한 단어장은 복구할 수 없습니다.</string>
+    <string name="main_activity_ask_delete_vocabulary">단어장을 정말 삭제할까요? 삭제된 단어장은 복구할 수 없습니다.</string>
     <string name="main_activity_menu_rename">단어장 이름 바꾸기</string>
     <string name="main_activity_menu_export">단어장 내보내기</string>
     <string name="main_activity_success_export_vocabulary">단어장을 내보냈습니다.</string>
@@ -35,9 +38,13 @@
 
     <string name="vocabulary_activity_title">단어장 수정하기</string>
     <string name="vocabulary_activity_search">단어 검색하기</string>
+    <string name="vocabulary_activity_search_hint">검색...</string>
     <string name="vocabulary_activity_delete_word_or_meaning">단어 또는 뜻 삭제하기</string>
     <string name="vocabulary_activity_delete_word">단어 삭제하기</string>
+    <string name="vocabulary_activity_ask_delete_word">단어를 정말 삭제할까요?</string>
     <string name="vocabulary_activity_delete_meaning">뜻 삭제하기</string>
+    <string name="vocabulary_activity_ask_delete_meaning">뜻을 정말 삭제할까요?</string>
+    <string name="vocabulary_activity_ask_delete_last_meaning">뜻을 정말 삭제할까요? 단어도 함께 삭제됩니다.</string>
     <string name="vocabulary_activity_replace_word">단어 바꾸기</string>
     <string name="vocabulary_activity_replace_meaning">뜻 바꾸기</string>
     <string name="vocabulary_activity_set_pronunciation">발음 설정하기</string>

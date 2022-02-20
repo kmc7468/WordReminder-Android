@@ -19,6 +19,7 @@ import com.staticom.wordreminder.core.Meaning;
 import com.staticom.wordreminder.core.Vocabulary;
 import com.staticom.wordreminder.core.VocabularyMetadata;
 import com.staticom.wordreminder.core.Word;
+import com.staticom.wordreminder.utility.AlertDialog;
 import com.staticom.wordreminder.utility.RecyclerViewEmptyObserver;
 
 public class VocabularyActivity extends AppCompatActivity {
@@ -211,7 +212,7 @@ public class VocabularyActivity extends AppCompatActivity {
 
         final SearchView searchWord = (SearchView)menu.findItem(R.id.searchWord).getActionView();
 
-        searchWord.setQueryHint("검색...");
+        searchWord.setQueryHint(getString(R.string.vocabulary_activity_search_hint));
         searchWord.setMaxWidth(Integer.MAX_VALUE);
         searchWord.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -240,8 +241,72 @@ public class VocabularyActivity extends AppCompatActivity {
         return true;
     }
 
+    private void deleteWord(boolean fromDeleteMeaning) {
+        final AlertDialog dialog = new AlertDialog(this,
+                fromDeleteMeaning ? R.string.vocabulary_activity_delete_meaning : R.string.vocabulary_activity_delete_word,
+                fromDeleteMeaning ? R.string.vocabulary_activity_ask_delete_last_meaning : R.string.vocabulary_activity_ask_delete_word);
+
+        dialog.setPositiveButton(R.string.delete, true, () -> {
+            displayedVocabulary.getVocabulary().removeWord(selectedWord);
+            wordsAdapter.notifyItemRemoved(wordsAdapter.getSelectedIndex());
+            wordsAdapter.setSelectedIndex(-1);
+
+            if (displayedVocabulary != originalVocabulary) {
+                originalVocabulary.getVocabulary().removeWord(selectedWord);
+            }
+
+            setSelectedWord(null);
+        }).setNegativeButton(R.string.cancel).show();
+    }
+
+    private void replaceWord() {
+        // TODO
+    }
+
+    private void deleteMeaning() {
+        if (selectedWord.getMeanings().size() == 1) {
+            deleteWord(true);
+
+            return;
+        }
+
+        final AlertDialog dialog = new AlertDialog(this,
+                R.string.vocabulary_activity_delete_meaning,
+                R.string.vocabulary_activity_ask_delete_meaning);
+
+        dialog.setPositiveButton(R.string.delete, true, () -> {
+            selectedWord.removeMeaning(selectedMeaning);
+            meaningsAdapter.notifyItemRemoved(meaningsAdapter.getSelectedIndex());
+            meaningsAdapter.setSelectedIndex(-1);
+
+            setSelectedMeaning(null);
+        }).setNegativeButton(R.string.cancel).show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.deleteWordOrMeaning) {
+            if (selectedMeaning == null) {
+                deleteWord(false);
+            } else {
+                deleteMeaning();
+            }
+
+            return true;
+        } else if (item.getItemId() == R.id.replaceWord) {
+            replaceWord();
+
+            return true;
+        } else if (item.getItemId() == R.id.deleteWord) {
+            deleteWord(false);
+
+            return true;
+        } else if (item.getItemId() == R.id.deleteMeaning) {
+            deleteMeaning();
+
+            return true;
+        }
+
         // TODO
 
         return super.onOptionsItemSelected(item);

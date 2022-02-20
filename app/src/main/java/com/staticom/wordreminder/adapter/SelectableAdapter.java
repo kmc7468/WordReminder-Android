@@ -60,7 +60,7 @@ public abstract class SelectableAdapter extends RecyclerView.Adapter<SelectableA
             final int viewHolderIndex = viewHolder.getAdapterPosition();
             final boolean isViewHolderActivated = viewHolder.itemView.isActivated();
 
-            if (viewHolderIndex == index) {
+            if (index != -1 && viewHolderIndex == index) {
                 selectedViewHolder = viewHolder;
 
                 if (!isViewHolderActivated) {
