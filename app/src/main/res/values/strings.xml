@@ -55,6 +55,8 @@
 
     <string name="question_activity_title">단어 암기하기</string>
     <string name="question_activity_error_create_question">오류가 발생해 문제를 생성하지 못했습니다.</string>
+    <string name="question_activity_hint_pronunciation"><![CDATA[<b>발음:</b> %1$s]]></string>
+    <string name="question_activity_hint_example"><![CDATA[<b>예문:</b> %1$s]]></string>
     <string name="question_activity_short_answer_hint">정답...</string>
     <string name="question_activity_stop">중단</string>
     <string name="question_activity_skip">스킵</string>

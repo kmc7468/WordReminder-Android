@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -30,7 +31,7 @@ public class QuestionActivity extends AppCompatActivity {
 
     private QuestionContext context;
     private Question question;
-    private final List<Meaning> wrongAnswers = new ArrayList<>();
+    private List<Meaning> wrongAnswers = new ArrayList<>();
 
     private TextView message;
     private TextView main;
@@ -138,12 +139,29 @@ public class QuestionActivity extends AppCompatActivity {
 
         message.setText(type.getMessage(this));
         main.setText(type.getMainComponent(question.getAnswer()));
-        // TODO: hint
+
+        final StringBuilder hintTextBuilder = new StringBuilder();
+
+        if (context.shouldDisplayPronunciation() && type.shouldDisplayPronunciationForMainComponent(question.getAnswer())) {
+            hintTextBuilder.append(String.format(
+                    getString(R.string.question_activity_hint_pronunciation), question.getAnswer().getPronunciation()));
+        }
+
+        if (context.shouldDisplayExample() && type.shouldDisplayExampleForMainComponent(question.getAnswer())) {
+            if (hintTextBuilder.length() > 0) {
+                hintTextBuilder.append("<br>");
+            }
+
+            hintTextBuilder.append(String.format(
+                    getString(R.string.question_activity_hint_example), question.getAnswer().getExample()));
+        }
+
+        hint.setText(HtmlCompat.fromHtml(hintTextBuilder.toString(), HtmlCompat.FROM_HTML_MODE_LEGACY));
 
         if (question.getType().getAnswerType() == QuestionType.AnswerType.MULTIPLE_CHOICE) {
-            answerFragment = new MultipleChoiceFragment(question);
+            answerFragment = new MultipleChoiceFragment(context, question);
         } else {
-            answerFragment = new ShortAnswerFragment(question);
+            answerFragment = new ShortAnswerFragment(context, question);
         }
 
         final FragmentManager manager = getSupportFragmentManager();
@@ -181,7 +199,7 @@ public class QuestionActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
 
         question = (Question)savedInstanceState.getSerializable("question");
-        wrongAnswers.addAll((List<Meaning>)savedInstanceState.getSerializable("wrongAnswers"));
+        wrongAnswers = (List<Meaning>)savedInstanceState.getSerializable("wrongAnswers");
 
         updatedQuestion();
     }

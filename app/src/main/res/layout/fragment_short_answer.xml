@@ -5,15 +5,29 @@
     android:layout_height="match_parent"
     tools:context=".ShortAnswerFragment">
 
-    <EditText
-        android:id="@+id/answer"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:ems="10"
-        android:hint="@string/question_activity_short_answer_hint"
-        android:importantForAutofill="no"
-        android:inputType="textVisiblePassword|textNoSuggestions|text"
-        android:singleLine="true" />
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/answer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:ems="10"
+            android:hint="@string/question_activity_short_answer_hint"
+            android:importantForAutofill="no"
+            android:inputType="textVisiblePassword|textNoSuggestions|text"
+            android:singleLine="true" />
+
+        <TextView
+            android:id="@+id/hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp" />
+    </LinearLayout>
 </ScrollView>
