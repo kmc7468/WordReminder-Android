@@ -171,6 +171,14 @@ public class QuestionActivity extends AppCompatActivity {
         transaction.commit();
     }
 
+    private boolean createQuestionAndUpdate() {
+        if (createQuestion()) {
+            updatedQuestion();
+
+            return true;
+        } else return false;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -185,13 +193,14 @@ public class QuestionActivity extends AppCompatActivity {
         });
 
         createContext();
-        createQuestion();
 
         message = findViewById(R.id.message);
         main = findViewById(R.id.main);
         hint = findViewById(R.id.hint);
 
-        updatedQuestion();
+        if (!createQuestionAndUpdate()) {
+            finish();
+        }
     }
 
     @Override
@@ -219,8 +228,7 @@ public class QuestionActivity extends AppCompatActivity {
     public void onSkipClick(View view) {
         wrongAnswers.add(question.getAnswer());
 
-        createQuestion();
-        updatedQuestion();
+        createQuestionAndUpdate();
     }
 
     public void onSummitClick(View view) {
@@ -238,7 +246,6 @@ public class QuestionActivity extends AppCompatActivity {
             return;
         }
 
-        createQuestion();
-        updatedQuestion();
+        createQuestionAndUpdate();
     }
 }

@@ -156,6 +156,7 @@ public class VocabularyActivity extends AppCompatActivity {
         meaningsAdapter.setOnItemSelectedListener((view, index) -> {
             setSelectedMeaning(word.getMeaning(index));
         });
+        meaningsAdapter.setSelectedIndex(-1);
 
         setSelectedMeaning(null);
     }
