@@ -1,6 +1,5 @@
 package com.staticom.wordreminder.adapter;
 
-import android.annotation.SuppressLint;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
@@ -57,6 +56,7 @@ public class MeaningsAdapter extends SelectableAdapter {
             views.removeIf(layoutId -> layoutId == 0);
 
             final ConstraintSet constraintSet = new ConstraintSet();
+
             constraintSet.clone(rootLayout);
 
             for (int i = 0; i < views.size() - 1; ++i) {

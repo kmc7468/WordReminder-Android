@@ -34,12 +34,10 @@ public class VocabularyActivity extends AppCompatActivity {
     private MenuItem save;
     private boolean isEdited = false, isSaved = false;
 
-    private RecyclerView words;
     private VocabularyMetadata originalVocabulary, displayedVocabulary;
     private WordsAdapter wordsAdapter;
     private Word selectedWord;
 
-    private RecyclerView meanings;
     private MeaningsAdapter meaningsAdapter;
     private Meaning selectedMeaning;
 
@@ -100,14 +98,21 @@ public class VocabularyActivity extends AppCompatActivity {
         dialog.setPositiveButton(R.string.save, false, () -> {
             if (save()) {
                 setResultAndFinish();
-
-                dialog.dismiss();
             }
+
+            dialog.dismiss();
         }).setNegativeButton(R.string.no_save, true, () -> {
             setResultAndFinish();
 
             dialog.dismiss();
         }).setNeutralButton(R.string.cancel).show();
+    }
+
+    private void updateMenusVisibility() {
+        if (menu != null) {
+            menu.setGroupVisible(R.id.wordEditMenus, selectedWord != null);
+            menu.setGroupVisible(R.id.meaningEditMenus, selectedMeaning != null);
+        }
     }
 
     private void updateCount() {
@@ -132,13 +137,6 @@ public class VocabularyActivity extends AppCompatActivity {
         } else {
             meaningsText.setText(HtmlCompat.fromHtml(
                     getString(R.string.vocabulary_activity_meanings_empty), HtmlCompat.FROM_HTML_MODE_LEGACY));
-        }
-    }
-
-    private void updateMenusVisibility() {
-        if (menu != null) {
-            menu.setGroupVisible(R.id.wordEditMenus, selectedWord != null);
-            menu.setGroupVisible(R.id.meaningEditMenus, selectedMeaning != null);
         }
     }
 
@@ -199,16 +197,16 @@ public class VocabularyActivity extends AppCompatActivity {
 
         originalVocabulary = VocabularyMetadata.deserialize(getIntent().getSerializableExtra("vocabulary"));
 
-        words = findViewById(R.id.words);
         wordsAdapter = new WordsAdapter(null);
+        meaningsAdapter = new MeaningsAdapter(null);
+
+        final RecyclerView words = findViewById(R.id.words);
+        final RecyclerView meanings = findViewById(R.id.meanings);
 
         words.setLayoutManager(new LinearLayoutManager(this));
         words.setAdapter(wordsAdapter);
         wordsAdapter.registerAdapterDataObserver(
                 new RecyclerViewEmptyObserver(words, findViewById(R.id.emptyWordsText)));
-
-        meanings = findViewById(R.id.meanings);
-        meaningsAdapter = new MeaningsAdapter(null);
 
         meanings.setLayoutManager(new LinearLayoutManager(this));
         meanings.setAdapter(meaningsAdapter);
@@ -216,31 +214,6 @@ public class VocabularyActivity extends AppCompatActivity {
                 new RecyclerViewEmptyObserver(meanings, findViewById(R.id.emptyMeaningsText)));
 
         setDisplayedVocabulary(originalVocabulary);
-    }
-
-    private void searchWord(String query) {
-        final String queryLowerCase = query.toLowerCase();
-        final Vocabulary searchResult = new Vocabulary();
-
-        for (final Word word : displayedVocabulary.getVocabulary().getWords()) {
-            if (word.getWord().toLowerCase().contains(queryLowerCase)) {
-                searchResult.addWordRef(word);
-
-                continue;
-            }
-
-            for (final Meaning meaning : word.getMeanings()) {
-                if (meaning.getMeaning().toLowerCase().contains(queryLowerCase) ||
-                        meaning.getPronunciation().toLowerCase().contains(queryLowerCase) ||
-                        meaning.getExample().toLowerCase().contains(queryLowerCase)) {
-                    searchResult.addWordRef(word);
-
-                    break;
-                }
-            }
-        }
-
-        setDisplayedVocabulary(new VocabularyMetadata(query, searchResult));
     }
 
     @Override
@@ -292,6 +265,31 @@ public class VocabularyActivity extends AppCompatActivity {
 
         savedInstanceState.putInt("selectedWord", wordsAdapter.getSelectedIndex());
         savedInstanceState.putInt("selectedMeaning", meaningsAdapter.getSelectedIndex());
+    }
+
+    private void searchWord(String query) {
+        final String queryLowerCase = query.toLowerCase();
+        final Vocabulary searchResult = new Vocabulary();
+
+        for (final Word word : displayedVocabulary.getVocabulary().getWords()) {
+            if (word.getWord().toLowerCase().contains(queryLowerCase)) {
+                searchResult.addWordRef(word);
+
+                continue;
+            }
+
+            for (final Meaning meaning : word.getMeanings()) {
+                if (meaning.getMeaning().toLowerCase().contains(queryLowerCase) ||
+                        meaning.getPronunciation().toLowerCase().contains(queryLowerCase) ||
+                        meaning.getExample().toLowerCase().contains(queryLowerCase)) {
+                    searchResult.addWordRef(word);
+
+                    break;
+                }
+            }
+        }
+
+        setDisplayedVocabulary(new VocabularyMetadata(query, searchResult));
     }
 
     @Override

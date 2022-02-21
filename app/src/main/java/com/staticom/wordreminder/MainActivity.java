@@ -49,9 +49,9 @@ public class MainActivity extends AppCompatActivity {
         void onVocabularyNameInputted(String name);
     }
 
-    private ActivityResultLauncher<String> exportVocabularyResult;
-
     private Menu menu;
+
+    private ActivityResultLauncher<String> exportVocabularyResult;
 
     private Path rootPath;
 
@@ -124,9 +124,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void toggleStartButton() {
         if (isOpenStartButton) {
-            start.startAnimation(createCloseAnimation);
+            start.startAnimation(startCloseAnimation);
         } else {
-            start.startAnimation(createOpenAnimation);
+            start.startAnimation(startOpenAnimation);
         }
 
         isOpenStartButton = !isOpenStartButton;
@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void addWrongVocabulary(ActivityResult result) {
+    private void addVocabularyForWrongAnswers(ActivityResult result) {
         if (result.getResultCode() != RESULT_OK) return;
 
         final Intent intent = result.getData();
@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
         start = findViewById(R.id.start);
         startOpenAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         startCloseAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
-        startResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::addWrongVocabulary);
+        startResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::addVocabularyForWrongAnswers);
     }
 
     @Override
@@ -357,15 +357,15 @@ public class MainActivity extends AppCompatActivity {
         final CustomDialog dialog = new CustomDialog(this, R.layout.dialog_about);
 
         final TextView version = dialog.findViewById(R.id.version);
-        final StringBuilder versionStringBuilder = new StringBuilder();
+        final StringBuilder versionTextBuilder = new StringBuilder();
 
-        versionStringBuilder.append(getString(R.string.main_activity_current_version));
-        versionStringBuilder.append(": ");
-        versionStringBuilder.append(BuildConfig.VERSION_NAME);
-        versionStringBuilder.append(' ');
-        versionStringBuilder.append(BuildConfig.BUILD_TYPE);
+        versionTextBuilder.append(getString(R.string.main_activity_current_version));
+        versionTextBuilder.append(": ");
+        versionTextBuilder.append(BuildConfig.VERSION_NAME);
+        versionTextBuilder.append(' ');
+        versionTextBuilder.append(BuildConfig.BUILD_TYPE);
 
-        version.setText(versionStringBuilder.toString());
+        version.setText(versionTextBuilder.toString());
 
         final Button developerBlog = dialog.findViewById(R.id.developerBlog);
         final Button close = dialog.findViewById(R.id.close);
@@ -472,6 +472,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onStartClick(View view) {
+        if (isOpenAddButtons) {
+            toggleAddButtons();
+        }
+
         final CustomDialog dialog = new CustomDialog(this, R.layout.dialog_question_context);
 
         final Switch wordToMeaning = dialog.findViewById(R.id.word_to_meaning);

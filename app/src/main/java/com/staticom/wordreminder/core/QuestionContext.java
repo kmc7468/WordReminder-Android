@@ -56,7 +56,7 @@ public class QuestionContext {
     }
 
     private <T> T loop(LoopBody<T> body) throws Exception {
-        AtomicReference<T> result = new AtomicReference<>();
+        final AtomicReference<T> result = new AtomicReference<>();
 
         for (int i = 0; i < LOOP_LIMIT; ++i) {
             if (body.runOnce(result)) return result.get();

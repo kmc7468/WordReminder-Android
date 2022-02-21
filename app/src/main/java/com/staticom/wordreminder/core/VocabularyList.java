@@ -48,9 +48,11 @@ public class VocabularyList {
         for (final VocabularyMetadata vocabulary : deletedVocabularyList) {
             try {
                 Files.delete(vocabulary.getPath());
-            } catch (final NoSuchFileException e) {
+            } catch (final NoSuchFileException ignored) {
             }
         }
+
+        deletedVocabularyList.clear();
 
         for (final VocabularyMetadata vocabulary : vocabularyList) {
             if (vocabulary.shouldSave()) {

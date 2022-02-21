@@ -45,7 +45,6 @@ public class QuestionActivity extends AppCompatActivity {
                         getString(R.string.question_activity_vocabulary_for_wrong_answers),
                         context.getVocabulary().getName(), time.toString()),
                 getFilesDir().toPath().resolve(UUID.randomUUID().toString() + ".kv"), time);
-
         final Vocabulary wrongAnswers = new Vocabulary();
 
         for (final Word word : context.getVocabulary().getVocabulary().getWords()) {

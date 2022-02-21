@@ -28,10 +28,6 @@ public class Question implements Serializable {
         return answer;
     }
 
-    public Meaning[] getChoices() {
-        return choices;
-    }
-
     public Meaning getChoice(int index) {
         return choices[index];
     }

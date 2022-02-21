@@ -12,12 +12,12 @@ public class VocabularyMetadata {
 
     private static class SerializableVocabularyMetadata implements Serializable {
 
-        private String name;
-        private String path;
-        private LocalDateTime time;
+        private final String name;
+        private final String path;
+        private final LocalDateTime time;
 
-        private Vocabulary vocabulary;
-        private boolean shouldSave;
+        private final Vocabulary vocabulary;
+        private final boolean shouldSave;
 
         public SerializableVocabularyMetadata(VocabularyMetadata vocabulary) {
             name = vocabulary.name;
@@ -57,10 +57,6 @@ public class VocabularyMetadata {
 
     public Path getPath() {
         return path;
-    }
-
-    public void setPath(Path path) {
-        this.path = path;
     }
 
     public LocalDateTime getTime() {
