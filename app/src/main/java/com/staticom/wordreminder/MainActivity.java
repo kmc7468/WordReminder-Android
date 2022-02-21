@@ -213,6 +213,7 @@ public class MainActivity extends AppCompatActivity {
 
                     vocabularyList.addVocabulary(vocabulary);
                     vocabularyListAdapter.notifyItemInserted(vocabularyListAdapter.getItemCount());
+                    vocabularyListAdapter.setSelectedIndex(vocabularyListAdapter.getItemCount() - 1);
                 }
             } catch (final Exception e) {
                 Toast.makeText(getApplicationContext(), R.string.main_activity_load_vocabulary_error, Toast.LENGTH_LONG).show();
@@ -230,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
 
         vocabularyList.addVocabulary(vocabulary);
         vocabularyListAdapter.notifyItemInserted(vocabularyListAdapter.getItemCount());
+        vocabularyListAdapter.setSelectedIndex(vocabularyListAdapter.getItemCount() - 1);
     }
 
     @Override
@@ -454,6 +456,7 @@ public class MainActivity extends AppCompatActivity {
 
             vocabularyList.addVocabulary(vocabulary);
             vocabularyListAdapter.notifyItemInserted(vocabularyListAdapter.getItemCount());
+            vocabularyListAdapter.setSelectedIndex(vocabularyListAdapter.getItemCount() - 1);
         });
     }
 
