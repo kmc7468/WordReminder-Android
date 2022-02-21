@@ -1,6 +1,7 @@
 package com.staticom.wordreminder;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -481,6 +482,16 @@ public class MainActivity extends AppCompatActivity {
         final Switch displayPronunciation = dialog.findViewById(R.id.display_pronunciation);
         final Switch displayExample = dialog.findViewById(R.id.display_example);
 
+        final SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+
+        wordToMeaning.setChecked(preferences.getBoolean("wordToMeaning", false));
+        wordToMeaningSA.setChecked(preferences.getBoolean("wordToMeaningSA", false));
+        meaningToWord.setChecked(preferences.getBoolean("meaningToWord", false));
+        meaningToWordSA.setChecked(preferences.getBoolean("meaningToWordSA", false));
+
+        displayPronunciation.setChecked(preferences.getBoolean("displayPronunciation", false));
+        displayExample.setChecked(preferences.getBoolean("displayExample", false));
+
         final Button cancel = dialog.findViewById(R.id.cancel);
         final Button start = dialog.findViewById(R.id.start);
 
@@ -509,6 +520,18 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("displayExample", displayExample.isChecked());
 
             startResult.launch(intent);
+
+            final SharedPreferences.Editor editor = preferences.edit();
+
+            editor.putBoolean("wordToMeaning", wordToMeaning.isChecked());
+            editor.putBoolean("wordToMeaningSA", wordToMeaningSA.isChecked());
+            editor.putBoolean("meaningToWord", meaningToWord.isChecked());
+            editor.putBoolean("meaningToWordSA", meaningToWordSA.isChecked());
+
+            editor.putBoolean("displayPronunciation", displayPronunciation.isChecked());
+            editor.putBoolean("displayExample", displayExample.isChecked());
+
+            editor.apply();
 
             dialog.dismiss();
         });
