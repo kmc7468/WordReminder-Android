@@ -20,6 +20,7 @@ import com.staticom.wordreminder.core.Vocabulary;
 import com.staticom.wordreminder.core.VocabularyMetadata;
 import com.staticom.wordreminder.core.Word;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -173,6 +174,24 @@ public class QuestionActivity extends AppCompatActivity {
         hint = findViewById(R.id.hint);
 
         updatedQuestion();
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        question = (Question)savedInstanceState.getSerializable("question");
+        wrongAnswers.addAll((List<Meaning>)savedInstanceState.getSerializable("wrongAnswers"));
+
+        updatedQuestion();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        savedInstanceState.putSerializable("question", question);
+        savedInstanceState.putSerializable("wrongAnswers", (Serializable)wrongAnswers);
     }
 
     public void onStopClick(View view) {
