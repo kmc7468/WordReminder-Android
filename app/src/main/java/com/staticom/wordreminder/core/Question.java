@@ -20,6 +20,10 @@ public class Question implements Serializable {
         return type;
     }
 
+    public Vocabulary getVocabulary() {
+        return answer.getWord().getVocabulary();
+    }
+
     public Meaning getAnswer() {
         return answer;
     }

@@ -51,6 +51,14 @@ public class QuestionType implements Serializable {
         return answerType;
     }
 
+    public String getEmptyAnswerMessage(Context context) {
+        if (answerType == AnswerType.MULTIPLE_CHOICE)
+            return context.getString(R.string.question_type_multiple_choice_error_empty_answer);
+        else if (answerType == AnswerType.SHORT_ANSWER)
+            return context.getString(R.string.question_type_short_answer_error_empty_answer);
+        else return null;
+    }
+
     public String getMessage(Context context) {
         return context.getString(messageId);
     }

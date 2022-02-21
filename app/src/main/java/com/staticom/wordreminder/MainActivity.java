@@ -134,6 +134,21 @@ public class MainActivity extends AppCompatActivity {
         start.setClickable(isOpenStartButton);
     }
 
+    private boolean loadVocabulary(VocabularyMetadata vocabulary) {
+        if (vocabulary.hasVocabulary()) return true;
+
+        try {
+            vocabulary.loadVocabulary();
+
+            return true;
+        } catch (final Exception e) {
+            Toast.makeText(this, R.string.main_activity_load_vocabulary_error, Toast.LENGTH_LONG).show();
+
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     private void updateVocabulary(ActivityResult result) {
         if (result.getResultCode() != RESULT_OK) return;
 
@@ -238,16 +253,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             vocabularyListAdapter.setOnEditButtonClickListener(index -> {
-                if (!selectedVocabulary.hasVocabulary()) {
-                    try {
-                        selectedVocabulary.loadVocabulary();
-                    } catch (final Exception e) {
-                        Toast.makeText(this, R.string.main_activity_load_vocabulary_error, Toast.LENGTH_LONG).show();
-
-                        e.printStackTrace();
-                        return;
-                    }
-                }
+                if (!loadVocabulary(selectedVocabulary)) return;
 
                 final Intent intent = new Intent(this, VocabularyActivity.class);
 
@@ -485,14 +491,19 @@ public class MainActivity extends AppCompatActivity {
                         R.string.main_activity_question_error_not_selected_question_types, Toast.LENGTH_SHORT).show();
 
                 return;
-            }
+            } else if (!loadVocabulary(selectedVocabulary)) return;
 
             final Intent intent = new Intent(this, QuestionActivity.class);
+
+            intent.putExtra("vocabulary", selectedVocabulary.serialize());
 
             intent.putExtra("wordToMeaning", wordToMeaning.isChecked());
             intent.putExtra("wordToMeaningSA", wordToMeaningSA.isChecked());
             intent.putExtra("meaningToWord", meaningToWord.isChecked());
-            intent.putExtra("meaningToWordSA", wordToMeaningSA.isChecked());
+            intent.putExtra("meaningToWordSA", meaningToWordSA.isChecked());
+
+            intent.putExtra("displayPronunciation", displayPronunciation.isChecked());
+            intent.putExtra("displayExample", displayExample.isChecked());
 
             startResult.launch(intent);
 

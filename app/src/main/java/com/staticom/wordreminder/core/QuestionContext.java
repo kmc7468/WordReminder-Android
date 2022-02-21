@@ -27,6 +27,10 @@ public class QuestionContext {
         this.vocabulary = vocabulary;
     }
 
+    public VocabularyMetadata getVocabulary() {
+        return vocabulary;
+    }
+
     private QuestionType getRandomUsableType() {
         return usableTypes.get(random.nextInt(usableTypes.size()));
     }
@@ -35,8 +39,16 @@ public class QuestionContext {
         usableTypes.add(type);
     }
 
+    public boolean shouldDisplayPronunciation() {
+        return displayPronunciation;
+    }
+
     public void setDisplayPronunciation(boolean displayPronunciation) {
         this.displayPronunciation = displayPronunciation;
+    }
+
+    public boolean shouldDisplayExample() {
+        return displayExample;
     }
 
     public void setDisplayExample(boolean displayExample) {
