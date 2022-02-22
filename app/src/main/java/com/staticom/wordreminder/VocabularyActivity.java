@@ -603,7 +603,7 @@ public class VocabularyActivity extends AppCompatActivity {
 
             final boolean displayed = displayedVocabulary.getVocabulary().containsWord(targetWord);
             if (!displayed) {
-                displayedVocabulary.getVocabulary().addWord(targetWord);
+                displayedVocabulary.getVocabulary().addWordRef(targetWord);
             }
 
             if (!displayed || targetWordIndex == -1) {

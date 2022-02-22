@@ -22,7 +22,7 @@
     <string name="question_type_multiple_choice_error_empty_answer">정답을 선택해 주세요.</string>
     <string name="question_type_short_answer_error_empty_answer">정답을 입력해 주세요.</string>
 
-    <string name="main_activity_title">단어장 만들기</string>
+    <string name="main_activity_title">단어장 목록</string>
     <string name="main_activity_menu_delete">단어장 삭제하기</string>
     <string name="main_activity_ask_delete_vocabulary">단어장을 정말 삭제할까요? 삭제된 단어장은 복구할 수 없습니다.</string>
     <string name="main_activity_menu_rename">단어장 이름 바꾸기</string>
