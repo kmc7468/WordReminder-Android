@@ -16,6 +16,7 @@ public class Vocabulary implements Serializable {
     private enum ContainerId {
         HOMONYM_CONTAINER,
         EXAMPLE_CONTAINER,
+        TAG_CONTAINER,
     }
 
     private interface ContainerReader {
@@ -27,6 +28,7 @@ public class Vocabulary implements Serializable {
     }
 
     private final List<Word> words = new ArrayList<>();
+    private final List<Tag> tags = new ArrayList<>();
 
     public List<Word> getWords() {
         return Collections.unmodifiableList(words);
@@ -74,6 +76,22 @@ public class Vocabulary implements Serializable {
         words.remove(word);
     }
 
+    public List<Tag> getTags() {
+        return Collections.unmodifiableList(tags);
+    }
+
+    public Tag getTag(int index) {
+        return tags.get(index);
+    }
+
+    public void addTag(Tag tag) {
+        tags.add(tag);
+    }
+
+    public void removeTag(Tag tag) {
+        tags.remove(tag);
+    }
+
     private static boolean readContainer(BinaryStream fileStream, boolean read,
                                          ContainerId id, ContainerId realId, ContainerReader reader) throws IOException {
         if (id == realId) {
@@ -105,6 +123,11 @@ public class Vocabulary implements Serializable {
         boolean needHomonymContainer = false,
                 needExampleContainer = false;
         int containerCount = 0;
+
+        final boolean needTagContainer = !getTags().isEmpty();
+        if (needTagContainer) {
+            ++containerCount;
+        }
 
         fileStream.writeInt(words.size());
 
@@ -145,6 +168,24 @@ public class Vocabulary implements Serializable {
             for (final Word word : words) {
                 for (final Meaning meaning : word.getMeanings()) {
                     containerStream.writeString(meaning.getExample());
+                }
+            }
+        });
+
+        writeContainer(fileStream, ContainerId.TAG_CONTAINER, needTagContainer, containerStream -> {
+            containerStream.writeInt(tags.size());
+
+            for (final Tag tag : tags) {
+                containerStream.writeString(tag.getTag());
+            }
+
+            for (final Word word : words) {
+                for (final Meaning meaning : word.getMeanings()) {
+                    containerStream.writeInt(meaning.getTags().size());
+
+                    for (final Tag tag : meaning.getTags()) {
+                        containerStream.writeInt(tags.indexOf(tag));
+                    }
                 }
             }
         });
@@ -197,6 +238,22 @@ public class Vocabulary implements Serializable {
                 for (final Word word : vocabulary.words) {
                     for (final Meaning meaning : word.getMeanings()) {
                         meaning.setExample(containerStream.readString());
+                    }
+                }
+            });
+
+            read = readContainer(fileStream, read, ContainerId.TAG_CONTAINER, id, containerStream -> {
+                final int tagCount = containerStream.readInt();
+                for (int j = 0; j < tagCount; ++j) {
+                    vocabulary.tags.add(new Tag(containerStream.readString(), vocabulary));
+                }
+
+                for (final Word word : vocabulary.words) {
+                    for (final Meaning meaning : word.getMeanings()) {
+                        final int meaningTagCount = containerStream.readInt();
+                        for (int j = 0; j < meaningTagCount; ++j) {
+                            meaning.addTag(vocabulary.tags.get(containerStream.readInt()));
+                        }
                     }
                 }
             });

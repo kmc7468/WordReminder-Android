@@ -1,6 +1,9 @@
 package com.staticom.wordreminder.core;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Meaning implements Serializable {
 
@@ -15,6 +18,8 @@ public class Meaning implements Serializable {
     private String meaning;
     private String pronunciation;
     private String example = "";
+
+    private List<Tag> tags = new ArrayList<>();
 
     public Meaning(Word word, String meaning, String pronunciation) {
         this.word = word;
@@ -90,5 +95,25 @@ public class Meaning implements Serializable {
             default:
                 return null;
         }
+    }
+
+    public List<Tag> getTags() {
+        return Collections.unmodifiableList(tags);
+    }
+
+    public Tag getTag(int index) {
+        return tags.get(index);
+    }
+
+    public void addTag(Tag tag) {
+        tags.add(tag);
+
+        tag.addMeaning(this);
+    }
+
+    public void removeTag(Tag tag) {
+        tags.remove(tag);
+
+        tag.removeMeaning(this);
     }
 }
