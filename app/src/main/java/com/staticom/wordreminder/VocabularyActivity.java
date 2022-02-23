@@ -13,6 +13,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,6 +31,8 @@ import com.staticom.wordreminder.utility.AlertDialog;
 import com.staticom.wordreminder.utility.CustomDialog;
 import com.staticom.wordreminder.utility.RecyclerViewEmptyObserver;
 
+import java.io.Serializable;
+
 public class VocabularyActivity extends AppCompatActivity {
 
     private Menu menu;
@@ -40,6 +45,8 @@ public class VocabularyActivity extends AppCompatActivity {
 
     private MeaningsAdapter meaningsAdapter;
     private Meaning selectedMeaning;
+
+    private ActivityResultLauncher<Intent> tagManagerResult;
 
     private boolean save() {
         try {
@@ -178,6 +185,40 @@ public class VocabularyActivity extends AppCompatActivity {
         }
     }
 
+    private void edited() {
+        setTitle(R.string.vocabulary_activity_title_edited);
+
+        save.setVisible(true);
+        isEdited = true;
+    }
+
+    private void updateVocabulary(ActivityResult result) {
+        if (result.getResultCode() != RESULT_OK) return;
+
+        final Intent intent = result.getData();
+        final Vocabulary newVocabulary = (Vocabulary)intent.getSerializableExtra("vocabulary");
+
+        originalVocabulary.setVocabulary(newVocabulary);
+        selectedWord = selectedWord != null ? newVocabulary.findWord(selectedWord.getWord()) : null;
+        selectedMeaning = selectedMeaning != null ? selectedWord.findMeaning(selectedMeaning.getMeaning()) : null;
+
+        if (originalVocabulary != displayedVocabulary) {
+            final Vocabulary newDisplayedVocabulary = new Vocabulary();
+
+            for (final Word word : displayedVocabulary.getVocabulary().getWords()) {
+                newDisplayedVocabulary.addWordRef(newVocabulary.findWord(word.getWord()));
+            }
+
+            displayedVocabulary.setVocabulary(newDisplayedVocabulary);
+        }
+
+        if (selectedMeaning != null) {
+            meaningsAdapter.notifyDataSetChanged();
+        }
+
+        edited();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -214,6 +255,8 @@ public class VocabularyActivity extends AppCompatActivity {
                 new RecyclerViewEmptyObserver(meanings, findViewById(R.id.emptyMeaningsText)));
 
         setDisplayedVocabulary(originalVocabulary);
+
+        tagManagerResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::updateVocabulary);
     }
 
     @Override
@@ -330,13 +373,6 @@ public class VocabularyActivity extends AppCompatActivity {
         searchWord.setIconified(false);
 
         return true;
-    }
-
-    private void edited() {
-        setTitle(R.string.vocabulary_activity_title_edited);
-
-        save.setVisible(true);
-        isEdited = true;
     }
 
     private void deleteWord(boolean fromDeleteMeaning) {
@@ -498,6 +534,14 @@ public class VocabularyActivity extends AppCompatActivity {
         }).setNegativeButton(R.string.cancel).show();
     }
 
+    private void showTagManager() {
+        final Intent intent = new Intent(this, TagManagerActivity.class);
+
+        intent.putExtra("vocabulary", originalVocabulary.getVocabulary());
+
+        tagManagerResult.launch(intent);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.save) {
@@ -534,6 +578,10 @@ public class VocabularyActivity extends AppCompatActivity {
             return true;
         } else if (item.getItemId() == R.id.deleteMeaning) {
             deleteMeaning();
+
+            return true;
+        } else if (item.getItemId() == R.id.tagManager) {
+            showTagManager();
 
             return true;
         } else return super.onOptionsItemSelected(item);

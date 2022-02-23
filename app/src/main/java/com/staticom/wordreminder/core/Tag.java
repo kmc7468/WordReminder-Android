@@ -1,11 +1,12 @@
 package com.staticom.wordreminder.core;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class Tag {
+public class Tag implements Serializable {
 
     private String tag;
     private final Vocabulary vocabulary;

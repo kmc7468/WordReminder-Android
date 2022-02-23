@@ -84,6 +84,14 @@ public class Vocabulary implements Serializable {
         return tags.get(index);
     }
 
+    public boolean containsTag(String tag) {
+        for (final Tag t : tags) {
+            if (t.getTag().equals(tag)) return true;
+        }
+
+        return false;
+    }
+
     public void addTag(Tag tag) {
         tags.add(tag);
     }

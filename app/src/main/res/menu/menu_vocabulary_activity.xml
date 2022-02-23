@@ -51,4 +51,8 @@
             android:title="@string/vocabulary_activity_delete_meaning"
             app:showAsAction="never" />
     </group>
+    <item
+        android:id="@+id/tagManager"
+        android:title="@string/vocabulary_activity_tag_manager"
+        app:showAsAction="never" />
 </menu>

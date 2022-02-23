@@ -41,11 +41,15 @@ public class Word implements Serializable {
     }
 
     public boolean containsMeaning(String meaning) {
+        return findMeaning(meaning) != null;
+    }
+
+    public Meaning findMeaning(String meaning) {
         for (final Meaning m : meanings) {
-            if (m.getMeaning().equals(meaning)) return true;
+            if (m.getMeaning().equals(meaning)) return m;
         }
 
-        return false;
+        return null;
     }
 
     public void addMeaning(Meaning meaning) {

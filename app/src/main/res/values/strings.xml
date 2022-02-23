@@ -17,6 +17,8 @@
     <string name="meanings_adapter_pronunciation"><![CDATA[<b>발음:</b> %1$s]]></string>
     <string name="meanings_adapter_example"><![CDATA[<b>예문:</b> %1$s]]></string>
 
+    <string name="tags_adapter_count">단어 %1$d개, 뜻 %2$d개</string>
+
     <string name="question_type_word_to_meaning_message">다음 단어의 뜻은?</string>
     <string name="question_type_meaning_to_word_message">다음 뜻을 가진 단어는?</string>
     <string name="question_type_multiple_choice_error_empty_answer">정답을 선택해 주세요.</string>
@@ -66,6 +68,17 @@
     <string name="question_activity_error_save_vocabulary_for_wrong_answers">오류가 발생해 오답노트를 저장하지 못했습니다.</string>
     <string name="question_activity_success_save_vocabulary_for_wrong_answers">오답노트를 저장했습니다.</string>
 
+    <string name="tag_manager_activity_title">태그 매니저</string>
+    <string name="tag_manager_activity_title_edited">태그 매니저 *</string>
+    <string name="tag_manager_activity_delete_tag">태그 삭제하기</string>
+    <string name="tag_manager_activity_ask_delete_tag">태그를 정말 삭제할까요? 삭제된 태그는 복구할 수 없으며, 태그에 포함된 단어와 뜻은 삭제되지 않습니다.</string>
+    <string name="tag_manager_activity_rename_tag">태그 이름 바꾸기</string>
+    <string name="tag_manager_activity_require_tag_name">태그 이름을 입력해 주세요.</string>
+    <string name="tag_manager_activity_error_empty_tag">태그 이름은 비어있을 수 없습니다.</string>
+    <string name="tag_manager_activity_error_duplicated_tag">이미 존재하는 태그 이름입니다.</string>
+    <string name="tag_manager_activity_empty_tags">태그가 없습니다.</string>
+    <string name="tag_manager_activity_new_tag_name_hint">새 태그 이름...</string>
+
     <string name="vocabulary_activity_title">단어장 수정하기</string>
     <string name="vocabulary_activity_title_edited">단어장 수정하기 *</string>
     <string name="vocabulary_activity_warning_not_saved_vocabulary">저장되지 않은 변경 사항이 있습니다.</string>
@@ -95,6 +108,7 @@
     <string name="vocabulary_activity_warning_pronunciation_equals_word">단어와 발음이 같습니다. 호환성을 위해 발음 데이터가 없는 것으로 취급됩니다.</string>
     <string name="vocabulary_activity_set_example">예문 설정하기</string>
     <string name="vocabulary_activity_require_example">예문을 입력해 주세요. 비어있을 수 있습니다.</string>
+    <string name="vocabulary_activity_tag_manager">태그 매니저</string>
     <string name="vocabulary_activity_words"><![CDATA[<b>%1$s의 단어 목록</b> (%2$d개)]]></string>
     <string name="vocabulary_activity_words_search_result"><![CDATA[<b>%1$s의 검색 결과</b> (%2$d개)]]></string>
     <string name="vocabulary_activity_empty_words">단어가 없습니다.</string>
