@@ -10,10 +10,12 @@ import androidx.core.text.HtmlCompat;
 
 import com.staticom.wordreminder.R;
 import com.staticom.wordreminder.core.Meaning;
+import com.staticom.wordreminder.core.Tag;
 import com.staticom.wordreminder.core.Word;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MeaningsAdapter extends SelectableAdapter {
 
@@ -24,6 +26,7 @@ public class MeaningsAdapter extends SelectableAdapter {
         private final TextView meaning;
         private final TextView pronunciation;
         private final TextView example;
+        private final TextView tags;
 
         public ViewHolder(View view) {
             super(view);
@@ -33,6 +36,7 @@ public class MeaningsAdapter extends SelectableAdapter {
             meaning = view.findViewById(R.id.meaning);
             pronunciation = view.findViewById(R.id.pronunciation);
             example = view.findViewById(R.id.example);
+            tags = view.findViewById(R.id.tags);
 
             onHolderDeactivated(true);
         }
@@ -42,15 +46,18 @@ public class MeaningsAdapter extends SelectableAdapter {
                     itemView.getResources().getDisplayMetrics()) + 0.5f);
         }
 
-        private void setOptionalViewsVisibility(boolean pronunciationVisibility, boolean exampleVisibility) {
+        private void setOptionalViewsVisibility(boolean pronunciationVisibility, boolean exampleVisibility,
+                                                boolean tagsVisibility) {
             pronunciation.setVisibility(pronunciationVisibility ? View.VISIBLE : View.GONE);
             example.setVisibility(exampleVisibility ? View.VISIBLE : View.GONE);
+            tags.setVisibility(tagsVisibility ? View.VISIBLE : View.GONE);
 
             final List<Integer> views = new ArrayList<>();
 
             views.add(R.id.meaning);
             views.add(pronunciationVisibility ? R.id.pronunciation : 0);
             views.add(exampleVisibility ? R.id.example : 0);
+            views.add(tagsVisibility ? R.id.tags : 0);
             views.add(R.id.dummy);
 
             views.removeIf(layoutId -> layoutId == 0);
@@ -74,12 +81,12 @@ public class MeaningsAdapter extends SelectableAdapter {
         public void onHolderActivated(boolean isBindMode) {
             final Meaning meaning = word.getMeaning(getAdapterPosition());
 
-            setOptionalViewsVisibility(meaning.hasPronunciation(), meaning.hasExample());
+            setOptionalViewsVisibility(meaning.hasPronunciation(), meaning.hasExample(), !meaning.getTags().isEmpty());
         }
 
         @Override
         public void onHolderDeactivated(boolean isBindMode) {
-            setOptionalViewsVisibility(false, false);
+            setOptionalViewsVisibility(false, false, false);
         }
     }
 
@@ -123,6 +130,15 @@ public class MeaningsAdapter extends SelectableAdapter {
                 String.format(
                         viewHolder.itemView.getContext().getString(R.string.meanings_adapter_example),
                         meaning.getExample()), HtmlCompat.FROM_HTML_MODE_LEGACY));
+        myViewHolder.example.setText(HtmlCompat.fromHtml(
+                String.format(
+                        viewHolder.itemView.getContext().getString(R.string.meanings_adapter_example),
+                        meaning.getExample()), HtmlCompat.FROM_HTML_MODE_LEGACY));
+        myViewHolder.tags.setText(HtmlCompat.fromHtml(
+                String.format(
+                        viewHolder.itemView.getContext().getString(R.string.meanings_adapter_tags),
+                        meaning.getTags().stream().map(Tag::getTag).collect(Collectors.joining(", "))),
+                HtmlCompat.FROM_HTML_MODE_LEGACY));
 
         if (myViewHolder.itemView.isActivated()) {
             myViewHolder.onHolderActivated(true);

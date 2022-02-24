@@ -215,7 +215,10 @@ public class VocabularyActivity extends AppCompatActivity {
             displayedVocabulary.setVocabulary(newDisplayedVocabulary);
         }
 
-        if (selectedMeaning != null) {
+        wordsAdapter.setVocabulary(displayedVocabulary);
+
+        if (selectedWord != null) {
+            meaningsAdapter.setWord(selectedWord);
             meaningsAdapter.notifyDataSetChanged();
         }
 
@@ -696,9 +699,22 @@ public class VocabularyActivity extends AppCompatActivity {
                 wordsAdapter.setSelectedIndex(wordsAdapter.getItemCount() - 1);
             }
 
-            targetWord.addMeaning(new Meaning(meaningStr,
+            final Meaning newMeaning = new Meaning(meaningStr,
                     pronunciation.getText().toString().trim(),
-                    example.getText().toString().trim()));
+                    example.getText().toString().trim());
+
+            if (!tagList.isEmpty()) {
+                final Spinner tags = dialog.findViewById(R.id.tags);
+                final boolean[] isSelected = ((CheckableAdapter)tags.getAdapter()).getIsSelected();
+
+                for (int i = 0; i < isSelected.length; ++i) {
+                    if (isSelected[i]) {
+                        newMeaning.addTag(tagList.get(i));
+                    }
+                }
+            }
+
+            targetWord.addMeaning(newMeaning);
 
             meaningsAdapter.notifyItemInserted(meaningsAdapter.getItemCount());
             meaningsAdapter.setSelectedIndex(meaningsAdapter.getItemCount() - 1);

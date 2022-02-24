@@ -40,10 +40,22 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toTopOf="@id/dummy"
+        app:layout_constraintBottom_toTopOf="@id/tags"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pronunciation" />
+
+    <TextView
+        android:id="@+id/tags"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toTopOf="@id/dummy"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/example" />
 
     <LinearLayout
         android:id="@+id/dummy"

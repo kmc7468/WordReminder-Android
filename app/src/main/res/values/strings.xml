@@ -16,6 +16,7 @@
 
     <string name="meanings_adapter_pronunciation"><![CDATA[<b>발음:</b> %1$s]]></string>
     <string name="meanings_adapter_example"><![CDATA[<b>예문:</b> %1$s]]></string>
+    <string name="meanings_adapter_tags"><![CDATA[<b>태그:</b> %1$s]]></string>
 
     <string name="tags_adapter_count">단어 %1$d개, 뜻 %2$d개</string>
 
