@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,9 +22,11 @@ import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.staticom.wordreminder.adapter.CheckableAdapter;
 import com.staticom.wordreminder.adapter.MeaningsAdapter;
 import com.staticom.wordreminder.adapter.WordsAdapter;
 import com.staticom.wordreminder.core.Meaning;
+import com.staticom.wordreminder.core.Tag;
 import com.staticom.wordreminder.core.Vocabulary;
 import com.staticom.wordreminder.core.VocabularyMetadata;
 import com.staticom.wordreminder.core.Word;
@@ -31,7 +34,7 @@ import com.staticom.wordreminder.utility.AlertDialog;
 import com.staticom.wordreminder.utility.CustomDialog;
 import com.staticom.wordreminder.utility.RecyclerViewEmptyObserver;
 
-import java.io.Serializable;
+import java.util.List;
 
 public class VocabularyActivity extends AppCompatActivity {
 
@@ -603,6 +606,34 @@ public class VocabularyActivity extends AppCompatActivity {
             word.requestFocus();
         }
 
+        final List<Tag> tagList = originalVocabulary.getVocabulary().getTags();
+        if (!tagList.isEmpty()) {
+            final String[] tagNames = new String[tagList.size()];
+
+            for (int i = 0; i < tagList.size(); ++i) {
+                tagNames[i] = tagList.get(i).getTag();
+            }
+
+            final TextView tagsText = dialog.findViewById(R.id.tagsText);
+
+            tagsText.setVisibility(View.VISIBLE);
+
+            final Spinner tags = dialog.findViewById(R.id.tags);
+
+            tags.setFocusable(true);
+            tags.setFocusableInTouchMode(true);
+            tags.setOnFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus) {
+                    tags.performClick();
+                }
+            });
+            tags.setAdapter(new CheckableAdapter(
+                    getString(R.string.vocabulary_activity_tags_hint),
+                    getString(R.string.vocabulary_activity_selected_tags),
+                    tagNames));
+            tags.setVisibility(View.VISIBLE);
+        }
+
         final Button reset = dialog.findViewById(R.id.reset);
         final Button cancel = dialog.findViewById(R.id.cancel);
         final Button add = dialog.findViewById(R.id.add);
@@ -614,6 +645,12 @@ public class VocabularyActivity extends AppCompatActivity {
             example.setText("");
 
             word.requestFocus();
+
+            if (!tagList.isEmpty()) {
+                final Spinner tags = dialog.findViewById(R.id.tags);
+
+                ((CheckableAdapter)tags.getAdapter()).reset();
+            }
         });
         cancel.setOnClickListener(v -> {
             dialog.dismiss();
