@@ -175,6 +175,12 @@ public class TagManagerActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            setResultAndFinish();
+
+            return true;
+        }
+
         if (item.getItemId() == R.id.delete) {
             deleteTag();
 
