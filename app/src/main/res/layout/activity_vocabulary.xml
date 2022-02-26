@@ -6,103 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".VocabularyActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/vocabulary"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        android:orientation="vertical"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/wordsLayout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="16dp"
-            android:layout_weight="3">
-
-            <TextView
-                android:id="@+id/wordsText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:textSize="20sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/words"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/wordsText" />
-
-            <TextView
-                android:id="@+id/emptyWordsText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/vocabulary_activity_empty_words"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@id/words"
-                app:layout_constraintEnd_toEndOf="@id/words"
-                app:layout_constraintStart_toStartOf="@id/words"
-                app:layout_constraintTop_toTopOf="@id/words"
-                tools:visibility="visible" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/meaningsLayout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="16dp"
-            android:layout_weight="2">
-
-            <TextView
-                android:id="@+id/meaningsText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:textSize="20sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/meanings"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="8dp"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/meaningsText"
-                tools:visibility="visible" />
-
-            <TextView
-                android:id="@+id/emptyMeaningsText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/vocabulary_activity_empty_meanings"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@id/meanings"
-                app:layout_constraintEnd_toEndOf="@id/meanings"
-                app:layout_constraintStart_toStartOf="@id/meanings"
-                app:layout_constraintTop_toTopOf="@id/meanings"
-                tools:visibility="visible" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add"

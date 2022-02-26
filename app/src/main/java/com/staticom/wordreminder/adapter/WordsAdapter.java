@@ -28,6 +28,10 @@ public class WordsAdapter extends SelectableAdapter {
         this.vocabulary = vocabulary;
     }
 
+    public VocabularyMetadata getVocabulary() {
+        return vocabulary;
+    }
+
     public void setVocabulary(VocabularyMetadata vocabulary) {
         this.vocabulary = vocabulary;
 
@@ -37,6 +41,10 @@ public class WordsAdapter extends SelectableAdapter {
     @Override
     public int getItemCount() {
         return vocabulary != null ? vocabulary.getVocabulary().getWords().size() : 0;
+    }
+
+    public Word getSelectedWord() {
+        return vocabulary.getVocabulary().getWord(getSelectedIndex());
     }
 
     @Override

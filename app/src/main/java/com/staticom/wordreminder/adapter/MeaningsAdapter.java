@@ -98,6 +98,10 @@ public class MeaningsAdapter extends SelectableAdapter {
         this.word = word;
     }
 
+    public Word getWord() {
+        return word;
+    }
+
     public void setWord(Word word) {
         this.word = word;
 
@@ -107,6 +111,10 @@ public class MeaningsAdapter extends SelectableAdapter {
     @Override
     public int getItemCount() {
         return word != null ? word.getMeanings().size() : 0;
+    }
+
+    public Meaning getSelectedMeaning() {
+        return word.getMeaning(getSelectedIndex());
     }
 
     @Override
