@@ -112,10 +112,8 @@
     <string name="vocabulary_activity_tag_manager">태그 매니저</string>
     <string name="vocabulary_activity_words"><![CDATA[<b>%1$s의 단어 목록</b> (%2$d개)]]></string>
     <string name="vocabulary_activity_words_search_result"><![CDATA[<b>%1$s의 검색 결과</b> (%2$d개)]]></string>
-    <string name="vocabulary_activity_empty_words">단어가 없습니다.</string>
     <string name="vocabulary_activity_meanings"><![CDATA[<b>%1$s의 뜻 목록</b> (%2$d개)]]></string>
     <string name="vocabulary_activity_meanings_empty"><![CDATA[<b>뜻 목록</b>]]></string>
-    <string name="vocabulary_activity_empty_meanings">단어를 선택해 주세요.</string>
     <string name="vocabulary_activity_add_meaning">단어/뜻 추가하기</string>
     <string name="vocabulary_activity_word">단어*</string>
     <string name="vocabulary_activity_word_hint">단어...</string>

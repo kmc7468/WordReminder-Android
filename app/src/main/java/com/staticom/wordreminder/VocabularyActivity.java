@@ -238,6 +238,7 @@ public class VocabularyActivity extends AppCompatActivity {
             }
         }
 
+        vocabularyFragment.setWordsTextFormat(getString(R.string.vocabulary_activity_words_search_result));
         vocabularyFragment.setVocabulary(new VocabularyMetadata(query, searchResult));
     }
 
