@@ -479,8 +479,8 @@ public class MainActivity extends AppCompatActivity {
         toggleAddButtons();
     }
 
-    private VocabularyMetadata makeVocabulary(CheckableAdapter tagsAdapter) {
-        if (tagsAdapter == null) return selectedVocabulary;
+    private VocabularyMetadata makeVocabulary(Switch selectTags, CheckableAdapter tagsAdapter) {
+        if (!selectTags.isChecked()) return selectedVocabulary;
 
         final boolean[] isSelected = tagsAdapter.getIsSelected();
         final List<Tag> selectedTags = new ArrayList<>();
@@ -494,7 +494,7 @@ public class MainActivity extends AppCompatActivity {
         final VocabularyMetadata vocabulary = new VocabularyMetadata(selectedVocabulary.getName(), null, null);
         final Vocabulary taggedVocabulary = new Vocabulary();
 
-        for (final Tag tag : selectedTags) {
+        for (final Tag tag : selectedVocabulary.getVocabulary().getTags()) {
             taggedVocabulary.addTag(tag);
         }
 
@@ -580,7 +580,7 @@ public class MainActivity extends AppCompatActivity {
 
             final Intent intent = new Intent(this, QuestionActivity.class);
 
-            intent.putExtra("vocabulary", makeVocabulary(tagsAdapter).serialize());
+            intent.putExtra("vocabulary", makeVocabulary(selectTags, tagsAdapter).serialize());
 
             intent.putExtra("wordToMeaning", wordToMeaning.isChecked());
             intent.putExtra("wordToMeaningSA", wordToMeaningSA.isChecked());
