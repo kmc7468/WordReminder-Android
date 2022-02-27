@@ -39,16 +39,12 @@
             android:title="@string/vocabulary_activity_replace_meaning"
             app:showAsAction="never" />
         <item
-            android:id="@+id/setPronunciation"
-            android:title="@string/vocabulary_activity_set_pronunciation"
-            app:showAsAction="never" />
-        <item
-            android:id="@+id/setExample"
-            android:title="@string/vocabulary_activity_set_example"
-            app:showAsAction="never" />
-        <item
             android:id="@+id/deleteMeaning"
             android:title="@string/vocabulary_activity_delete_meaning"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/setHints"
+            android:title="@string/vocabulary_activity_set_hints"
             app:showAsAction="never" />
     </group>
     <item

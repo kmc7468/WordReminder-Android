@@ -69,6 +69,8 @@ public class TagManagerActivity extends AppCompatActivity {
             }
         });
         tagsAdapter.setOnListButtonClickListener(index -> {
+            selectedTag.sortWords();
+
             final VocabularyMetadata vocabulary = new VocabularyMetadata(selectedTag.getTag(), null, null);
             final Vocabulary taggedVocabulary = new Vocabulary();
 

@@ -35,7 +35,7 @@ public class CheckableAdapter extends BaseAdapter {
     private String titleText;
 
     private final String[] array;
-    private final boolean[] isSelected;
+    private boolean[] isSelected;
 
     public CheckableAdapter(String defaultTitleText, String titleTextFormat, String[] array) {
         this.defaultTitleText = defaultTitleText;
@@ -129,6 +129,12 @@ public class CheckableAdapter extends BaseAdapter {
 
     public boolean[] getIsSelected() {
         return Arrays.copyOf(isSelected, isSelected.length);
+    }
+
+    public void setIsSelected(boolean[] isSelected) {
+        this.isSelected = isSelected;
+
+        updateTitleText();
     }
 
     public void reset() {

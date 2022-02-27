@@ -52,10 +52,12 @@ public class Word implements Serializable {
         return null;
     }
 
-    public void addMeaning(Meaning meaning) {
+    public Meaning addMeaning(Meaning meaning) {
         meaning.setWord(this);
 
         meanings.add(meaning);
+
+        return meaning;
     }
 
     public void addMeaningRef(Meaning meaning) {

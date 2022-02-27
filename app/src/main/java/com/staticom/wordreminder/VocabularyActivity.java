@@ -401,46 +401,102 @@ public class VocabularyActivity extends AppCompatActivity {
         }).setNegativeButton(R.string.cancel).show();
     }
 
-    private void setPronunciation() {
-        final Meaning selectedMeaning = vocabularyFragment.getSelectedMeaning();
-        final AlertDialog dialog = new AlertDialog(this,
-                R.string.vocabulary_activity_set_pronunciation,
-                R.string.vocabulary_activity_require_pronunciation);
+    private CheckableAdapter initializeTags(TextView tagsText, Spinner tags) {
+        final List<Tag> tagList = originalVocabulary.getVocabulary().getTags();
+        if (!tagList.isEmpty()) {
+            tagsText.setVisibility(View.VISIBLE);
 
-        dialog.addEdit(selectedMeaning.getPronunciation());
-        dialog.setPositiveButton(R.string.set, false, () -> {
-            final String pronunciation = dialog.getEditText().trim();
-            if (pronunciation.equals(vocabularyFragment.getSelectedWord().getWord())) {
+            final String[] tagNames = new String[tagList.size()];
+
+            for (int i = 0; i < tagList.size(); ++i) {
+                tagNames[i] = tagList.get(i).getTag();
+            }
+
+            final CheckableAdapter adapter = new CheckableAdapter(
+                    getString(R.string.vocabulary_activity_tags_hint),
+                    getString(R.string.vocabulary_activity_selected_tags),
+                    tagNames);
+
+            tags.setFocusable(true);
+            tags.setFocusableInTouchMode(true);
+            tags.setOnFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus) {
+                    tags.performClick();
+                }
+            });
+
+            tags.setAdapter(adapter);
+            tags.setVisibility(View.VISIBLE);
+
+            return adapter;
+        } else return null;
+    }
+
+    private void addTagsToMeaning(Meaning meaning, CheckableAdapter tagsAdapter) {
+        if (tagsAdapter == null) return;
+
+        final boolean[] isSelected = tagsAdapter.getIsSelected();
+
+        meaning.removeAllTags();
+
+        for (int i = 0; i < isSelected.length; ++i) {
+            if (isSelected[i]) {
+                meaning.addTag(originalVocabulary.getVocabulary().getTag(i));
+            }
+        }
+    }
+
+    private void setHints() {
+        final Meaning selectedMeaning = vocabularyFragment.getSelectedMeaning();
+        final CustomDialog dialog = new CustomDialog(this, R.layout.dialog_set_hints);
+
+        final TextView pronunciation = dialog.findViewById(R.id.pronunciation);
+        final TextView example = dialog.findViewById(R.id.example);
+
+        pronunciation.setText(selectedMeaning.getPronunciation());
+        example.setText(selectedMeaning.getExample());
+
+        final List<Tag> tags = originalVocabulary.getVocabulary().getTags();
+        final CheckableAdapter tagsAdapter = initializeTags(
+                dialog.findViewById(R.id.tagsText), dialog.findViewById(R.id.tags));
+
+        if (tagsAdapter != null) {
+            final boolean[] isSelected = new boolean[tags.size()];
+            for (int i = 0; i < isSelected.length; ++i) {
+                isSelected[i] = selectedMeaning.containsTag(tags.get(i));
+            }
+
+            tagsAdapter.setIsSelected(isSelected);
+        }
+
+        final Button cancel = dialog.findViewById(R.id.cancel);
+        final Button change = dialog.findViewById(R.id.change);
+
+        cancel.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+        change.setOnClickListener(v -> {
+            final String pronunciationStr = pronunciation.getText().toString().trim();
+            final String exampleStr = example.getText().toString().trim();
+
+            if (pronunciationStr.equals(selectedMeaning.getWord().getWord())) {
                 Toast.makeText(getApplicationContext(),
                         R.string.vocabulary_activity_warning_pronunciation_equals_word, Toast.LENGTH_SHORT).show();
             }
 
-            selectedMeaning.setPronunciation(pronunciation);
-            vocabularyFragment.notifySelectedMeaningUpdated();
+            selectedMeaning.setPronunciation(pronunciationStr);
+            selectedMeaning.setExample(exampleStr);
+
+            addTagsToMeaning(selectedMeaning, tagsAdapter);
+
+            vocabularyFragment.notifyMeaningsUpdated();
 
             edited();
 
             dialog.dismiss();
-        }).setNegativeButton(R.string.cancel).show();
-    }
+        });
 
-    private void setExample() {
-        final Meaning selectedMeaning = vocabularyFragment.getSelectedMeaning();
-        final AlertDialog dialog = new AlertDialog(this,
-                R.string.vocabulary_activity_set_example,
-                R.string.vocabulary_activity_require_example);
-
-        dialog.addEdit(selectedMeaning.getExample());
-        dialog.setPositiveButton(R.string.set, false, () -> {
-            final String example = dialog.getEditText().trim();
-
-            selectedMeaning.setExample(example);
-            vocabularyFragment.notifySelectedMeaningUpdated();
-
-            edited();
-
-            dialog.dismiss();
-        }).setNegativeButton(R.string.cancel).show();
+        dialog.show();
     }
 
     private void showTagManager() {
@@ -477,16 +533,12 @@ public class VocabularyActivity extends AppCompatActivity {
             replaceMeaning();
 
             return true;
-        } else if (item.getItemId() == R.id.setPronunciation) {
-            setPronunciation();
-
-            return true;
-        } else if (item.getItemId() == R.id.setExample) {
-            setExample();
-
-            return true;
         } else if (item.getItemId() == R.id.deleteMeaning) {
             deleteMeaning();
+
+            return true;
+        } else if (item.getItemId() == R.id.setHints) {
+            setHints();
 
             return true;
         } else if (item.getItemId() == R.id.tagManager) {
@@ -512,33 +564,8 @@ public class VocabularyActivity extends AppCompatActivity {
             word.requestFocus();
         }
 
-        final List<Tag> tagList = originalVocabulary.getVocabulary().getTags();
-        if (!tagList.isEmpty()) {
-            final String[] tagNames = new String[tagList.size()];
-
-            for (int i = 0; i < tagList.size(); ++i) {
-                tagNames[i] = tagList.get(i).getTag();
-            }
-
-            final TextView tagsText = dialog.findViewById(R.id.tagsText);
-
-            tagsText.setVisibility(View.VISIBLE);
-
-            final Spinner tags = dialog.findViewById(R.id.tags);
-
-            tags.setFocusable(true);
-            tags.setFocusableInTouchMode(true);
-            tags.setOnFocusChangeListener((v, hasFocus) -> {
-                if (hasFocus) {
-                    tags.performClick();
-                }
-            });
-            tags.setAdapter(new CheckableAdapter(
-                    getString(R.string.vocabulary_activity_tags_hint),
-                    getString(R.string.vocabulary_activity_selected_tags),
-                    tagNames));
-            tags.setVisibility(View.VISIBLE);
-        }
+        final CheckableAdapter tagsAdapter = initializeTags(
+                dialog.findViewById(R.id.tagsText), dialog.findViewById(R.id.tags));
 
         final Button reset = dialog.findViewById(R.id.reset);
         final Button cancel = dialog.findViewById(R.id.cancel);
@@ -550,13 +577,11 @@ public class VocabularyActivity extends AppCompatActivity {
             pronunciation.setText("");
             example.setText("");
 
-            word.requestFocus();
-
-            if (!tagList.isEmpty()) {
-                final Spinner tags = dialog.findViewById(R.id.tags);
-
-                ((CheckableAdapter)tags.getAdapter()).reset();
+            if (tagsAdapter != null) {
+                tagsAdapter.reset();
             }
+
+            word.requestFocus();
         });
         cancel.setOnClickListener(v -> {
             dialog.dismiss();
@@ -604,22 +629,12 @@ public class VocabularyActivity extends AppCompatActivity {
                 vocabularyFragment.setSelectedWord(displayedVocabulary.getVocabulary().getWords().size() - 1);
             }
 
-            final Meaning newMeaning = new Meaning(meaningStr,
+            final Meaning newMeaning = targetWord.addMeaning(new Meaning(
+                    meaningStr,
                     pronunciation.getText().toString().trim(),
-                    example.getText().toString().trim());
+                    example.getText().toString().trim()));
 
-            targetWord.addMeaning(newMeaning);
-
-            if (!tagList.isEmpty()) {
-                final Spinner tags = dialog.findViewById(R.id.tags);
-                final boolean[] isSelected = ((CheckableAdapter)tags.getAdapter()).getIsSelected();
-
-                for (int i = 0; i < isSelected.length; ++i) {
-                    if (isSelected[i]) {
-                        newMeaning.addTag(tagList.get(i));
-                    }
-                }
-            }
+            addTagsToMeaning(newMeaning, tagsAdapter);
 
             vocabularyFragment.notifyMeaningAdded();
             vocabularyFragment.setSelectedMeaning(targetWord.getMeanings().size() - 1);

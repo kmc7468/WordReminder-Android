@@ -120,4 +120,12 @@ public class Meaning implements Serializable {
 
         tag.removeMeaning(this);
     }
+
+    public void removeAllTags() {
+        for (final Tag tag : tags) {
+            tag.removeMeaning(this);
+        }
+
+        tags.clear();
+    }
 }
