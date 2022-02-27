@@ -30,6 +30,7 @@ import com.staticom.wordreminder.core.VocabularyMetadata;
 import com.staticom.wordreminder.core.Word;
 import com.staticom.wordreminder.utility.AlertDialog;
 import com.staticom.wordreminder.utility.CustomDialog;
+import com.staticom.wordreminder.utility.TagsSpinner;
 
 import java.util.List;
 
@@ -404,28 +405,12 @@ public class VocabularyActivity extends AppCompatActivity {
     private CheckableAdapter initializeTags(TextView tagsText, Spinner tags) {
         final List<Tag> tagList = originalVocabulary.getVocabulary().getTags();
         if (!tagList.isEmpty()) {
-            tagsText.setVisibility(View.VISIBLE);
-
-            final String[] tagNames = new String[tagList.size()];
-
-            for (int i = 0; i < tagList.size(); ++i) {
-                tagNames[i] = tagList.get(i).getTag();
-            }
-
-            final CheckableAdapter adapter = new CheckableAdapter(
+            final CheckableAdapter adapter = TagsSpinner.initializeTags(tags,
+                    originalVocabulary.getVocabulary(),
                     getString(R.string.vocabulary_activity_tags_hint),
-                    getString(R.string.vocabulary_activity_selected_tags),
-                    tagNames);
+                    getString(R.string.vocabulary_activity_selected_tags));
 
-            tags.setFocusable(true);
-            tags.setFocusableInTouchMode(true);
-            tags.setOnFocusChangeListener((v, hasFocus) -> {
-                if (hasFocus) {
-                    tags.performClick();
-                }
-            });
-
-            tags.setAdapter(adapter);
+            tagsText.setVisibility(View.VISIBLE);
             tags.setVisibility(View.VISIBLE);
 
             return adapter;

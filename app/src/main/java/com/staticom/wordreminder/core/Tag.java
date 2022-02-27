@@ -62,17 +62,23 @@ public class Tag implements Serializable {
         words.remove(meaning.getWord());
     }
 
-    public void sortMeanings() {
-        meanings.sort((a, b) -> {
-            if (a.getWord() == b.getWord()) {
-                final List<Meaning> meanings = a.getWord().getMeanings();
+    public Vocabulary makeVocabulary() {
+        sortWords();
 
-                return Integer.compare(meanings.indexOf(a), meanings.indexOf(b));
-            } else {
-                final List<Word> words = vocabulary.getWords();
+        final Vocabulary vocabulary = new Vocabulary();
 
-                return Integer.compare(words.indexOf(a.getWord()), words.indexOf(b.getWord()));
+        for (final Word word : words) {
+            final Word wordRef = new Word(word.getWord());
+
+            for (final Meaning meaning : word.getMeanings()) {
+                if (meaning.containsTag(this)) {
+                    wordRef.addMeaningRef(meaning);
+                }
             }
-        });
+
+            vocabulary.addWord(wordRef);
+        }
+
+        return vocabulary;
     }
 }

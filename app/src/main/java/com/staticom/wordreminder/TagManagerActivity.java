@@ -69,25 +69,6 @@ public class TagManagerActivity extends AppCompatActivity {
             }
         });
         tagsAdapter.setOnListButtonClickListener(index -> {
-            selectedTag.sortWords();
-
-            final VocabularyMetadata vocabulary = new VocabularyMetadata(selectedTag.getTag(), null, null);
-            final Vocabulary taggedVocabulary = new Vocabulary();
-
-            for (final Word word : selectedTag.getWords()) {
-                final Word taggedWord = new Word(word.getWord());
-
-                for (final Meaning meaning : word.getMeanings()) {
-                    if (meaning.containsTag(selectedTag)) {
-                        taggedWord.addMeaningRef(meaning);
-                    }
-                }
-
-                taggedVocabulary.addWord(taggedWord);
-            }
-
-            vocabulary.setVocabulary(taggedVocabulary);
-
             final Intent intent = new Intent(this, VocabularyViewerActivity.class);
 
             intent.putExtra("title", String.format(
@@ -97,6 +78,10 @@ public class TagManagerActivity extends AppCompatActivity {
             intent.putExtra("wordsTextFormat", getString(R.string.tag_manager_activity_words_with_tag));
             intent.putExtra("defaultMeaningsText", getString(R.string.tag_manager_activity_meanings_with_tag_empty));
             intent.putExtra("meaningsTextFormat", getString(R.string.tag_manager_activity_meanings_with_tag));
+
+            final VocabularyMetadata vocabulary = new VocabularyMetadata(selectedTag.getTag(), null, null);
+
+            vocabulary.setVocabulary(selectedTag.makeVocabulary());
 
             intent.putExtra("vocabulary", vocabulary.serialize());
 

@@ -109,6 +109,14 @@ public class Meaning implements Serializable {
         return tags.contains(tag);
     }
 
+    public boolean containsTag(List<Tag> tags) {
+        for (final Tag tag : tags) {
+            if (containsTag(tag)) return true;
+        }
+
+        return false;
+    }
+
     public void addTag(Tag tag) {
         tags.add(tag);
 

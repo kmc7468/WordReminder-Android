@@ -55,6 +55,9 @@
     <string name="main_activity_question_options">문제 옵션</string>
     <string name="main_activity_question_option_display_pronunciation">발음 표시하기</string>
     <string name="main_activity_question_option_display_example">예문 표시하기</string>
+    <string name="main_activity_question_option_select_tags">암기할 태그 선택하기</string>
+    <string name="main_activity_tags_hint">태그를 선택하세요.</string>
+    <string name="main_activity_selected_tags">선택된 태그: %1$s</string>
 
     <string name="question_activity_title">단어 암기하기</string>
     <string name="question_activity_error_create_question">오류가 발생해 문제를 생성하지 못했습니다.</string>
@@ -108,7 +111,7 @@
     <string name="vocabulary_activity_require_meaning">뜻을 입력해 주세요.</string>
     <string name="vocabulary_activity_error_empty_meaning">뜻은 비어있을 수 없습니다.</string>
     <string name="vocabulary_activity_error_duplicated_meaning">이미 존재하는 뜻입니다.</string>
-    <string name="vocabulary_activity_set_hints">발음/예문/태그 설정하기</string>
+    <string name="vocabulary_activity_set_hints">힌트/태그 설정하기</string>
     <string name="vocabulary_activity_warning_pronunciation_equals_word">단어와 발음이 같습니다. 호환성을 위해 발음 데이터가 없는 것으로 취급됩니다.</string>
     <string name="vocabulary_activity_tag_manager">태그 매니저</string>
     <string name="vocabulary_activity_words"><![CDATA[<b>%1$s의 단어 목록</b> (%2$d개)]]></string>

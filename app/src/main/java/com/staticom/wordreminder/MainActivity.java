@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,13 +27,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.staticom.wordreminder.adapter.CheckableAdapter;
 import com.staticom.wordreminder.adapter.VocabularyListAdapter;
+import com.staticom.wordreminder.core.Meaning;
+import com.staticom.wordreminder.core.Tag;
 import com.staticom.wordreminder.core.Vocabulary;
 import com.staticom.wordreminder.core.VocabularyList;
 import com.staticom.wordreminder.core.VocabularyMetadata;
+import com.staticom.wordreminder.core.Word;
 import com.staticom.wordreminder.utility.AlertDialog;
 import com.staticom.wordreminder.utility.CustomDialog;
 import com.staticom.wordreminder.utility.RecyclerViewEmptyObserver;
+import com.staticom.wordreminder.utility.TagsSpinner;
 
 import org.json.JSONArray;
 
@@ -41,6 +47,8 @@ import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -471,10 +479,50 @@ public class MainActivity extends AppCompatActivity {
         toggleAddButtons();
     }
 
+    private VocabularyMetadata makeVocabulary(CheckableAdapter tagsAdapter) {
+        if (tagsAdapter == null) return selectedVocabulary;
+
+        final boolean[] isSelected = tagsAdapter.getIsSelected();
+        final List<Tag> selectedTags = new ArrayList<>();
+
+        for (int i = 0; i < isSelected.length; ++i) {
+            if (isSelected[i]) {
+                selectedTags.add(selectedVocabulary.getVocabulary().getTag(i));
+            }
+        }
+
+        final VocabularyMetadata vocabulary = new VocabularyMetadata(selectedVocabulary.getName(), null, null);
+        final Vocabulary taggedVocabulary = new Vocabulary();
+
+        for (final Tag tag : selectedTags) {
+            taggedVocabulary.addTag(tag);
+        }
+
+        for (final Word word : selectedVocabulary.getVocabulary().getWords()) {
+            final Word wordRef = new Word(word.getWord());
+
+            for (final Meaning meaning : word.getMeanings()) {
+                if (meaning.containsTag(selectedTags)) {
+                    wordRef.addMeaningRef(meaning);
+                }
+            }
+
+            if (!wordRef.getMeanings().isEmpty()) {
+                taggedVocabulary.addWord(wordRef);
+            }
+        }
+
+        vocabulary.setVocabulary(taggedVocabulary);
+
+        return vocabulary;
+    }
+
     public void onStartClick(View view) {
         if (isOpenAddButtons) {
             toggleAddButtons();
         }
+
+        if (!loadVocabulary(selectedVocabulary)) return;
 
         final CustomDialog dialog = new CustomDialog(this, R.layout.dialog_question_context);
 
@@ -496,6 +544,25 @@ public class MainActivity extends AppCompatActivity {
         displayPronunciation.setChecked(preferences.getBoolean("displayPronunciation", false));
         displayExample.setChecked(preferences.getBoolean("displayExample", false));
 
+        final Switch selectTags = dialog.findViewById(R.id.selectTags);
+        final CheckableAdapter tagsAdapter;
+
+        if (!selectedVocabulary.getVocabulary().getTags().isEmpty()) {
+            final Spinner tags = dialog.findViewById(R.id.tags);
+
+            tagsAdapter = TagsSpinner.initializeTags(tags,
+                    selectedVocabulary.getVocabulary(),
+                    getString(R.string.main_activity_tags_hint),
+                    getString(R.string.main_activity_selected_tags));
+
+            selectTags.setOnCheckedChangeListener((v, isChecked) -> {
+                tags.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            });
+            selectTags.setVisibility(View.VISIBLE);
+        } else {
+            tagsAdapter = null;
+        }
+
         final Button cancel = dialog.findViewById(R.id.cancel);
         final Button start = dialog.findViewById(R.id.start);
 
@@ -509,11 +576,11 @@ public class MainActivity extends AppCompatActivity {
                         R.string.main_activity_question_error_not_selected_question_types, Toast.LENGTH_SHORT).show();
 
                 return;
-            } else if (!loadVocabulary(selectedVocabulary)) return;
+            }
 
             final Intent intent = new Intent(this, QuestionActivity.class);
 
-            intent.putExtra("vocabulary", selectedVocabulary.serialize());
+            intent.putExtra("vocabulary", makeVocabulary(tagsAdapter).serialize());
 
             intent.putExtra("wordToMeaning", wordToMeaning.isChecked());
             intent.putExtra("wordToMeaningSA", wordToMeaningSA.isChecked());

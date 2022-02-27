@@ -17,6 +17,7 @@ import com.staticom.wordreminder.core.Meaning;
 import com.staticom.wordreminder.core.Question;
 import com.staticom.wordreminder.core.QuestionContext;
 import com.staticom.wordreminder.core.QuestionType;
+import com.staticom.wordreminder.core.Tag;
 import com.staticom.wordreminder.core.Vocabulary;
 import com.staticom.wordreminder.core.VocabularyMetadata;
 import com.staticom.wordreminder.core.Word;
@@ -46,6 +47,10 @@ public class QuestionActivity extends AppCompatActivity {
                         context.getVocabulary().getName(), time.toString()),
                 getFilesDir().toPath().resolve(UUID.randomUUID().toString() + ".kv"), time);
         final Vocabulary wrongAnswers = new Vocabulary();
+
+        for (final Tag tag : context.getVocabulary().getVocabulary().getTags()) {
+            wrongAnswers.addTag(tag);
+        }
 
         for (final Word word : context.getVocabulary().getVocabulary().getWords()) {
             for (final Meaning meaning : word.getMeanings()) {
@@ -78,7 +83,7 @@ public class QuestionActivity extends AppCompatActivity {
     private void createVocabularyForWrongAnswersAndFinish() {
         if (!wrongAnswers.isEmpty()) {
             final VocabularyMetadata vocabulary = createVocabularyForWrongAnswers();
-            if (createVocabularyForWrongAnswers() == null) return;
+            if (vocabulary == null) return;
 
             final Intent intent = new Intent();
 
