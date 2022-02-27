@@ -106,20 +106,22 @@ public class VocabularyFragment extends Fragment {
     }
 
     public void setVocabulary(VocabularyMetadata vocabulary) {
-        wordsAdapter.setVocabulary(vocabulary);
+        if (getSelectedWordIndex() != -1) {
+            final Word selectedWord = getSelectedWord();
+            if (vocabulary.getVocabulary().getWords().contains(selectedWord)) {
+                final int selectedWordNewIndex = vocabulary.getVocabulary().getWords().indexOf(selectedWord);
+                final int selectedMeaningIndex = getSelectedMeaningIndex();
 
-        if (getSelectedWordIndex() == -1) return;
+                wordsAdapter.setSelectedIndex(selectedWordNewIndex);
+                meaningsAdapter.setSelectedIndex(selectedMeaningIndex);
+            } else {
+                wordsAdapter.setSelectedIndex(-1);
 
-        final Word selectedWord = getSelectedWord();
-        if (vocabulary.getVocabulary().getWords().contains(selectedWord)) {
-            final int selectedWordNewIndex = vocabulary.getVocabulary().getWords().indexOf(selectedWord);
-            final int selectedMeaningIndex = getSelectedMeaningIndex();
-
-            wordsAdapter.setSelectedIndex(selectedWordNewIndex);
-            meaningsAdapter.setSelectedIndex(selectedMeaningIndex);
-        } else {
-            wordsAdapter.setSelectedIndex(-1);
+                meaningsAdapter.setWord(null);
+            }
         }
+
+        wordsAdapter.setVocabulary(vocabulary);
 
         updateCount();
     }
@@ -127,11 +129,11 @@ public class VocabularyFragment extends Fragment {
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState == null) return;
 
-        setVocabulary(VocabularyMetadata.deserialize(savedInstanceState.getSerializable("vocabulary")));
-
         wordsTextFormat = savedInstanceState.getString("wordsTextFormat");
         defaultMeaningsText = savedInstanceState.getString("defaultMeaningsText");
         meaningsTextFormat = savedInstanceState.getString("meaningsTextFormat");
+
+        setVocabulary(VocabularyMetadata.deserialize(savedInstanceState.getSerializable("vocabulary")));
 
         final int selectedWord = savedInstanceState.getInt("selectedWord");
         if (selectedWord != -1) {

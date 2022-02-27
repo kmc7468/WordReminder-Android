@@ -15,7 +15,8 @@
         <activity
             android:name=".TagManagerActivity"
             android:exported="false"
-            android:parentActivityName=".VocabularyActivity" />
+            android:parentActivityName=".VocabularyActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".QuestionActivity"
             android:exported="false" />

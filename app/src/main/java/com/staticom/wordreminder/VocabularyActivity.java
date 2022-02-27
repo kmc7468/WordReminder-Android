@@ -274,6 +274,7 @@ public class VocabularyActivity extends AppCompatActivity {
             }
         });
         searchWord.setOnCloseListener(() -> {
+            vocabularyFragment.setWordsTextFormat(getString(R.string.vocabulary_activity_words));
             vocabularyFragment.setVocabulary(originalVocabulary);
 
             return true;
