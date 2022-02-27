@@ -78,6 +78,10 @@
     <string name="tag_manager_activity_error_empty_tag">태그 이름은 비어있을 수 없습니다.</string>
     <string name="tag_manager_activity_error_duplicated_tag">이미 존재하는 태그 이름입니다.</string>
     <string name="tag_manager_activity_empty_tags">태그가 없습니다.</string>
+    <string name="tag_manager_activity_words_and_meanings_with_tag">%1$s 태그를 가진 단어/뜻 목록</string>
+    <string name="tag_manager_activity_words_with_tag"><![CDATA[<b>단어 목록</b> (%2$d개)]]></string>
+    <string name="tag_manager_activity_meanings_with_tag"><![CDATA[<b>%2$s의 뜻 목록</b> (%3$d개)]]></string>
+    <string name="tag_manager_activity_meanings_with_tag_empty"><![CDATA[<b>뜻 목록</b>]]></string>
     <string name="tag_manager_activity_new_tag_name_hint">새 태그 이름...</string>
 
     <string name="vocabulary_activity_title">단어장 수정하기</string>
@@ -112,7 +116,7 @@
     <string name="vocabulary_activity_tag_manager">태그 매니저</string>
     <string name="vocabulary_activity_words"><![CDATA[<b>%1$s의 단어 목록</b> (%2$d개)]]></string>
     <string name="vocabulary_activity_words_search_result"><![CDATA[<b>%1$s의 검색 결과</b> (%2$d개)]]></string>
-    <string name="vocabulary_activity_meanings"><![CDATA[<b>%1$s의 뜻 목록</b> (%2$d개)]]></string>
+    <string name="vocabulary_activity_meanings"><![CDATA[<b>%2$s의 뜻 목록</b> (%3$d개)]]></string>
     <string name="vocabulary_activity_meanings_empty"><![CDATA[<b>뜻 목록</b>]]></string>
     <string name="vocabulary_activity_add_meaning">단어/뜻 추가하기</string>
     <string name="vocabulary_activity_word">단어*</string>

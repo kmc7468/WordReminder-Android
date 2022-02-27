@@ -58,12 +58,22 @@ public class Word implements Serializable {
         meanings.add(meaning);
     }
 
+    public void addMeaningRef(Meaning meaning) {
+        meanings.add(meaning);
+    }
+
     public void removeMeaning(int index) {
-        meanings.remove(index).setWord(null);
+        final Meaning meaning = meanings.remove(index);
+
+        if (meaning.getWord() == this) {
+            meaning.setWord(null);
+        }
     }
 
     public void removeMeaning(Meaning meaning) {
-        meaning.setWord(null);
+        if (meaning.getWord() == this) {
+            meaning.setWord(null);
+        }
 
         meanings.remove(meaning);
     }

@@ -105,6 +105,10 @@ public class Meaning implements Serializable {
         return tags.get(index);
     }
 
+    public boolean containsTag(Tag tag) {
+        return tags.contains(tag);
+    }
+
     public void addTag(Tag tag) {
         tags.add(tag);
 

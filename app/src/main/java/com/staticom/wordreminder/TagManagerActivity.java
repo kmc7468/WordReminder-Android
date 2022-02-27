@@ -17,6 +17,7 @@ import com.staticom.wordreminder.adapter.TagsAdapter;
 import com.staticom.wordreminder.core.Meaning;
 import com.staticom.wordreminder.core.Tag;
 import com.staticom.wordreminder.core.Vocabulary;
+import com.staticom.wordreminder.core.VocabularyMetadata;
 import com.staticom.wordreminder.core.Word;
 import com.staticom.wordreminder.utility.AlertDialog;
 import com.staticom.wordreminder.utility.RecyclerViewEmptyObserver;
@@ -66,6 +67,38 @@ public class TagManagerActivity extends AppCompatActivity {
             if (menu != null) {
                 menu.setGroupVisible(R.id.tagEditMenus, true);
             }
+        });
+        tagsAdapter.setOnListButtonClickListener(index -> {
+            final VocabularyMetadata vocabulary = new VocabularyMetadata(selectedTag.getTag(), null, null);
+            final Vocabulary taggedVocabulary = new Vocabulary();
+
+            for (final Word word : selectedTag.getWords()) {
+                final Word taggedWord = new Word(word.getWord());
+
+                for (final Meaning meaning : word.getMeanings()) {
+                    if (meaning.containsTag(selectedTag)) {
+                        taggedWord.addMeaningRef(meaning);
+                    }
+                }
+
+                taggedVocabulary.addWord(taggedWord);
+            }
+
+            vocabulary.setVocabulary(taggedVocabulary);
+
+            final Intent intent = new Intent(this, VocabularyViewerActivity.class);
+
+            intent.putExtra("title", String.format(
+                    getString(R.string.tag_manager_activity_words_and_meanings_with_tag),
+                    selectedTag.getTag()));
+
+            intent.putExtra("wordsTextFormat", getString(R.string.tag_manager_activity_words_with_tag));
+            intent.putExtra("defaultMeaningsText", getString(R.string.tag_manager_activity_meanings_with_tag_empty));
+            intent.putExtra("meaningsTextFormat", getString(R.string.tag_manager_activity_meanings_with_tag));
+
+            intent.putExtra("vocabulary", vocabulary.serialize());
+
+            startActivity(intent);
         });
 
         final RecyclerView tags = findViewById(R.id.tags);

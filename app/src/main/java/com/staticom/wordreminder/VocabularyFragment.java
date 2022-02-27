@@ -45,6 +45,7 @@ public class VocabularyFragment extends Fragment {
         if (wordsAdapter.getSelectedIndex() != -1) {
             meaningsText.setText(HtmlCompat.fromHtml(
                     String.format(meaningsTextFormat,
+                            wordsAdapter.getVocabulary().getName(),
                             getSelectedWord().getWord(),
                             getSelectedWord().getMeanings().size()),
                     HtmlCompat.FROM_HTML_MODE_LEGACY));
@@ -253,7 +254,7 @@ public class VocabularyFragment extends Fragment {
     public void notifyVocabularyUpdated() {
         if (getSelectedWordIndex() != -1) {
             meaningsAdapter.setWord(getSelectedWord());
-            
+
             notifyMeaningsUpdated();
         }
     }

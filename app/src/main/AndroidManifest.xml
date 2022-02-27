@@ -10,12 +10,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WordReminder">
         <activity
+            android:name=".VocabularyViewerActivity"
+            android:exported="false" />
+        <activity
             android:name=".TagManagerActivity"
             android:exported="false"
             android:parentActivityName=".VocabularyActivity" />
         <activity
             android:name=".QuestionActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".VocabularyActivity"
             android:exported="false" />
