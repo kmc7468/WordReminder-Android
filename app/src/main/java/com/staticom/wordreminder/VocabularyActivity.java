@@ -18,6 +18,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -128,8 +129,8 @@ public class VocabularyActivity extends AppCompatActivity {
 
         originalVocabulary.setVocabulary(newVocabulary);
 
-        if (originalVocabulary != vocabularyFragment.getVocabulary()) {
-            final VocabularyMetadata displayedVocabulary = vocabularyFragment.getVocabulary();
+        final VocabularyMetadata displayedVocabulary = vocabularyFragment.getVocabulary();
+        if (displayedVocabulary != originalVocabulary) {
             final Vocabulary newDisplayedVocabulary = new Vocabulary();
 
             for (final Word word : displayedVocabulary.getVocabulary().getWords()) {
@@ -138,6 +139,8 @@ public class VocabularyActivity extends AppCompatActivity {
 
             displayedVocabulary.setVocabulary(newDisplayedVocabulary);
         }
+
+        vocabularyFragment.notifyVocabularyUpdated();
 
         if (vocabularyFragment.getSelectedWordIndex() != -1) {
             vocabularyFragment.notifyMeaningsUpdated();
@@ -163,28 +166,36 @@ public class VocabularyActivity extends AppCompatActivity {
             }
         });
 
-        vocabularyFragment = new VocabularyFragment();
-
-        vocabularyFragment.setWordsTextFormat(getString(R.string.vocabulary_activity_words));
-        vocabularyFragment.setDefaultMeaningsText(getString(R.string.vocabulary_activity_meanings_empty));
-        vocabularyFragment.setMeaningsTextFormat(getString(R.string.vocabulary_activity_meanings));
-
-        vocabularyFragment.setOnWordSelectedListener((view, index) -> {
-            updateMenusVisibility();
-        });
-        vocabularyFragment.setOnMeaningSelectedListener((view, index) -> {
-            updateMenusVisibility();
-        });
-
         final FragmentManager manager = getSupportFragmentManager();
-        final FragmentTransaction transaction = manager.beginTransaction();
+        final Fragment vocabularyFragment = manager.findFragmentByTag("vocabularyFragment");
 
-        transaction.add(R.id.vocabulary, vocabularyFragment);
-        transaction.commit();
+        if (vocabularyFragment != null) {
+            this.vocabularyFragment = (VocabularyFragment)vocabularyFragment;
+        } else {
+            this.vocabularyFragment = new VocabularyFragment();
+
+            this.vocabularyFragment.setWordsTextFormat(getString(R.string.vocabulary_activity_words));
+            this.vocabularyFragment.setDefaultMeaningsText(getString(R.string.vocabulary_activity_meanings_empty));
+            this.vocabularyFragment.setMeaningsTextFormat(getString(R.string.vocabulary_activity_meanings));
+
+            final FragmentTransaction transaction = manager.beginTransaction();
+
+            transaction.add(R.id.vocabulary, this.vocabularyFragment, "vocabularyFragment");
+            transaction.commit();
+        }
+
+        this.vocabularyFragment.setOnWordSelectedListener((view, index) -> {
+            updateMenusVisibility();
+        });
+        this.vocabularyFragment.setOnMeaningSelectedListener((view, index) -> {
+            updateMenusVisibility();
+        });
 
         originalVocabulary = VocabularyMetadata.deserialize(getIntent().getSerializableExtra("vocabulary"));
 
-        vocabularyFragment.setVocabulary(originalVocabulary);
+        if (vocabularyFragment == null) {
+            this.vocabularyFragment.setVocabulary(originalVocabulary);
+        }
 
         tagManagerResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::updateVocabulary);
     }
@@ -195,18 +206,6 @@ public class VocabularyActivity extends AppCompatActivity {
 
         isEdited = savedInstanceState.getBoolean("isEdited");
         isSaved = savedInstanceState.getBoolean("isSaved");
-
-        final boolean isSearched = savedInstanceState.getBoolean("isSearched");
-        if (isSearched) {
-            final VocabularyMetadata displayedVocabulary = vocabularyFragment.getVocabulary();
-            final Vocabulary newDisplayedVocabulary = new Vocabulary();
-
-            for (final Word word : displayedVocabulary.getVocabulary().getWords()) {
-                newDisplayedVocabulary.addWordRef(originalVocabulary.getVocabulary().findWord(word.getWord()));
-            }
-
-            displayedVocabulary.setVocabulary(newDisplayedVocabulary);
-        }
     }
 
     @Override
@@ -215,11 +214,6 @@ public class VocabularyActivity extends AppCompatActivity {
 
         savedInstanceState.putBoolean("isEdited", isEdited);
         savedInstanceState.putBoolean("isSaved", isSaved);
-
-        final VocabularyMetadata displayedVocabulary = vocabularyFragment.getVocabulary();
-        final boolean isSearched = displayedVocabulary != originalVocabulary;
-
-        savedInstanceState.putBoolean("isSearched", isSearched);
     }
 
     private void searchWord(String query) {

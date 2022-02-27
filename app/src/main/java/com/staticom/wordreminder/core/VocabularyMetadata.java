@@ -21,7 +21,7 @@ public class VocabularyMetadata {
 
         public SerializableVocabularyMetadata(VocabularyMetadata vocabulary) {
             name = vocabulary.name;
-            path = vocabulary.path.toString();
+            path = vocabulary.path != null ? vocabulary.path.toString() : null;
             time = vocabulary.time;
 
             this.vocabulary = vocabulary.vocabulary;
@@ -106,7 +106,7 @@ public class VocabularyMetadata {
     public static VocabularyMetadata deserialize(Serializable serializable) {
         final SerializableVocabularyMetadata vocabulary = (SerializableVocabularyMetadata)serializable;
         final VocabularyMetadata result = new VocabularyMetadata(
-                vocabulary.name, Paths.get(vocabulary.path), vocabulary.time);
+                vocabulary.name, vocabulary.path != null ? Paths.get(vocabulary.path) : null, vocabulary.time);
 
         result.vocabulary = vocabulary.vocabulary;
         result.shouldSave = vocabulary.shouldSave;

@@ -128,6 +128,10 @@ public class VocabularyFragment extends Fragment {
 
         setVocabulary(VocabularyMetadata.deserialize(savedInstanceState.getSerializable("vocabulary")));
 
+        wordsTextFormat = savedInstanceState.getString("wordsTextFormat");
+        defaultMeaningsText = savedInstanceState.getString("defaultMeaningsText");
+        meaningsTextFormat = savedInstanceState.getString("meaningsTextFormat");
+
         final int selectedWord = savedInstanceState.getInt("selectedWord");
         if (selectedWord != -1) {
             wordsAdapter.setSelectedIndex(selectedWord);
@@ -144,6 +148,10 @@ public class VocabularyFragment extends Fragment {
         super.onSaveInstanceState(savedInstanceState);
 
         savedInstanceState.putSerializable("vocabulary", getVocabulary().serialize());
+
+        savedInstanceState.putString("wordsTextFormat", wordsTextFormat);
+        savedInstanceState.putString("defaultMeaningsText", defaultMeaningsText);
+        savedInstanceState.putString("meaningsTextFormat", meaningsTextFormat);
 
         savedInstanceState.putInt("selectedWord", getSelectedWordIndex());
         savedInstanceState.putInt("selectedMeaning", getSelectedMeaningIndex());
@@ -240,5 +248,13 @@ public class VocabularyFragment extends Fragment {
         this.meaningsTextFormat = meaningsTextFormat;
 
         updateCount();
+    }
+
+    public void notifyVocabularyUpdated() {
+        if (getSelectedWordIndex() != -1) {
+            meaningsAdapter.setWord(getSelectedWord());
+            
+            notifyMeaningsUpdated();
+        }
     }
 }
