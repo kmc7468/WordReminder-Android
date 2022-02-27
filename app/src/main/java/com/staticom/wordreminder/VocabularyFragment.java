@@ -25,12 +25,12 @@ public class VocabularyFragment extends Fragment {
 
     private TextView wordsText;
     private String wordsTextFormat;
-    private WordsAdapter wordsAdapter = new WordsAdapter(null);
+    private final WordsAdapter wordsAdapter = new WordsAdapter(null);
     private SelectableAdapter.OnItemSelectedListener onWordSelectedListener;
 
     private TextView meaningsText;
     private String defaultMeaningsText, meaningsTextFormat;
-    private MeaningsAdapter meaningsAdapter = new MeaningsAdapter(null);
+    private final MeaningsAdapter meaningsAdapter = new MeaningsAdapter(null);
     private SelectableAdapter.OnItemSelectedListener onMeaningSelectedListener;
 
     private void updateCount() {

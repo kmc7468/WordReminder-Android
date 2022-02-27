@@ -12,7 +12,6 @@ import com.staticom.wordreminder.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class CheckableAdapter extends BaseAdapter {

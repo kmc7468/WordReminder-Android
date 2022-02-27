@@ -101,10 +101,6 @@ public class Meaning implements Serializable {
         return Collections.unmodifiableList(tags);
     }
 
-    public Tag getTag(int index) {
-        return tags.get(index);
-    }
-
     public boolean containsTag(Tag tag) {
         return tags.contains(tag);
     }

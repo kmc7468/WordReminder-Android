@@ -67,6 +67,8 @@ public class Tag implements Serializable {
 
         final Vocabulary vocabulary = new Vocabulary();
 
+        vocabulary.addTag(this);
+
         for (final Word word : words) {
             final Word wordRef = new Word(word.getWord());
 
