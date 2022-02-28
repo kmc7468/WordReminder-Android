@@ -87,7 +87,11 @@ public class ShortAnswerFragment extends Fragment implements AnswerFragment {
 
         if (type.getAnswerComponent(question.getAnswer()).toLowerCase().equals(answer)) return true;
 
-        if (type.getType() == QuestionType.Type.MEANING_TO_WORD) {
+        if (type.getType() == QuestionType.Type.WORD_TO_MEANING) {
+            for (final Meaning meaning : question.getAnswer().getWord().getMeanings()) {
+                if (type.getAnswerComponent(meaning).toLowerCase().equals(answer)) return true;
+            }
+        } else if (type.getType() == QuestionType.Type.MEANING_TO_WORD) {
             final Vocabulary vocabulary = question.getVocabulary();
             for (final Word word : vocabulary.getWords()) {
                 for (final Meaning meaning : word.getMeanings()) {
