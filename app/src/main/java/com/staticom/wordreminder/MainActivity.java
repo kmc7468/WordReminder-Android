@@ -220,9 +220,21 @@ public class MainActivity extends AppCompatActivity {
                     vocabulary.setVocabulary(Vocabulary.readFromFileStream(stream));
                     vocabulary.setShouldSave(true);
 
-                    vocabularyList.addVocabulary(vocabulary);
-                    vocabularyListAdapter.notifyItemInserted(vocabularyListAdapter.getItemCount());
-                    vocabularyListAdapter.setSelectedIndex(vocabularyListAdapter.getItemCount() - 1);
+                    if (vocabulary.getVocabulary().hasUnreadableContainers()) {
+                        final AlertDialog dialog = new AlertDialog(this,
+                                R.string.main_activity_warning_has_unreadable_containers,
+                                R.string.main_activity_ask_load_vocabulary_which_has_unreadable_containers);
+
+                        dialog.setPositiveButton(R.string.load, true, () -> {
+                            vocabularyList.addVocabulary(vocabulary);
+                            vocabularyListAdapter.notifyItemInserted(vocabularyListAdapter.getItemCount());
+                            vocabularyListAdapter.setSelectedIndex(vocabularyListAdapter.getItemCount() - 1);
+                        }).setNegativeButton(R.string.cancel).show();
+                    } else {
+                        vocabularyList.addVocabulary(vocabulary);
+                        vocabularyListAdapter.notifyItemInserted(vocabularyListAdapter.getItemCount());
+                        vocabularyListAdapter.setSelectedIndex(vocabularyListAdapter.getItemCount() - 1);
+                    }
                 }
             } catch (final Exception e) {
                 Toast.makeText(getApplicationContext(), R.string.main_activity_load_vocabulary_error, Toast.LENGTH_LONG).show();

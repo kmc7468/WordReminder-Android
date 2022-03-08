@@ -17,6 +17,8 @@ public class Vocabulary implements Serializable {
         HOMONYM_CONTAINER,
         EXAMPLE_CONTAINER,
         TAG_CONTAINER,
+
+        UNKNOWN,
     }
 
     private interface ContainerReader {
@@ -29,6 +31,8 @@ public class Vocabulary implements Serializable {
 
     private final List<Word> words = new ArrayList<>();
     private final List<Tag> tags = new ArrayList<>();
+
+    private boolean hasUnreadableContainers = false;
 
     public List<Word> getWords() {
         return Collections.unmodifiableList(words);
@@ -100,13 +104,8 @@ public class Vocabulary implements Serializable {
         tags.remove(tag);
     }
 
-    private static boolean readContainer(BinaryStream fileStream, boolean read,
-                                         ContainerId id, ContainerId realId, ContainerReader reader) throws IOException {
-        if (id == realId) {
-            reader.read(fileStream);
-
-            return true;
-        } else return read;
+    public boolean hasUnreadableContainers() {
+        return hasUnreadableContainers;
     }
 
     private static void writeContainer(BinaryStream fileStream,
@@ -199,6 +198,19 @@ public class Vocabulary implements Serializable {
         });
     }
 
+    private static ContainerId castToContainerId(int id) {
+        return ContainerId.values()[Math.min(id, ContainerId.UNKNOWN.ordinal())];
+    }
+
+    private static boolean readContainer(BinaryStream fileStream, boolean read,
+                                         ContainerId id, ContainerId realId, ContainerReader reader) throws IOException {
+        if (id == realId) {
+            reader.read(fileStream);
+
+            return true;
+        } else return read;
+    }
+
     public static Vocabulary readFromFileStream(FileInputStream stream) throws IOException {
         final BinaryStream fileStream = new BinaryStream(stream);
 
@@ -224,7 +236,7 @@ public class Vocabulary implements Serializable {
         }
 
         for (int i = 0; i < containerCount; ++i) {
-            final ContainerId id = ContainerId.values()[fileStream.readInt()];
+            final ContainerId id = castToContainerId(fileStream.readInt());
             final int length = fileStream.readInt();
             boolean read = false;
 
@@ -268,6 +280,8 @@ public class Vocabulary implements Serializable {
 
             if (!read) {
                 fileStream.skip(length);
+
+                vocabulary.hasUnreadableContainers = true;
             }
         }
 
