@@ -613,6 +613,8 @@ public class VocabularyActivity extends AppCompatActivity {
             if (!displayed || targetWordIndex == -1) {
                 vocabularyFragment.notifyWordAdded();
                 vocabularyFragment.setSelectedWord(displayedVocabulary.getVocabulary().getWords().size() - 1);
+            } else {
+                vocabularyFragment.setSelectedWord(targetWordIndex);
             }
 
             final Meaning newMeaning = targetWord.addMeaning(new Meaning(
