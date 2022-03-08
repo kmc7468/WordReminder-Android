@@ -80,6 +80,16 @@ public class Vocabulary implements Serializable {
         words.remove(word);
     }
 
+    public int getAmountOfMeanings() {
+        int result = 0;
+
+        for (final Word word : words) {
+            result += word.getMeanings().size();
+        }
+
+        return result;
+    }
+
     public List<Tag> getTags() {
         return Collections.unmodifiableList(tags);
     }

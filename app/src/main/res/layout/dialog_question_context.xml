@@ -120,6 +120,17 @@
                 app:layout_constraintTop_toBottomOf="@+id/display_pronunciation" />
 
             <Switch
+                android:id="@+id/disableDuplication"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/main_activity_question_option_disable_duplication"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/display_example" />
+
+            <Switch
                 android:id="@+id/selectTags"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -129,7 +140,7 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/display_example"
+                app:layout_constraintTop_toBottomOf="@+id/disableDuplication"
                 tools:visibility="visible" />
 
             <Spinner

@@ -18,13 +18,16 @@ public class QuestionContext {
     private final Random random = new Random();
 
     private final VocabularyMetadata vocabulary;
+    private final int amountOfMeanings;
     private final List<QuestionType> usableTypes = new ArrayList<>();
 
     private boolean displayPronunciation = false;
     private boolean displayExample = false;
+    private boolean disableDuplication = false;
 
     public QuestionContext(VocabularyMetadata vocabulary) {
         this.vocabulary = vocabulary;
+        amountOfMeanings = vocabulary.getVocabulary().getAmountOfMeanings();
     }
 
     public VocabularyMetadata getVocabulary() {
@@ -55,6 +58,14 @@ public class QuestionContext {
         this.displayExample = displayExample;
     }
 
+    public boolean shouldDisableDuplication() {
+        return disableDuplication;
+    }
+
+    public void setDisableDuplication(boolean disableDuplication) {
+        this.disableDuplication = disableDuplication;
+    }
+
     private <T> T loop(LoopBody<T> body) throws Exception {
         final AtomicReference<T> result = new AtomicReference<>();
 
@@ -78,6 +89,16 @@ public class QuestionContext {
             final Meaning meaning = getRandomMeaning();
 
             if (type.isUsableForAnswer(meaning)) {
+                if (disableDuplication) {
+                    if (type.getUsedMeanings().contains(meaning)) return false;
+
+                    type.addUsedMeaning(meaning);
+
+                    if (type.getUsedMeanings().size() == amountOfMeanings) {
+                        type.clearUsedMeanings();
+                    }
+                }
+
                 result.set(meaning);
 
                 return true;

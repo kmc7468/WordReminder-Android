@@ -545,6 +545,7 @@ public class MainActivity extends AppCompatActivity {
 
         final Switch displayPronunciation = dialog.findViewById(R.id.display_pronunciation);
         final Switch displayExample = dialog.findViewById(R.id.display_example);
+        final Switch disableDuplication = dialog.findViewById(R.id.disableDuplication);
 
         final SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 
@@ -555,6 +556,7 @@ public class MainActivity extends AppCompatActivity {
 
         displayPronunciation.setChecked(preferences.getBoolean("displayPronunciation", false));
         displayExample.setChecked(preferences.getBoolean("displayExample", false));
+        disableDuplication.setChecked(preferences.getBoolean("disableDuplication", false));
 
         final Switch selectTags = dialog.findViewById(R.id.selectTags);
         final CheckableAdapter tagsAdapter;
@@ -601,6 +603,7 @@ public class MainActivity extends AppCompatActivity {
 
             intent.putExtra("displayPronunciation", displayPronunciation.isChecked());
             intent.putExtra("displayExample", displayExample.isChecked());
+            intent.putExtra("disableDuplication", disableDuplication.isChecked());
 
             startResult.launch(intent);
 
@@ -613,6 +616,7 @@ public class MainActivity extends AppCompatActivity {
 
             editor.putBoolean("displayPronunciation", displayPronunciation.isChecked());
             editor.putBoolean("displayExample", displayExample.isChecked());
+            editor.putBoolean("disableDuplication", disableDuplication.isChecked());
 
             editor.apply();
 

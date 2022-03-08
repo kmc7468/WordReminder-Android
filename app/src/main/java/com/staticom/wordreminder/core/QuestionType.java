@@ -7,7 +7,10 @@ import androidx.annotation.StringRes;
 import com.staticom.wordreminder.R;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 
 public class QuestionType implements Serializable {
 
@@ -29,6 +32,8 @@ public class QuestionType implements Serializable {
     private final EnumSet<Meaning.Component> hintsForMainComponent;
     private final Meaning.Component answerComponent;
     private final EnumSet<Meaning.Component> hintsForAnswerComponent;
+
+    private final List<Meaning> usedMeanings = new ArrayList<>();
 
     protected QuestionType(Type type, AnswerType answerType,
                            @StringRes int messageId, Meaning.Component mainComponent, EnumSet<Meaning.Component> hintsForMainComponent,
@@ -75,16 +80,28 @@ public class QuestionType implements Serializable {
         return meaning.hasExample() && hintsForMainComponent.contains(Meaning.Component.EXAMPLE);
     }
 
-    public boolean shouldDisplayPronunciationForAnswerComponent(Meaning meaning) {
-        return meaning.hasPronunciation() && hintsForAnswerComponent.contains(Meaning.Component.PRONUNCIATION);
-    }
-
     public String getAnswerComponent(Meaning meaning) {
         return meaning.getComponent(answerComponent);
     }
 
+    public boolean shouldDisplayPronunciationForAnswerComponent(Meaning meaning) {
+        return meaning.hasPronunciation() && hintsForAnswerComponent.contains(Meaning.Component.PRONUNCIATION);
+    }
+
     public boolean shouldDisplayExampleForAnswerComponent(Meaning meaning) {
         return meaning.hasExample() && hintsForAnswerComponent.contains(Meaning.Component.EXAMPLE);
+    }
+
+    public List<Meaning> getUsedMeanings() {
+        return Collections.unmodifiableList(usedMeanings);
+    }
+
+    public void addUsedMeaning(Meaning meaning) {
+        usedMeanings.add(meaning);
+    }
+
+    public void clearUsedMeanings() {
+        usedMeanings.clear();
     }
 
     public boolean isUsableForAnswer(Meaning meaning) {
