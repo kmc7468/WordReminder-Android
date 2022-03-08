@@ -92,8 +92,12 @@ public class QuestionType implements Serializable {
     }
 
     public boolean isDuplicatedForAnswer(Meaning fixedMeaning, Meaning meaning) {
-        return fixedMeaning.getWord().getWord().equals(meaning.getWord().getWord()) ||
-                fixedMeaning.getMeaning().equals(meaning.getMeaning());
+        if (fixedMeaning.getWord() == meaning.getWord() ||
+                fixedMeaning.getMeaning().equals(meaning.getMeaning())) return true;
+
+        final Word fixedWord = fixedMeaning.getWord();
+
+        return fixedWord.containsMeaning(meaning.getMeaning());
     }
 
     public static class WordToMeaning extends QuestionType {
