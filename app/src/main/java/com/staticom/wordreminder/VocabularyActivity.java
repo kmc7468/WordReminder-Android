@@ -1,12 +1,10 @@
 package com.staticom.wordreminder;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -221,7 +219,7 @@ public class VocabularyActivity extends AppCompatActivity {
         final String queryLowerCase = query.toLowerCase();
         final Vocabulary searchResult = new Vocabulary();
 
-        for (final Word word : vocabularyFragment.getVocabulary().getVocabulary().getWords()) {
+        for (final Word word : originalVocabulary.getVocabulary().getWords()) {
             if (word.getWord().toLowerCase().contains(queryLowerCase)) {
                 searchResult.addWordRef(word);
 
@@ -260,10 +258,6 @@ public class VocabularyActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchWord(query.trim());
-
-                final InputMethodManager manager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-
-                manager.hideSoftInputFromWindow(searchWord.getWindowToken(), 0);
 
                 return true;
             }
