@@ -106,8 +106,15 @@ public class VocabularyFragment extends Fragment {
     }
 
     public void setVocabulary(VocabularyMetadata vocabulary) {
+        Word selectedWord = null;
+
         if (getSelectedWordIndex() != -1) {
-            final Word selectedWord = getSelectedWord();
+            selectedWord = getSelectedWord();
+        }
+
+        wordsAdapter.setVocabulary(vocabulary);
+
+        if (selectedWord != null) {
             if (vocabulary.getVocabulary().getWords().contains(selectedWord)) {
                 final int selectedWordNewIndex = vocabulary.getVocabulary().getWords().indexOf(selectedWord);
                 final int selectedMeaningIndex = getSelectedMeaningIndex();
@@ -120,8 +127,6 @@ public class VocabularyFragment extends Fragment {
                 meaningsAdapter.setWord(null);
             }
         }
-
-        wordsAdapter.setVocabulary(vocabulary);
 
         updateCount();
     }
