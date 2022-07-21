@@ -13,59 +13,59 @@ import com.staticom.wordreminder.core.VocabularyMetadata;
 
 public class VocabularyListAdapter extends SelectableAdapter {
 
-    public interface OnEditButtonClickListener {
-        void onEditButtonClick(int index);
+    public interface OnOpenButtonClickListener {
+        void onOpenButtonClick(int index);
     }
 
     private class ViewHolder extends SelectableAdapter.ViewHolder {
 
         private final TextView name;
         private final TextView time;
-        private final ImageButton edit;
+        private final ImageButton open;
 
-        private final Animation editOpenAnimation, editCloseAnimation;
+        private final Animation openOpenAnimation, openCloseAnimation;
 
         public ViewHolder(Context applicationContext, View view) {
             super(view);
 
             name = view.findViewById(R.id.name);
             time = view.findViewById(R.id.time);
-            edit = view.findViewById(R.id.edit);
+            open = view.findViewById(R.id.open);
 
-            edit.setOnClickListener(v -> {
-                if (onEditButtonClickListener != null) {
-                    onEditButtonClickListener.onEditButtonClick(getSelectedIndex());
+            open.setOnClickListener(v -> {
+                if (onOpenButtonClickListener != null) {
+                    onOpenButtonClickListener.onOpenButtonClick(getSelectedIndex());
                 }
             });
 
-            editOpenAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_open);
-            editCloseAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_close);
+            openOpenAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_open);
+            openCloseAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_close);
         }
 
         @Override
         public void onHolderActivated(boolean requiredAnimation) {
             if (requiredAnimation) {
-                edit.startAnimation(editOpenAnimation);
+                open.startAnimation(openOpenAnimation);
             }
 
-            edit.setVisibility(View.VISIBLE);
-            edit.setClickable(true);
+            open.setVisibility(View.VISIBLE);
+            open.setClickable(true);
         }
 
         @Override
         public void onHolderDeactivated(boolean requiredAnimation) {
             if (requiredAnimation) {
-                edit.startAnimation(editCloseAnimation);
+                open.startAnimation(openCloseAnimation);
             }
 
-            edit.setVisibility(View.INVISIBLE);
-            edit.setClickable(false);
+            open.setVisibility(View.INVISIBLE);
+            open.setClickable(false);
         }
     }
 
     private final VocabularyList vocabularyList;
 
-    private OnEditButtonClickListener onEditButtonClickListener;
+    private OnOpenButtonClickListener onOpenButtonClickListener;
 
     public VocabularyListAdapter(VocabularyList vocabularyList) {
         super(R.layout.item_vocabulary);
@@ -78,8 +78,8 @@ public class VocabularyListAdapter extends SelectableAdapter {
         return vocabularyList.getVocabularyList().size();
     }
 
-    public void setOnEditButtonClickListener(OnEditButtonClickListener onEditButtonClickListener) {
-        this.onEditButtonClickListener = onEditButtonClickListener;
+    public void setOnOpenButtonClickListener(OnOpenButtonClickListener onOpenButtonClickListener) {
+        this.onOpenButtonClickListener = onOpenButtonClickListener;
     }
 
     @Override

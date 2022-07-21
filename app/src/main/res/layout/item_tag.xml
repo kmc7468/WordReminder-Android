@@ -41,7 +41,7 @@
         android:layout_marginBottom="8dp"
         android:background="?attr/actionBarItemBackground"
         android:clickable="false"
-        android:contentDescription="@string/vocabulary_list_adapter_edit"
+        android:contentDescription="@string/tags_adapter_open_words"
         android:minWidth="48dp"
         android:minHeight="48dp"
         android:padding="4dp"

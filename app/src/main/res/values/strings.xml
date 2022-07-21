@@ -13,18 +13,22 @@
     <string name="close">닫기</string>
     <string name="reset">초기화</string>
 
-    <string name="vocabulary_list_adapter_edit">단어장 수정하기</string>
+    <string name="vocabulary_list_adapter_open">단어장 보기</string>
 
     <string name="meanings_adapter_pronunciation"><![CDATA[<b>발음:</b> %1$s]]></string>
     <string name="meanings_adapter_example"><![CDATA[<b>예문:</b> %1$s]]></string>
     <string name="meanings_adapter_tags"><![CDATA[<b>태그:</b> %1$s]]></string>
 
     <string name="tags_adapter_count">단어 %1$d개, 뜻 %2$d개</string>
+    <string name="tags_adapter_open_words">이 태그를 가진 단어/뜻 보기</string>
 
     <string name="question_type_word_to_meaning_message">다음 단어의 뜻은?</string>
     <string name="question_type_meaning_to_word_message">다음 뜻을 가진 단어는?</string>
     <string name="question_type_multiple_choice_error_empty_answer">정답을 선택해 주세요.</string>
     <string name="question_type_short_answer_error_empty_answer">정답을 입력해 주세요.</string>
+
+    <string name="detailed_vocabulary_activity_title">단어장 보기</string>
+    <string name="detailed_vocabulary_activity_empty_words">단어장이 비어있습니다.</string>
 
     <string name="main_activity_title">단어장 목록</string>
     <string name="main_activity_menu_delete">단어장 삭제하기</string>

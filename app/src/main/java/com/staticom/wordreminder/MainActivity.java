@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private VocabularyList vocabularyList;
     private VocabularyListAdapter vocabularyListAdapter;
     private VocabularyMetadata selectedVocabulary;
-    private ActivityResultLauncher<Intent> editVocabularyResult;
+    private ActivityResultLauncher<Intent> openVocabularyResult;
 
     private FloatingActionButton create, load;
     private boolean isOpenAddButtons = false;
@@ -275,14 +275,14 @@ public class MainActivity extends AppCompatActivity {
                     toggleStartButton();
                 }
             });
-            vocabularyListAdapter.setOnEditButtonClickListener(index -> {
+            vocabularyListAdapter.setOnOpenButtonClickListener(index -> {
                 if (!loadVocabulary(selectedVocabulary)) return;
 
-                final Intent intent = new Intent(this, VocabularyActivity.class);
+                final Intent intent = new Intent(this, DetailedVocabularyActivity.class);
 
                 intent.putExtra("vocabulary", selectedVocabulary.serialize());
 
-                editVocabularyResult.launch(intent);
+                openVocabularyResult.launch(intent);
             });
 
             final RecyclerView vocabularyList = findViewById(R.id.vocabularyList);
@@ -293,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
             vocabularyListAdapter.registerAdapterDataObserver(
                     new RecyclerViewEmptyObserver(vocabularyList, findViewById(R.id.emptyVocabularyListText)));
 
-            editVocabularyResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::updateVocabulary);
+            openVocabularyResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::updateVocabulary);
         }
 
         create = findViewById(R.id.create);

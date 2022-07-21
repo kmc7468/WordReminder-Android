@@ -89,10 +89,15 @@ public class Word implements Serializable {
     }
 
     public Meaning mergeMeanings() {
+        return mergeMeanings(", ", ", ", ", ");
+    }
+
+    public Meaning mergeMeanings(String meaningDelimiter, String pronunciationDelimiter, String exampleDelimiter) {
         if (meanings.size() == 1) return getMeaning(0);
 
         final List<String> meanings = new ArrayList<>();
         final List<String> pronunciations = new ArrayList<>();
+        final List<String> examples = new ArrayList<>();
 
         for (final Meaning meaning : this.meanings) {
             meanings.add(meaning.getMeaning());
@@ -100,12 +105,17 @@ public class Word implements Serializable {
             if (meaning.hasPronunciation()) {
                 pronunciations.add(meaning.getPronunciation());
             }
+
+            if (meaning.hasExample()) {
+                examples.add(meaning.getExample());
+            }
         }
 
         final String mergedMeanings = String.join(", ", meanings);
         final String mergedPronunciations = String.join(", ", makeUnique(pronunciations));
+        final String mergedExamples = String.join(", ", makeUnique(examples));
 
-        return new Meaning(this, mergedMeanings, mergedPronunciations);
+        return new Meaning(this, mergedMeanings, mergedPronunciations, mergedExamples);
     }
 
     private static List<String> makeUnique(List<String> list) {

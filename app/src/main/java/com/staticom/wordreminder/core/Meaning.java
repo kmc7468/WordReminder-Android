@@ -21,18 +21,25 @@ public class Meaning implements Serializable {
 
     private List<Tag> tags = new ArrayList<>();
 
-    public Meaning(Word word, String meaning, String pronunciation) {
-        this.word = word;
-        this.meaning = meaning;
-        this.pronunciation = pronunciation;
-    }
-
     public Meaning(String meaning, String pronunciation) {
         this.meaning = meaning;
         this.pronunciation = pronunciation;
     }
 
     public Meaning(String meaning, String pronunciation, String example) {
+        this.meaning = meaning;
+        this.pronunciation = pronunciation;
+        this.example = example;
+    }
+
+    public Meaning(Word word, String meaning, String pronunciation) {
+        this.word = word;
+        this.meaning = meaning;
+        this.pronunciation = pronunciation;
+    }
+
+    public Meaning(Word word, String meaning, String pronunciation, String example) {
+        this.word = word;
         this.meaning = meaning;
         this.pronunciation = pronunciation;
         this.example = example;
