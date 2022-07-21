@@ -20,8 +20,6 @@ import com.staticom.wordreminder.utility.RecyclerViewEmptyObserver;
 
 public class DetailedVocabularyActivity extends AppCompatActivity {
 
-    private Menu menu;
-
     private VocabularyMetadata vocabulary;
     private DetailedWordsAdapter wordsAdapter;
     private Word selectedWord;
@@ -78,8 +76,6 @@ public class DetailedVocabularyActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_detailed_vocabulary_activity, menu);
-
-        this.menu = menu;
 
         return true;
     }
