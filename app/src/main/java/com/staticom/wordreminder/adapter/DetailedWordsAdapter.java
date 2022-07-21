@@ -66,7 +66,7 @@ public class DetailedWordsAdapter extends SelectableAdapter {
 
         if (mergedMeaning.hasPronunciation()) {
             myViewHolder.pronunciations.setVisibility(View.VISIBLE);
-            myViewHolder.pronunciations.setText(mergedMeaning.getPronunciation());
+            myViewHolder.pronunciations.setText("[" + mergedMeaning.getPronunciation() + "]");
         } else {
             myViewHolder.pronunciations.setVisibility(View.GONE);
         }

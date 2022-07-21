@@ -10,19 +10,18 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.staticom.wordreminder.adapter.DetailedWordsAdapter;
 import com.staticom.wordreminder.core.VocabularyMetadata;
-import com.staticom.wordreminder.core.Word;
 import com.staticom.wordreminder.utility.RecyclerViewEmptyObserver;
 
 public class DetailedVocabularyActivity extends AppCompatActivity {
 
     private VocabularyMetadata vocabulary;
     private DetailedWordsAdapter wordsAdapter;
-    private Word selectedWord;
     private ActivityResultLauncher<Intent> editVocabularyResult;
 
     private void updateVocabulary(ActivityResult result) {
@@ -58,14 +57,12 @@ public class DetailedVocabularyActivity extends AppCompatActivity {
         vocabulary = VocabularyMetadata.deserialize(getIntent().getSerializableExtra("vocabulary"));
 
         wordsAdapter = new DetailedWordsAdapter(vocabulary);
-        wordsAdapter.setOnItemSelectedListener((view, index) -> {
-            selectedWord = vocabulary.getVocabulary().getWord(index);
-        });
 
         final RecyclerView words = findViewById(R.id.words);
 
         words.setLayoutManager(new LinearLayoutManager(this));
         words.setAdapter(wordsAdapter);
+        words.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         wordsAdapter.registerAdapterDataObserver(
                 new RecyclerViewEmptyObserver(words, findViewById(R.id.emptyWordsText)));
