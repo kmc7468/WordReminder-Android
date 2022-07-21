@@ -10,8 +10,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WordReminder">
         <activity
+            android:name=".RelationsActivity"
+            android:exported="false"
+            android:parentActivityName=".VocabularyActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".DetailedVocabularyActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".VocabularyViewerActivity"
             android:exported="false" />

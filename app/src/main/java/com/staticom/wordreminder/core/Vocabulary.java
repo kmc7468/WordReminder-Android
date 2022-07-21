@@ -1,5 +1,7 @@
 package com.staticom.wordreminder.core;
 
+import android.util.Pair;
+
 import com.staticom.wordreminder.utility.BinaryStream;
 
 import java.io.ByteArrayOutputStream;
@@ -17,6 +19,7 @@ public class Vocabulary implements Serializable {
         HOMONYM_CONTAINER,
         EXAMPLE_CONTAINER,
         TAG_CONTAINER,
+        RELATION_CONTAINER,
 
         UNKNOWN,
     }
@@ -138,7 +141,8 @@ public class Vocabulary implements Serializable {
         final BinaryStream fileStream = new BinaryStream(stream);
 
         boolean needHomonymContainer = false,
-                needExampleContainer = false;
+                needExampleContainer = false,
+                needRelationContainer = false;
         int containerCount = 0;
 
         final boolean needTagContainer = !getTags().isEmpty();
@@ -162,6 +166,11 @@ public class Vocabulary implements Serializable {
 
             if (word.hasExample() && !needExampleContainer) {
                 needExampleContainer = true;
+                ++containerCount;
+            }
+
+            if (word.hasRelation() && !needRelationContainer) {
+                needRelationContainer = true;
                 ++containerCount;
             }
         }
@@ -203,6 +212,17 @@ public class Vocabulary implements Serializable {
                     for (final Tag tag : meaning.getTags()) {
                         containerStream.writeInt(tags.indexOf(tag));
                     }
+                }
+            }
+        });
+
+        writeContainer(fileStream, ContainerId.RELATION_CONTAINER, needRelationContainer, containerStream -> {
+            for (final Word word : words) {
+                containerStream.writeInt(word.getRelations().size());
+
+                for (final Pair<Word, String> relation : word.getRelations()) {
+                    containerStream.writeInt(words.indexOf(relation.first));
+                    containerStream.writeString(relation.second);
                 }
             }
         });
@@ -284,6 +304,18 @@ public class Vocabulary implements Serializable {
                         for (int j = 0; j < meaningTagCount; ++j) {
                             meaning.addTag(vocabulary.tags.get(containerStream.readInt()));
                         }
+                    }
+                }
+            });
+
+            read = readContainer(fileStream, read, ContainerId.RELATION_CONTAINER, id, containerStream -> {
+                for (final Word word : vocabulary.words) {
+                    final int relationCount = containerStream.readInt();
+                    for (int j = 0; j < relationCount; ++j) {
+                        final int wordIndex = containerStream.readInt();
+                        final String relation = containerStream.readString();
+
+                        word.addRelation(vocabulary.words.get(wordIndex), relation);
                     }
                 }
             });

@@ -41,6 +41,7 @@ public class VocabularyActivity extends AppCompatActivity {
     private VocabularyFragment vocabularyFragment;
     private VocabularyMetadata originalVocabulary;
 
+    private ActivityResultLauncher<Intent> manageRelationsResult;
     private ActivityResultLauncher<Intent> tagManagerResult;
 
     private boolean save() {
@@ -196,6 +197,7 @@ public class VocabularyActivity extends AppCompatActivity {
             this.vocabularyFragment.setVocabulary(originalVocabulary);
         }
 
+        manageRelationsResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::updateVocabulary);
         tagManagerResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::updateVocabulary);
     }
 
@@ -366,6 +368,15 @@ public class VocabularyActivity extends AppCompatActivity {
         }).setNegativeButton(R.string.cancel).show();
     }
 
+    private void manageRelations() {
+        final Intent intent = new Intent(this, RelationsActivity.class);
+
+        intent.putExtra("vocabulary", originalVocabulary.getVocabulary());
+        intent.putExtra("selectedWord", vocabularyFragment.getSelectedWordIndex());
+
+        manageRelationsResult.launch(intent);
+    }
+
     private void replaceMeaning() {
         final Meaning selectedMeaning = vocabularyFragment.getSelectedMeaning();
         final AlertDialog dialog = new AlertDialog(this,
@@ -482,7 +493,7 @@ public class VocabularyActivity extends AppCompatActivity {
     private void showTagManager() {
         final Intent intent = new Intent(this, TagManagerActivity.class);
 
-        intent.putExtra("vocabulary", originalVocabulary.getVocabulary());
+        intent.putExtra("vocabulary", originalVocabulary.serialize());
 
         tagManagerResult.launch(intent);
     }
@@ -507,6 +518,10 @@ public class VocabularyActivity extends AppCompatActivity {
             return true;
         } else if (item.getItemId() == R.id.deleteWord) {
             deleteWord(false);
+
+            return true;
+        } else if (item.getItemId() == R.id.manageRelations) {
+            manageRelations();
 
             return true;
         } else if (item.getItemId() == R.id.replaceMeaning) {

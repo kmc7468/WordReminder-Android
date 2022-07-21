@@ -30,6 +30,9 @@
             android:id="@+id/deleteWord"
             android:title="@string/vocabulary_activity_delete_word"
             app:showAsAction="never" />
+        <item
+            android:id="@+id/manageRelations"
+            android:title="@string/vocabulary_activity_manage_relations" />
     </group>
     <group
         android:id="@+id/meaningEditMenus"

@@ -4,54 +4,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TagManagerActivity">
+    tools:context=".RelationsActivity">
 
     <TextView
-        android:id="@+id/tagsText"
+        android:id="@+id/relationsText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:text="TextView"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/tags"
+        android:id="@+id/relations"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="4dp"
-        android:scrollbars="vertical"
         app:layout_constraintBottom_toTopOf="@+id/add"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tagsText" />
+        app:layout_constraintTop_toBottomOf="@+id/relationsText" />
 
     <TextView
-        android:id="@+id/emptyTagsText"
+        android:id="@+id/emptyRelationsText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/tag_manager_activity_empty_tags"
+        android:text="@string/relations_activity_empty_relations"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/tags"
-        app:layout_constraintEnd_toEndOf="@+id/tags"
-        app:layout_constraintStart_toStartOf="@+id/tags"
-        app:layout_constraintTop_toTopOf="@+id/tags"
+        app:layout_constraintBottom_toBottomOf="@+id/relations"
+        app:layout_constraintEnd_toEndOf="@+id/relations"
+        app:layout_constraintStart_toStartOf="@+id/relations"
+        app:layout_constraintTop_toTopOf="@+id/relations"
         tools:visibility="visible" />
 
     <EditText
-        android:id="@+id/name"
+        android:id="@+id/editTextTextPersonName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="4dp"
         android:ems="10"
-        android:hint="@string/tag_manager_activity_new_tag_name_hint"
-        android:inputType="text"
+        android:hint="@string/relations_activity_new_relation_relation"
+        android:inputType="textPersonName"
         android:minHeight="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/add"

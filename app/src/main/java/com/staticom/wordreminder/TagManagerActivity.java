@@ -6,10 +6,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,7 +29,7 @@ public class TagManagerActivity extends AppCompatActivity {
     private Menu menu;
     private boolean isEdited = false;
 
-    private Vocabulary vocabulary;
+    private VocabularyMetadata vocabulary;
     private TagsAdapter tagsAdapter;
     private Tag selectedTag;
 
@@ -35,7 +37,7 @@ public class TagManagerActivity extends AppCompatActivity {
         if (isEdited) {
             final Intent intent = new Intent();
 
-            intent.putExtra("vocabulary", vocabulary);
+            intent.putExtra("vocabulary", vocabulary.getVocabulary());
 
             setResult(RESULT_OK, intent);
         } else {
@@ -58,11 +60,19 @@ public class TagManagerActivity extends AppCompatActivity {
             }
         });
 
-        vocabulary = (Vocabulary)getIntent().getSerializableExtra("vocabulary");
+        vocabulary = VocabularyMetadata.deserialize(getIntent().getSerializableExtra("vocabulary"));
 
-        tagsAdapter = new TagsAdapter(vocabulary);
+        final TextView tagsText = findViewById(R.id.tagsText);
+
+        tagsText.setText(HtmlCompat.fromHtml(
+                String.format(getString(R.string.tag_manager_activity_tags),
+                        vocabulary.getName(),
+                        vocabulary.getVocabulary().getTags().size()),
+                HtmlCompat.FROM_HTML_MODE_LEGACY));
+
+        tagsAdapter = new TagsAdapter(vocabulary.getVocabulary());
         tagsAdapter.setOnItemSelectedListener((view, index) -> {
-            selectedTag = vocabulary.getTag(index);
+            selectedTag = vocabulary.getVocabulary().getTag(index);
 
             if (menu != null) {
                 menu.setGroupVisible(R.id.tagEditMenus, true);
@@ -140,13 +150,13 @@ public class TagManagerActivity extends AppCompatActivity {
         dialog.setPositiveButton(R.string.delete, true, () -> {
             final int selectedIndex = tagsAdapter.getSelectedIndex();
 
-            for (final Word word : vocabulary.getWords()) {
+            for (final Word word : vocabulary.getVocabulary().getWords()) {
                 for (final Meaning meaning : word.getMeanings()) {
                     meaning.removeTag(selectedTag);
                 }
             }
 
-            vocabulary.removeTag(selectedTag);
+            vocabulary.getVocabulary().removeTag(selectedTag);
             tagsAdapter.notifyItemRemoved(selectedIndex);
             tagsAdapter.setSelectedIndex(-1);
 
@@ -177,7 +187,7 @@ public class TagManagerActivity extends AppCompatActivity {
                         R.string.tag_manager_activity_error_empty_tag, Toast.LENGTH_SHORT).show();
 
                 return;
-            } else if (vocabulary.containsTag(tag) && !selectedTag.getTag().equals(tag)) {
+            } else if (vocabulary.getVocabulary().containsTag(tag) && !selectedTag.getTag().equals(tag)) {
                 Toast.makeText(getApplicationContext(),
                         R.string.tag_manager_activity_error_duplicated_tag, Toast.LENGTH_SHORT).show();
 
@@ -220,7 +230,7 @@ public class TagManagerActivity extends AppCompatActivity {
                     R.string.tag_manager_activity_error_empty_tag, Toast.LENGTH_SHORT).show();
 
             return;
-        } else if (vocabulary.containsTag(tagName)) {
+        } else if (vocabulary.getVocabulary().containsTag(tagName)) {
             Toast.makeText(getApplicationContext(),
                     R.string.tag_manager_activity_error_duplicated_tag, Toast.LENGTH_SHORT).show();
 
@@ -229,7 +239,7 @@ public class TagManagerActivity extends AppCompatActivity {
 
         name.setText("");
 
-        vocabulary.addTag(new Tag(tagName, vocabulary));
+        vocabulary.getVocabulary().addTag(new Tag(tagName, vocabulary.getVocabulary()));
         tagsAdapter.notifyItemInserted(tagsAdapter.getItemCount());
         tagsAdapter.setSelectedIndex(tagsAdapter.getItemCount() - 1);
 

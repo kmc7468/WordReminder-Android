@@ -4,6 +4,7 @@
 
     <item
         android:id="@+id/edit"
+        android:icon="@android:drawable/ic_menu_edit"
         android:title="@string/detailed_vocabulary_activity_edit_vocabulary"
-        app:showAsAction="never" />
+        app:showAsAction="always" />
 </menu>

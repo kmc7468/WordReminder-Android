@@ -147,7 +147,9 @@ public class MainActivity extends AppCompatActivity {
         if (vocabulary.hasVocabulary()) return true;
 
         try {
+            Toast.makeText(this, "단어장로드시작" + LocalDateTime.now().toString(), Toast.LENGTH_SHORT).show();
             vocabulary.loadVocabulary();
+            Toast.makeText(this, "단어장로드완료" + LocalDateTime.now().toString(), Toast.LENGTH_SHORT).show();
 
             return true;
         } catch (final Exception e) {
@@ -280,11 +282,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             vocabularyListAdapter.setOnOpenButtonClickListener(index -> {
+                Toast.makeText(this, "이벤트인식" + LocalDateTime.now().toString(), Toast.LENGTH_SHORT).show();
+
                 if (!loadVocabulary(selectedVocabulary)) return;
 
                 final Intent intent = new Intent(this, DetailedVocabularyActivity.class);
 
+                Toast.makeText(this, "인텐트생성완료" + LocalDateTime.now().toString(), Toast.LENGTH_SHORT).show();
                 intent.putExtra("vocabulary", selectedVocabulary.serialize());
+                Toast.makeText(this, "인텐트탑재완료" + LocalDateTime.now().toString(), Toast.LENGTH_SHORT).show();
 
                 openVocabularyResult.launch(intent);
             });

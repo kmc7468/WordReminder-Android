@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResult;
@@ -20,11 +21,28 @@ import com.staticom.wordreminder.adapter.DetailedWordsAdapter;
 import com.staticom.wordreminder.core.VocabularyMetadata;
 import com.staticom.wordreminder.utility.RecyclerViewEmptyObserver;
 
+import java.time.LocalDateTime;
+
 public class DetailedVocabularyActivity extends AppCompatActivity {
 
     private VocabularyMetadata vocabulary;
+    private boolean isEdited = false;
     private DetailedWordsAdapter wordsAdapter;
     private ActivityResultLauncher<Intent> editVocabularyResult;
+
+    private void setResultAndFinish() {
+        if (isEdited) {
+            final Intent intent = new Intent();
+
+            intent.putExtra("vocabulary", vocabulary.serialize());
+
+            setResult(RESULT_OK, intent);
+        } else {
+            setResult(RESULT_CANCELED);
+        }
+
+        finish();
+    }
 
     private void updateVocabulary(ActivityResult result) {
         if (result.getResultCode() != RESULT_OK) return;
@@ -36,6 +54,8 @@ public class DetailedVocabularyActivity extends AppCompatActivity {
         //this.vocabulary.setTime(vocabulary.getTime()); TODO
 
         wordsAdapter.notifyDataSetChanged();
+
+        isEdited = true;
     }
 
     @Override
@@ -44,19 +64,17 @@ public class DetailedVocabularyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detailed_vocabulary);
         setTitle(R.string.detailed_vocabulary_activity_title);
 
+        Toast.makeText(getApplicationContext(), "onCreated호출" + LocalDateTime.now().toString(), Toast.LENGTH_SHORT).show();
+
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                final Intent intent = new Intent();
-
-                intent.putExtra("vocabulary", vocabulary.serialize());
-
-                setResult(RESULT_OK, intent);
-                finish();
+                setResultAndFinish();
             }
         });
 
         vocabulary = VocabularyMetadata.deserialize(getIntent().getSerializableExtra("vocabulary"));
+        Toast.makeText(getApplicationContext(), "단어장저장완료" + LocalDateTime.now().toString(), Toast.LENGTH_SHORT).show();
 
         wordsAdapter = new DetailedWordsAdapter(vocabulary);
 
@@ -81,6 +99,12 @@ public class DetailedVocabularyActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            setResultAndFinish();
+
+            return true;
+        }
+
         if (item.getItemId() == R.id.edit) {
             final Intent intent = new Intent(this, VocabularyActivity.class);
 

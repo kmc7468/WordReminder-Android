@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/relationEditMenus"
+        android:visible="false">
+        <item
+            android:id="@+id/changeWord"
+            android:title="@string/relations_activity_change_word"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/rename"
+            android:title="@string/relations_activity_rename_relation"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/delete"
+            android:icon="@android:drawable/ic_menu_delete"
+            android:title="@string/relations_activity_delete_relation"
+            app:showAsAction="always" />
+    </group>
+</menu>

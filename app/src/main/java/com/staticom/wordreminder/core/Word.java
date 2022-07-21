@@ -1,5 +1,7 @@
 package com.staticom.wordreminder.core;
 
+import android.util.Pair;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,6 +13,7 @@ public class Word implements Serializable {
     private Vocabulary vocabulary;
     private String word;
     private final List<Meaning> meanings = new ArrayList<>();
+    private final List<Pair<Word, String>> relations = new ArrayList<>();
 
     public Word(String word) {
         this.word = word;
@@ -88,6 +91,10 @@ public class Word implements Serializable {
         return false;
     }
 
+    private static List<String> makeUnique(List<String> list) {
+        return list.stream().distinct().collect(Collectors.toList());
+    }
+
     public Meaning mergeMeanings() {
         return mergeMeanings(", ", ", ", ", ");
     }
@@ -118,7 +125,23 @@ public class Word implements Serializable {
         return new Meaning(this, mergedMeanings, mergedPronunciations, mergedExamples);
     }
 
-    private static List<String> makeUnique(List<String> list) {
-        return list.stream().distinct().collect(Collectors.toList());
+    public boolean hasRelation() {
+        return !relations.isEmpty();
+    }
+
+    public Pair<Word, String> getRelation(int index) {
+        return relations.get(index);
+    }
+
+    public List<Pair<Word, String>> getRelations() {
+        return Collections.unmodifiableList(relations);
+    }
+
+    public void addRelation(Word word, String relation) {
+        relations.add(new Pair<>(word, relation));
+    }
+
+    public void removeRelation(int index) {
+        relations.remove(index);
     }
 }
