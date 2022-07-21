@@ -218,29 +218,8 @@ public class VocabularyActivity extends AppCompatActivity {
     }
 
     private void searchWord(String query) {
-        final String queryLowerCase = query.toLowerCase();
-        final Vocabulary searchResult = new Vocabulary();
-
-        for (final Word word : originalVocabulary.getVocabulary().getWords()) {
-            if (word.getWord().toLowerCase().contains(queryLowerCase)) {
-                searchResult.addWordRef(word);
-
-                continue;
-            }
-
-            for (final Meaning meaning : word.getMeanings()) {
-                if (meaning.getMeaning().toLowerCase().contains(queryLowerCase) ||
-                        meaning.getPronunciation().toLowerCase().contains(queryLowerCase) ||
-                        meaning.getExample().toLowerCase().contains(queryLowerCase)) {
-                    searchResult.addWordRef(word);
-
-                    break;
-                }
-            }
-        }
-
         vocabularyFragment.setWordsTextFormat(getString(R.string.vocabulary_activity_words_search_result));
-        vocabularyFragment.setVocabulary(new VocabularyMetadata(query, searchResult));
+        vocabularyFragment.setVocabulary(new VocabularyMetadata(query, originalVocabulary.getVocabulary().search(query)));
     }
 
     @Override

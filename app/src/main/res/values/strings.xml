@@ -155,6 +155,10 @@
     <string name="vocabulary_activity_tags_hint">태그를 선택하세요.</string>
     <string name="vocabulary_activity_selected_tags">선택된 태그: %1$s</string>
 
+    <string name="vocabulary_viewer_activity_search">단어 검색하기</string>
+    <string name="vocabulary_viewer_activity_search_hint">검색...</string>
+    <string name="vocabulary_viewer_activity_words_search_result"><![CDATA[<b>%1$s의 검색 결과</b> (%2$d개)]]></string>
+
     <string name="vocabulary_fragment_empty_words">단어가 없습니다.</string>
     <string name="vocabulary_fragment_empty_meanings">단어를 선택해 주세요.</string>
 </resources>
