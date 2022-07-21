@@ -162,8 +162,12 @@ public class MainActivity extends AppCompatActivity {
         if (result.getResultCode() != RESULT_OK) return;
 
         final Intent intent = result.getData();
+        final VocabularyMetadata vocabulary = VocabularyMetadata.deserialize(intent.getSerializableExtra("vocabulary"));
 
-        selectedVocabulary.setVocabulary((Vocabulary)intent.getSerializableExtra("vocabulary"));
+        selectedVocabulary.setVocabulary(vocabulary.getVocabulary());
+        //selectedVocabulary.setTime(vocabulary.getTime()); TODO
+
+        vocabularyListAdapter.notifyItemChanged(vocabularyListAdapter.getSelectedIndex());
     }
 
     private String getFilenameFromUri(Uri uri) {

@@ -82,7 +82,7 @@ public class VocabularyActivity extends AppCompatActivity {
 
             final Intent intent = new Intent();
 
-            intent.putExtra("vocabulary", originalVocabulary.getVocabulary());
+            intent.putExtra("vocabulary", originalVocabulary.serialize());
 
             setResult(RESULT_OK, intent);
         } else {
