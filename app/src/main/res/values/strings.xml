@@ -30,6 +30,9 @@
     <string name="detailed_vocabulary_activity_title">단어장 보기</string>
     <string name="detailed_vocabulary_activity_empty_words">단어장이 비어있습니다.</string>
     <string name="detailed_vocabulary_activity_edit_vocabulary">단어장 수정하기</string>
+    <string name="detailed_vocabulary_activity_hide_word">단어 가리기</string>
+    <string name="detailed_vocabulary_activity_hide_meanings">뜻 가리기</string>
+    <string name="detailed_vocabulary_activity_hide_hints">힌트 가리기</string>
 
     <string name="main_activity_title">단어장 목록</string>
     <string name="main_activity_menu_delete">단어장 삭제하기</string>

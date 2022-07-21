@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResult;
@@ -88,5 +90,17 @@ public class DetailedVocabularyActivity extends AppCompatActivity {
 
             return true;
         } else return super.onOptionsItemSelected(item);
+    }
+
+    public void onHideWordClick(View view) {
+        wordsAdapter.setShouldHideWord(((CheckBox)view).isChecked());
+    }
+
+    public void onHideMeaningsClick(View view) {
+        wordsAdapter.setShouldHideMeanings(((CheckBox)view).isChecked());
+    }
+
+    public void onHideHintsClick(View view) {
+        wordsAdapter.setShouldHideHints(((CheckBox)view).isChecked());
     }
 }

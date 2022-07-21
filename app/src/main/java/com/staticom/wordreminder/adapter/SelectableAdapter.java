@@ -18,6 +18,10 @@ public abstract class SelectableAdapter extends RecyclerView.Adapter<SelectableA
         void onItemSelected(View view, int index);
     }
 
+    public interface OnViewHolderUpdatedListener {
+        void onViewHolderUpdated(ViewHolder viewHolder);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public ViewHolder(View view) {
@@ -43,6 +47,12 @@ public abstract class SelectableAdapter extends RecyclerView.Adapter<SelectableA
 
     public SelectableAdapter(@LayoutRes int itemId) {
         this.itemId = itemId;
+    }
+
+    public void updateViewHolders(OnViewHolderUpdatedListener onViewHolderUpdatedListener) {
+        for (ViewHolder viewHolder : viewHolders) {
+            onViewHolderUpdatedListener.onViewHolderUpdated(viewHolder);
+        }
     }
 
     public int getSelectedIndex() {
