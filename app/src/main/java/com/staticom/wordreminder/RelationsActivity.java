@@ -42,15 +42,19 @@ public class RelationsActivity extends AppCompatActivity {
     private EditText relation;
     private ActivityResultLauncher<Intent> selectWordResult;
 
-    private void setResultAndFinish() {
-        if (isEdited) {
-            final Intent intent = new Intent();
+    private void setResultAndFinish(Word relatedWord) {
+        final Intent intent = new Intent();
 
+        if (relatedWord != null) {
+            intent.putExtra("relatedWord", vocabulary.indexOfWord(relatedWord.getWord()));
+        }
+
+        if (isEdited) {
             intent.putExtra("vocabulary", vocabulary);
 
             setResult(RESULT_OK, intent);
         } else {
-            setResult(RESULT_CANCELED);
+            setResult(RESULT_CANCELED, intent);
         }
 
         finish();
@@ -114,7 +118,7 @@ public class RelationsActivity extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                setResultAndFinish();
+                setResultAndFinish(null);
             }
         });
 
@@ -134,24 +138,7 @@ public class RelationsActivity extends AppCompatActivity {
             }
         });
         relationsAdapter.setOnSearchButtonClickListener(index -> {
-            /*final Intent intent = new Intent(this, VocabularyViewerActivity.class);
-
-            intent.putExtra("title", String.format(
-                    getString(R.string.tag_manager_activity_words_and_meanings_with_tag),
-                    selectedTag.getTag()));
-
-            intent.putExtra("wordsTextFormat", getString(R.string.tag_manager_activity_words_with_tag));
-            intent.putExtra("defaultMeaningsText", getString(R.string.tag_manager_activity_meanings_with_tag_empty));
-            intent.putExtra("meaningsTextFormat", getString(R.string.tag_manager_activity_meanings_with_tag));
-
-            final VocabularyMetadata vocabulary = new VocabularyMetadata(selectedTag.getTag(), null, null);
-
-            vocabulary.setVocabulary(selectedTag.makeVocabulary());
-
-            intent.putExtra("vocabulary", vocabulary.serialize());
-
-            startActivity(intent);*/
-            // TODO
+            setResultAndFinish(selectedRelation.getWord());
         });
 
         final RecyclerView relations = findViewById(R.id.relations);
@@ -265,7 +252,7 @@ public class RelationsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            setResultAndFinish();
+            setResultAndFinish(null);
 
             return true;
         }

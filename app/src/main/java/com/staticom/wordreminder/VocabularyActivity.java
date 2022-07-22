@@ -125,6 +125,7 @@ public class VocabularyActivity extends AppCompatActivity {
         if (result.getResultCode() != RESULT_OK) return;
 
         final Intent intent = result.getData();
+
         final Vocabulary newVocabulary = (Vocabulary)intent.getSerializableExtra("vocabulary");
 
         originalVocabulary.setVocabulary(newVocabulary);
@@ -147,6 +148,21 @@ public class VocabularyActivity extends AppCompatActivity {
         }
 
         edited();
+    }
+
+    private void updateVocabularyAndSelectWord(ActivityResult result) {
+        if (result.getResultCode() != RESULT_OK && result.getResultCode() != RESULT_CANCELED)
+            return;
+
+        updateVocabulary(result);
+
+        final Intent intent = result.getData();
+        final int relatedWord = intent.getIntExtra("relatedWord", -1);
+
+        if (relatedWord != -1) {
+            this.vocabularyFragment.setSelectedWordAndScroll(relatedWord);
+            this.vocabularyFragment.notifyMeaningsUpdated();
+        }
     }
 
     @Override
@@ -197,7 +213,7 @@ public class VocabularyActivity extends AppCompatActivity {
             this.vocabularyFragment.setVocabulary(originalVocabulary);
         }
 
-        manageRelationsResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::updateVocabulary);
+        manageRelationsResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::updateVocabularyAndSelectWord);
         tagManagerResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::updateVocabulary);
     }
 
@@ -520,6 +536,17 @@ public class VocabularyActivity extends AppCompatActivity {
 
             return true;
         } else return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        final int selectedWord = getIntent().getIntExtra("selectedWord", -1);
+        if (selectedWord != -1) {
+            this.vocabularyFragment.setSelectedWordAndScroll(selectedWord);
+            this.vocabularyFragment.notifyMeaningsUpdated();
+        }
     }
 
     public void onAddClick(View view) {

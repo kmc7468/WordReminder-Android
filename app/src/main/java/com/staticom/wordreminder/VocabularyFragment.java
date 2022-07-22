@@ -25,6 +25,7 @@ public class VocabularyFragment extends Fragment {
 
     private TextView wordsText;
     private String wordsTextFormat;
+    private RecyclerView words;
     private final WordsAdapter wordsAdapter = new WordsAdapter(null);
     private SelectableAdapter.OnItemSelectedListener onWordSelectedListener;
 
@@ -61,10 +62,10 @@ public class VocabularyFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_vocabulary, container, false);
 
-        final RecyclerView words = view.findViewById(R.id.words);
-        final RecyclerView meanings = view.findViewById(R.id.meanings);
-
         wordsText = view.findViewById(R.id.wordsText);
+        words = view.findViewById(R.id.words);
+
+        final RecyclerView meanings = view.findViewById(R.id.meanings);
 
         words.setLayoutManager(new LinearLayoutManager(view.getContext()));
         words.setAdapter(wordsAdapter);
@@ -179,6 +180,12 @@ public class VocabularyFragment extends Fragment {
 
     public void setSelectedWord(int index) {
         wordsAdapter.setSelectedIndex(index);
+    }
+
+    public void setSelectedWordAndScroll(int index) {
+        setSelectedWord(index);
+
+        words.scrollToPosition(index);
     }
 
     public void notifyWordAdded() {

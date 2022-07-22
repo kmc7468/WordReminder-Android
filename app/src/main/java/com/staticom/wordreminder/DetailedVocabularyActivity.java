@@ -6,7 +6,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResult;
@@ -21,13 +20,12 @@ import com.staticom.wordreminder.adapter.DetailedWordsAdapter;
 import com.staticom.wordreminder.core.VocabularyMetadata;
 import com.staticom.wordreminder.utility.RecyclerViewEmptyObserver;
 
-import java.time.LocalDateTime;
-
 public class DetailedVocabularyActivity extends AppCompatActivity {
 
     private VocabularyMetadata vocabulary;
     private boolean isEdited = false;
     private DetailedWordsAdapter wordsAdapter;
+
     private ActivityResultLauncher<Intent> editVocabularyResult;
 
     private void setResultAndFinish() {
@@ -109,6 +107,7 @@ public class DetailedVocabularyActivity extends AppCompatActivity {
             final Intent intent = new Intent(this, VocabularyActivity.class);
 
             intent.putExtra("vocabulary", vocabulary.serialize());
+            intent.putExtra("selectedWord", wordsAdapter.getSelectedIndex());
 
             editVocabularyResult.launch(intent);
 
