@@ -8,4 +8,10 @@
         android:title="@string/vocabulary_viewer_activity_search"
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="always|collapseActionView" />
+    <item
+        android:id="@+id/select"
+        android:icon="@android:drawable/ic_menu_send"
+        android:title="@string/vocabulary_viewer_activity_select"
+        android:visible="false"
+        app:showAsAction="always" />
 </menu>

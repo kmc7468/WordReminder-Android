@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -15,8 +16,27 @@ import com.staticom.wordreminder.core.VocabularyMetadata;
 
 public class VocabularyViewerActivity extends AppCompatActivity {
 
+    private Menu menu;
+    private boolean isSelectMode = false;
+
     private VocabularyMetadata vocabulary;
     private VocabularyFragment vocabularyFragment;
+
+    private void setResultAndFinish() {
+        if (isSelectMode) {
+            if (vocabularyFragment.getSelectedWordIndex() != -1) {
+                final Intent intent = new Intent();
+
+                intent.putExtra("selectedWord", vocabularyFragment.getSelectedWord().getWord());
+
+                setResult(RESULT_OK, intent);
+            } else {
+                setResult(RESULT_CANCELED);
+            }
+        }
+
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +47,12 @@ public class VocabularyViewerActivity extends AppCompatActivity {
         setTitle(intent.getStringExtra("title"));
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                setResultAndFinish();
+            }
+        });
 
         vocabulary = VocabularyMetadata.deserialize(intent.getSerializableExtra("vocabulary"));
 
@@ -48,6 +74,14 @@ public class VocabularyViewerActivity extends AppCompatActivity {
             transaction.add(R.id.vocabulary, this.vocabularyFragment, "vocabularyFragment");
             transaction.commit();
         }
+
+        if (intent.getBooleanExtra("isSelectMode", false)) {
+            isSelectMode = true;
+
+            this.vocabularyFragment.setOnWordSelectedListener((view, index) -> {
+                menu.findItem(R.id.select).setVisible(true);
+            });
+        }
     }
 
     private void searchWord(String query) {
@@ -58,6 +92,9 @@ public class VocabularyViewerActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_vocabulary_viewer_activity, menu);
+
+        this.menu = menu;
+
         final SearchView searchWord = (SearchView)menu.findItem(R.id.searchWord).getActionView();
 
         searchWord.setQueryHint(getString(R.string.vocabulary_viewer_activity_search_hint));
@@ -66,6 +103,10 @@ public class VocabularyViewerActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchWord(query.trim());
+
+                if (isSelectMode && vocabularyFragment.getSelectedWordIndex() == -1) {
+                    menu.findItem(R.id.select).setVisible(false);
+                }
 
                 return true;
             }
@@ -89,11 +130,15 @@ public class VocabularyViewerActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish();
+            setResultAndFinish();
 
             return true;
         }
 
-        return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.select) {
+            setResultAndFinish();
+
+            return true;
+        } else return super.onOptionsItemSelected(item);
     }
 }

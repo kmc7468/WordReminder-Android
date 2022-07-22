@@ -1,7 +1,5 @@
 package com.staticom.wordreminder.core;
 
-import android.util.Pair;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,7 +11,7 @@ public class Word implements Serializable {
     private Vocabulary vocabulary;
     private String word;
     private final List<Meaning> meanings = new ArrayList<>();
-    private final List<Pair<Word, String>> relations = new ArrayList<>();
+    private final List<Relation> relations = new ArrayList<>();
 
     public Word(String word) {
         this.word = word;
@@ -129,16 +127,24 @@ public class Word implements Serializable {
         return !relations.isEmpty();
     }
 
-    public Pair<Word, String> getRelation(int index) {
+    public boolean containsRelation(Word word) {
+        for (Relation relation : relations) {
+            if (relation.getWord().getWord().equals(word.getWord())) return true;
+        }
+
+        return false;
+    }
+
+    public Relation getRelation(int index) {
         return relations.get(index);
     }
 
-    public List<Pair<Word, String>> getRelations() {
+    public List<Relation> getRelations() {
         return Collections.unmodifiableList(relations);
     }
 
     public void addRelation(Word word, String relation) {
-        relations.add(new Pair<>(word, relation));
+        relations.add(new Relation(word, relation));
     }
 
     public void removeRelation(int index) {

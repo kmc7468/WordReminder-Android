@@ -1,7 +1,5 @@
 package com.staticom.wordreminder.core;
 
-import android.util.Pair;
-
 import com.staticom.wordreminder.utility.BinaryStream;
 
 import java.io.ByteArrayOutputStream;
@@ -220,9 +218,9 @@ public class Vocabulary implements Serializable {
             for (final Word word : words) {
                 containerStream.writeInt(word.getRelations().size());
 
-                for (final Pair<Word, String> relation : word.getRelations()) {
-                    containerStream.writeInt(words.indexOf(relation.first));
-                    containerStream.writeString(relation.second);
+                for (final Relation relation : word.getRelations()) {
+                    containerStream.writeInt(words.indexOf(relation.getWord()));
+                    containerStream.writeString(relation.getRelation());
                 }
             }
         });

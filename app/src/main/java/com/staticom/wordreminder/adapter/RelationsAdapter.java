@@ -9,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.staticom.wordreminder.R;
+import com.staticom.wordreminder.core.Relation;
 import com.staticom.wordreminder.core.Word;
 
 public class RelationsAdapter extends SelectableAdapter {
@@ -92,9 +93,9 @@ public class RelationsAdapter extends SelectableAdapter {
         super.onBindViewHolder(viewHolder, position);
 
         final RelationsAdapter.ViewHolder myViewHolder = (RelationsAdapter.ViewHolder)viewHolder;
-        final Pair<Word, String> relation = word.getRelation(position);
+        final Relation relation = word.getRelation(position);
 
-        myViewHolder.word.setText(relation.first.getWord());
-        myViewHolder.relation.setText(relation.second);
+        myViewHolder.word.setText(relation.getWord().getWord());
+        myViewHolder.relation.setText(relation.getRelation());
     }
 }

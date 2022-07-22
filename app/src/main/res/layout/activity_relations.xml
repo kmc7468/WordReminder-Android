@@ -43,7 +43,7 @@
         tools:visibility="visible" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/relation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"

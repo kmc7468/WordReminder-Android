@@ -85,14 +85,19 @@
     <string name="question_activity_success_save_vocabulary_for_wrong_answers">오답노트를 저장했습니다.</string>
 
     <string name="relations_activity_title">관계 관리하기</string>
-    <string name="relations_activity_relations"><![CDATA[<b>%1$s의 관계 목록</b> (%2$d개)]]></string>
-    <string name="relations_activity_empty_relations">관계가 없습니다.</string>
+    <string name="relations_activity_title_edited">관계 관리하기 *</string>
     <string name="relations_activity_delete_relation">관계 삭제하기</string>
     <string name="relations_activity_ask_delete_relation">관계를 정말 삭제할까요? 삭제된 관계는 복구할 수 없으며, 관련된 단어는 삭제되지 않습니다.</string>
     <string name="relations_activity_change_word">관련된 단어 바꾸기</string>
     <string name="relations_activity_rename_relation">관계 이름 바꾸기</string>
-    <string name="relations_activity_new_relation_word">단어를 선택하세요.</string>
+    <string name="relations_activity_error_empty_relation">관계 이름은 비어있을 수 없습니다.</string>
+    <string name="relations_activity_relations"><![CDATA[<b>%1$s의 관계 목록</b> (%2$d개)]]></string>
+    <string name="relations_activity_empty_relations">관계가 없습니다.</string>
     <string name="relations_activity_new_relation_relation">관계 이름...</string>
+    <string name="relations_activity_select_word">%1$s의 %2$s 관계의 단어 선택하기</string>
+    <string name="relations_activity_selectable_words"><![CDATA[<b>선택 가능한 단어 목록</b> (%2$d개)]]></string>
+    <string name="relations_activity_meanings"><![CDATA[<b>%2$s의 뜻 목록</b> (%3$d개)]]></string>
+    <string name="relations_activity_meanings_empty"><![CDATA[<b>뜻 목록</b>]]></string>
 
     <string name="tag_manager_activity_title">태그 매니저</string>
     <string name="tag_manager_activity_title_edited">태그 매니저 *</string>
@@ -157,6 +162,7 @@
 
     <string name="vocabulary_viewer_activity_search">단어 검색하기</string>
     <string name="vocabulary_viewer_activity_search_hint">검색...</string>
+    <string name="vocabulary_viewer_activity_select">이 단어 선택하기</string>
     <string name="vocabulary_viewer_activity_words_search_result"><![CDATA[<b>%1$s의 검색 결과</b> (%2$d개)]]></string>
 
     <string name="vocabulary_fragment_empty_words">단어가 없습니다.</string>

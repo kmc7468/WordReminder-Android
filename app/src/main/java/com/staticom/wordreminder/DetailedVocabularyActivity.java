@@ -64,7 +64,7 @@ public class DetailedVocabularyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detailed_vocabulary);
         setTitle(R.string.detailed_vocabulary_activity_title);
 
-        Toast.makeText(getApplicationContext(), "onCreated호출" + LocalDateTime.now().toString(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "onCreated호출" + LocalDateTime.now().toString(), Toast.LENGTH_SHORT).show();
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -74,7 +74,7 @@ public class DetailedVocabularyActivity extends AppCompatActivity {
         });
 
         vocabulary = VocabularyMetadata.deserialize(getIntent().getSerializableExtra("vocabulary"));
-        Toast.makeText(getApplicationContext(), "단어장저장완료" + LocalDateTime.now().toString(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "단어장저장완료" + LocalDateTime.now().toString(), Toast.LENGTH_SHORT).show();
 
         wordsAdapter = new DetailedWordsAdapter(vocabulary);
 
