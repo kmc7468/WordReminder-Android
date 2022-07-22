@@ -106,7 +106,7 @@ public class QuestionActivity extends AppCompatActivity {
 
         context.setDisplayPronunciation(intent.getBooleanExtra("displayPronunciation", false));
         context.setDisplayExample(intent.getBooleanExtra("displayExample", false));
-        context.setDisableDuplication(intent.getBooleanExtra("disableDuplication", false));
+        context.setAvoidDuplication(intent.getBooleanExtra("disableDuplication", false));
 
         if (intent.getBooleanExtra("wordToMeaning", false)) {
             context.addUsableType(QuestionType.WordToMeaning.multipleChoice());

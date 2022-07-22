@@ -27,11 +27,10 @@ public class QuestionType implements Serializable {
     private final Type type;
     private final AnswerType answerType;
 
+    @StringRes
     private final int messageId;
-    private final Meaning.Component mainComponent;
-    private final EnumSet<Meaning.Component> hintsForMainComponent;
-    private final Meaning.Component answerComponent;
-    private final EnumSet<Meaning.Component> hintsForAnswerComponent;
+    private final Meaning.Component mainComponent, answerComponent;
+    private final EnumSet<Meaning.Component> hintsForMainComponent, hintsForAnswerComponent;
 
     private final List<Meaning> usedMeanings = new ArrayList<>();
 
@@ -100,7 +99,7 @@ public class QuestionType implements Serializable {
         usedMeanings.add(meaning);
     }
 
-    public void clearUsedMeanings() {
+    public void removeAllUsedMeanings() {
         usedMeanings.clear();
     }
 

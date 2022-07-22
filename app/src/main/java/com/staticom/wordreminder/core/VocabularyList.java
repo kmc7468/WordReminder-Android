@@ -22,10 +22,6 @@ public class VocabularyList {
         return Collections.unmodifiableList(vocabularyList);
     }
 
-    public VocabularyMetadata getVocabulary(int index) {
-        return vocabularyList.get(index);
-    }
-
     public boolean containsVocabulary(String name) {
         for (final VocabularyMetadata vocabulary : vocabularyList) {
             if (vocabulary.getName().equals(name)) return true;
@@ -34,17 +30,20 @@ public class VocabularyList {
         return false;
     }
 
+    public VocabularyMetadata getVocabulary(int index) {
+        return vocabularyList.get(index);
+    }
+
     public void addVocabulary(VocabularyMetadata vocabulary) {
         vocabularyList.add(vocabulary);
     }
 
     public void removeVocabulary(VocabularyMetadata vocabulary) {
         vocabularyList.remove(vocabulary);
-
         deletedVocabularyList.add(vocabulary);
     }
 
-    public void saveOrDeleteVocabulary() throws IOException {
+    public void saveAndDeleteVocabulary() throws IOException {
         for (final VocabularyMetadata vocabulary : deletedVocabularyList) {
             try {
                 Files.delete(vocabulary.getPath());

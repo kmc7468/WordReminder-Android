@@ -435,7 +435,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void writeVocabularyList() {
         try {
-            vocabularyList.saveOrDeleteVocabulary();
+            vocabularyList.saveAndDeleteVocabulary();
 
             final Path path = rootPath.resolve("vocabularyList.json");
             final JSONArray array = vocabularyList.saveToJSONArray();

@@ -239,7 +239,7 @@ public class TagManagerActivity extends AppCompatActivity {
 
         name.setText("");
 
-        vocabulary.getVocabulary().addTag(new Tag(tagName, vocabulary.getVocabulary()));
+        vocabulary.getVocabulary().addTag(new Tag(vocabulary.getVocabulary(), tagName));
         tagsAdapter.notifyItemInserted(tagsAdapter.getItemCount());
         tagsAdapter.setSelectedIndex(tagsAdapter.getItemCount() - 1);
 

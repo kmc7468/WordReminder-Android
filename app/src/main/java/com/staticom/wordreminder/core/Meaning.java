@@ -32,12 +32,6 @@ public class Meaning implements Serializable {
         this.example = example;
     }
 
-    public Meaning(Word word, String meaning, String pronunciation) {
-        this.word = word;
-        this.meaning = meaning;
-        this.pronunciation = pronunciation;
-    }
-
     public Meaning(Word word, String meaning, String pronunciation, String example) {
         this.word = word;
         this.meaning = meaning;

@@ -8,15 +8,19 @@ import java.util.List;
 
 public class Tag implements Serializable {
 
-    private String tag;
     private final Vocabulary vocabulary;
+    private String tag;
 
     private final List<Word> words = new ArrayList<>();
     private final List<Meaning> meanings = new ArrayList<>();
 
-    public Tag(String tag, Vocabulary vocabulary) {
+    public Tag(Vocabulary vocabulary, String tag) {
         this.vocabulary = vocabulary;
         this.tag = tag;
+    }
+
+    public Vocabulary getVocabulary() {
+        return vocabulary;
     }
 
     public String getTag() {
@@ -25,10 +29,6 @@ public class Tag implements Serializable {
 
     public void setTag(String tag) {
         this.tag = tag;
-    }
-
-    public Vocabulary getVocabulary() {
-        return vocabulary;
     }
 
     public List<Word> getWords() {
@@ -63,11 +63,11 @@ public class Tag implements Serializable {
     }
 
     public Vocabulary makeVocabulary() {
-        sortWords();
-
         final Vocabulary vocabulary = new Vocabulary();
 
         vocabulary.addTag(this);
+
+        sortWords();
 
         for (final Word word : words) {
             final Word wordRef = new Word(word.getWord());

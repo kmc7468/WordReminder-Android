@@ -37,10 +37,6 @@ public class Word implements Serializable {
         return Collections.unmodifiableList(meanings);
     }
 
-    public Meaning getMeaning(int index) {
-        return meanings.get(index);
-    }
-
     public boolean containsMeaning(String meaning) {
         return findMeaning(meaning) != null;
     }
@@ -51,6 +47,10 @@ public class Word implements Serializable {
         }
 
         return null;
+    }
+
+    public Meaning getMeaning(int index) {
+        return meanings.get(index);
     }
 
     public Meaning addMeaning(Meaning meaning) {
@@ -100,9 +100,9 @@ public class Word implements Serializable {
     public Meaning mergeMeanings(String meaningDelimiter, String pronunciationDelimiter, String exampleDelimiter) {
         if (meanings.size() == 1) return getMeaning(0);
 
-        final List<String> meanings = new ArrayList<>();
-        final List<String> pronunciations = new ArrayList<>();
-        final List<String> examples = new ArrayList<>();
+        final List<String> meanings = new ArrayList<>(),
+                pronunciations = new ArrayList<>(),
+                examples = new ArrayList<>();
 
         for (final Meaning meaning : this.meanings) {
             meanings.add(meaning.getMeaning());
@@ -116,11 +116,15 @@ public class Word implements Serializable {
             }
         }
 
-        final String mergedMeanings = String.join(", ", meanings);
-        final String mergedPronunciations = String.join(", ", makeUnique(pronunciations));
-        final String mergedExamples = String.join(", ", makeUnique(examples));
+        final String mergedMeaning = String.join(meaningDelimiter, meanings);
+        final String mergedPronunciation = String.join(pronunciationDelimiter, makeUnique(pronunciations));
+        final String mergedExample = String.join(exampleDelimiter, makeUnique(examples));
 
-        return new Meaning(this, mergedMeanings, mergedPronunciations, mergedExamples);
+        return new Meaning(this, mergedMeaning, mergedPronunciation, mergedExample);
+    }
+
+    public List<Relation> getRelations() {
+        return Collections.unmodifiableList(relations);
     }
 
     public boolean hasRelation() {
@@ -141,10 +145,6 @@ public class Word implements Serializable {
 
     public Relation getRelation(int index) {
         return relations.get(index);
-    }
-
-    public List<Relation> getRelations() {
-        return Collections.unmodifiableList(relations);
     }
 
     public void addRelation(Word word, String relation) {

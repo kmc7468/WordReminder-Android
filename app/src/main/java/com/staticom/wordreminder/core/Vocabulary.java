@@ -39,8 +39,12 @@ public class Vocabulary implements Serializable {
         return Collections.unmodifiableList(words);
     }
 
-    public Word getWord(int index) {
-        return words.get(index);
+    public boolean containsWord(String word) {
+        return indexOfWord(word) != -1;
+    }
+
+    public boolean containsWord(Word word) {
+        return words.contains(word);
     }
 
     public int indexOfWord(String word) {
@@ -51,16 +55,12 @@ public class Vocabulary implements Serializable {
         return -1;
     }
 
-    public boolean containsWord(String word) {
-        return indexOfWord(word) != -1;
-    }
-
-    public boolean containsWord(Word word) {
-        return words.contains(word);
-    }
-
     public Word findWord(String word) {
         return words.get(indexOfWord(word));
+    }
+
+    public Word getWord(int index) {
+        return words.get(index);
     }
 
     public void addWord(Word word) {
@@ -81,7 +81,7 @@ public class Vocabulary implements Serializable {
         words.remove(word);
     }
 
-    public int getAmountOfMeanings() {
+    public int getMeaningCount() {
         int result = 0;
 
         for (final Word word : words) {
@@ -95,16 +95,16 @@ public class Vocabulary implements Serializable {
         return Collections.unmodifiableList(tags);
     }
 
-    public Tag getTag(int index) {
-        return tags.get(index);
-    }
-
     public boolean containsTag(String tag) {
         for (final Tag t : tags) {
             if (t.getTag().equals(tag)) return true;
         }
 
         return false;
+    }
+
+    public Tag getTag(int index) {
+        return tags.get(index);
     }
 
     public void addTag(Tag tag) {
@@ -120,13 +120,13 @@ public class Vocabulary implements Serializable {
     }
 
     private static void writeContainer(BinaryStream fileStream,
-                                       ContainerId id, boolean require, ContainerWriter writer) throws IOException {
+                                       ContainerId id, boolean require, ContainerWriter containerWriter) throws IOException {
         if (!require) return;
 
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final BinaryStream containerStream = new BinaryStream(stream);
 
-        writer.write(containerStream);
+        containerWriter.write(containerStream);
 
         final byte[] bytes = stream.toByteArray();
 
@@ -231,9 +231,9 @@ public class Vocabulary implements Serializable {
     }
 
     private static boolean readContainer(BinaryStream fileStream, boolean read,
-                                         ContainerId id, ContainerId realId, ContainerReader reader) throws IOException {
+                                         ContainerId id, ContainerId realId, ContainerReader containerReader) throws IOException {
         if (id == realId) {
-            reader.read(fileStream);
+            containerReader.read(fileStream);
 
             return true;
         } else return read;
@@ -241,25 +241,24 @@ public class Vocabulary implements Serializable {
 
     public static Vocabulary readFromFileStream(FileInputStream stream) throws IOException {
         final BinaryStream fileStream = new BinaryStream(stream);
-
         final Vocabulary vocabulary = new Vocabulary();
 
         final int wordCount = fileStream.readInt();
         for (int i = 0; i < wordCount; ++i) {
             final Word word = new Word(fileStream.readString());
-
             final String pronunciation = fileStream.readString();
             final String meaning = fileStream.readString();
 
             word.addMeaning(new Meaning(meaning, pronunciation));
+
             vocabulary.addWord(word);
         }
 
-        int containerCount;
+        final int containerCount;
 
         try {
             containerCount = fileStream.readInt();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return vocabulary;
         }
 
@@ -293,7 +292,7 @@ public class Vocabulary implements Serializable {
             read = readContainer(fileStream, read, ContainerId.TAG_CONTAINER, id, containerStream -> {
                 final int tagCount = containerStream.readInt();
                 for (int j = 0; j < tagCount; ++j) {
-                    vocabulary.tags.add(new Tag(containerStream.readString(), vocabulary));
+                    vocabulary.tags.add(new Tag(vocabulary, containerStream.readString()));
                 }
 
                 for (final Word word : vocabulary.words) {

@@ -44,6 +44,7 @@ public class VocabularyMetadata {
 
     public VocabularyMetadata(String name, Vocabulary vocabulary) {
         this.name = name;
+
         this.vocabulary = vocabulary;
     }
 

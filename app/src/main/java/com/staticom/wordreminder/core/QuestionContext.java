@@ -18,16 +18,16 @@ public class QuestionContext {
     private final Random random = new Random();
 
     private final VocabularyMetadata vocabulary;
-    private final int amountOfMeanings;
+    private final int meaningCount;
     private final List<QuestionType> usableTypes = new ArrayList<>();
 
     private boolean displayPronunciation = false;
     private boolean displayExample = false;
-    private boolean disableDuplication = false;
+    private boolean avoidDuplication = false;
 
     public QuestionContext(VocabularyMetadata vocabulary) {
         this.vocabulary = vocabulary;
-        amountOfMeanings = vocabulary.getVocabulary().getAmountOfMeanings();
+        meaningCount = vocabulary.getVocabulary().getMeaningCount();
     }
 
     public VocabularyMetadata getVocabulary() {
@@ -58,12 +58,8 @@ public class QuestionContext {
         this.displayExample = displayExample;
     }
 
-    public boolean shouldDisableDuplication() {
-        return disableDuplication;
-    }
-
-    public void setDisableDuplication(boolean disableDuplication) {
-        this.disableDuplication = disableDuplication;
+    public void setAvoidDuplication(boolean avoidDuplication) {
+        this.avoidDuplication = avoidDuplication;
     }
 
     private <T> T loop(LoopBody<T> body) throws Exception {
@@ -87,15 +83,14 @@ public class QuestionContext {
         final QuestionType type = getRandomUsableType();
         final Meaning answer = loop(result -> {
             final Meaning meaning = getRandomMeaning();
-
             if (type.isUsableForAnswer(meaning)) {
-                if (disableDuplication) {
+                if (avoidDuplication) {
                     if (type.getUsedMeanings().contains(meaning)) return false;
 
                     type.addUsedMeaning(meaning);
 
-                    if (type.getUsedMeanings().size() == amountOfMeanings) {
-                        type.clearUsedMeanings();
+                    if (type.getUsedMeanings().size() == meaningCount) { //TODO
+                        type.removeAllUsedMeanings();
                     }
                 }
 
@@ -105,21 +100,22 @@ public class QuestionContext {
             } else return false;
         });
 
-        Meaning[] choices = null;
+        final Meaning[] choices;
 
-        if (type.getAnswerType() == QuestionType.AnswerType.MULTIPLE_CHOICE) {
+        if (type.getAnswerType() != QuestionType.AnswerType.MULTIPLE_CHOICE) {
+            choices = null;
+        } else {
             choices = new Meaning[] { answer, null, null, null, null };
 
             for (int i = 1; i < 5; ++i) {
                 final int finalI = i;
-                final Meaning[] finalChoices = choices;
 
                 choices[i] = loop(result -> {
                     final Meaning meaning = getRandomMeaning();
                     if (!type.isUsableForAnswer(meaning)) return false;
 
                     for (int j = 0; j < finalI; ++j) {
-                        if (type.isDuplicatedForAnswer(finalChoices[j], meaning)) return false;
+                        if (type.isDuplicatedForAnswer(choices[j], meaning)) return false;
                     }
 
                     result.set(meaning);
