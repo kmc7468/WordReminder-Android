@@ -262,6 +262,7 @@ public class VocabularyFragment extends Fragment {
         if (getSelectedWordIndex() != -1) {
             meaningsAdapter.setWord(getSelectedWord());
 
+            notifySelectedWordUpdated();
             notifyMeaningsUpdated();
         }
     }

@@ -85,7 +85,7 @@ public class WordsAdapter extends SelectableAdapter {
                     return String.format(
                             viewHolder.itemView.getContext().getString(R.string.words_adapter_relation),
                             relation.getWord().getWord(), relation.getRelation());
-                }).collect(Collectors.joining("\n")),
+                }).collect(Collectors.joining("<br>")),
                 HtmlCompat.FROM_HTML_MODE_LEGACY));
 
         if (myViewHolder.itemView.isActivated()) {

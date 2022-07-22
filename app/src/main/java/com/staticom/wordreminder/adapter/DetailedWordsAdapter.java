@@ -7,11 +7,14 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.text.HtmlCompat;
 
 import com.staticom.wordreminder.R;
 import com.staticom.wordreminder.core.Meaning;
 import com.staticom.wordreminder.core.VocabularyMetadata;
 import com.staticom.wordreminder.core.Word;
+
+import java.util.stream.Collectors;
 
 public class DetailedWordsAdapter extends SelectableAdapter {
 
@@ -32,6 +35,9 @@ public class DetailedWordsAdapter extends SelectableAdapter {
         private boolean hasExamples;
         private final TextView examples;
         private final Animation examplesOpenAnimation, examplesCloseAnimation;
+        private boolean hasRelation;
+        private final TextView relations;
+        private final Animation relationsOpenAnimation, relationsCloseAnimation;
 
         public ViewHolder(Context applicationContext, View view) {
             super(view);
@@ -53,6 +59,9 @@ public class DetailedWordsAdapter extends SelectableAdapter {
             examples = view.findViewById(R.id.examples);
             examplesOpenAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.tv_open);
             examplesCloseAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.tv_close);
+            relations = view.findViewById(R.id.relations);
+            relationsOpenAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.tv_open);
+            relationsCloseAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.tv_close);
         }
     }
 
@@ -95,6 +104,7 @@ public class DetailedWordsAdapter extends SelectableAdapter {
         myViewHolder.pronunciations.clearAnimation();
         myViewHolder.meaningsAndExamples.clearAnimation();
         myViewHolder.examples.clearAnimation();
+        myViewHolder.relations.clearAnimation();
 
         final Word word = vocabulary.getVocabulary().getWord(position);
         final Meaning mergedMeaning = word.mergeMeanings(", ", ", ", "\n");
@@ -118,6 +128,21 @@ public class DetailedWordsAdapter extends SelectableAdapter {
             myViewHolder.examples.setText(mergedMeaning.getExample());
         } else {
             myViewHolder.examples.setVisibility(View.GONE);
+        }
+
+        myViewHolder.hasRelation = word.hasRelation();
+
+        if (myViewHolder.hasRelation) {
+            myViewHolder.relations.setVisibility(shouldHideHints ? View.GONE : View.VISIBLE);
+            myViewHolder.relations.setText(HtmlCompat.fromHtml(
+                    word.getRelations().stream().map(relation -> {
+                        return String.format(
+                                viewHolder.itemView.getContext().getString(R.string.detailed_word_adapter_relation),
+                                relation.getWord().getWord(), relation.getRelation());
+                    }).collect(Collectors.joining("<br>")),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY));
+        } else {
+            myViewHolder.relations.setVisibility(View.GONE);
         }
 
         myViewHolder.wordAndPronunciations.setVisibility(shouldHideWord ? View.INVISIBLE : View.VISIBLE);
@@ -172,6 +197,14 @@ public class DetailedWordsAdapter extends SelectableAdapter {
                     myViewHolder.examples.startAnimation(shouldHideHints ?
                             myViewHolder.examplesCloseAnimation : myViewHolder.examplesOpenAnimation);
                     myViewHolder.examples.setVisibility(shouldHideMeanings ? View.GONE : View.VISIBLE);
+
+                    shouldNotify = true;
+                }
+
+                if (myViewHolder.hasRelation) {
+                    myViewHolder.relations.startAnimation(shouldHideHints ?
+                            myViewHolder.relationsCloseAnimation : myViewHolder.relationsOpenAnimation);
+                    myViewHolder.relations.setVisibility(shouldHideMeanings ? View.GONE : View.VISIBLE);
 
                     shouldNotify = true;
                 }
