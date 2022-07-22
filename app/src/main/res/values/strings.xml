@@ -96,6 +96,7 @@
     <string name="relations_activity_ask_delete_relation">관계를 정말 삭제할까요? 삭제된 관계는 복구할 수 없으며, 관련된 단어는 삭제되지 않습니다.</string>
     <string name="relations_activity_change_word">관련된 단어 바꾸기</string>
     <string name="relations_activity_rename_relation">관계 이름 바꾸기</string>
+    <string name="relations_activity_require_relation">관계 이름을 입력해 주세요.</string>
     <string name="relations_activity_error_empty_relation">관계 이름은 비어있을 수 없습니다.</string>
     <string name="relations_activity_relations"><![CDATA[<b>%1$s의 관계 목록</b> (%2$d개)]]></string>
     <string name="relations_activity_empty_relations">관계가 없습니다.</string>

@@ -22,17 +22,9 @@ public class VocabularyViewerActivity extends AppCompatActivity {
     private VocabularyMetadata vocabulary;
     private VocabularyFragment vocabularyFragment;
 
-    private void setResultAndFinish() {
+    private void setResultCanceledAndFinish() {
         if (isSelectMode) {
-            if (vocabularyFragment.getSelectedWordIndex() != -1) {
-                final Intent intent = new Intent();
-
-                intent.putExtra("selectedWord", vocabularyFragment.getSelectedWord().getWord());
-
-                setResult(RESULT_OK, intent);
-            } else {
-                setResult(RESULT_CANCELED);
-            }
+            setResult(RESULT_CANCELED);
         }
 
         finish();
@@ -50,7 +42,7 @@ public class VocabularyViewerActivity extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                setResultAndFinish();
+                setResultCanceledAndFinish();
             }
         });
 
@@ -130,13 +122,18 @@ public class VocabularyViewerActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            setResultAndFinish();
+            setResultCanceledAndFinish();
 
             return true;
         }
 
         if (item.getItemId() == R.id.select) {
-            setResultAndFinish();
+            final Intent intent = new Intent();
+
+            intent.putExtra("selectedWord", vocabularyFragment.getSelectedWord().getWord());
+
+            setResult(RESULT_OK, intent);
+            finish();
 
             return true;
         } else return super.onOptionsItemSelected(item);

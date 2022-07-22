@@ -128,11 +128,15 @@ public class Word implements Serializable {
     }
 
     public boolean containsRelation(Word word) {
-        for (Relation relation : relations) {
-            if (relation.getWord().getWord().equals(word.getWord())) return true;
+        return findRelation(word) != null;
+    }
+
+    public Relation findRelation(Word word) {
+        for (final Relation relation : relations) {
+            if (relation.getWord().getWord().equals(word.getWord())) return relation;
         }
 
-        return false;
+        return null;
     }
 
     public Relation getRelation(int index) {
@@ -149,5 +153,9 @@ public class Word implements Serializable {
 
     public void removeRelation(int index) {
         relations.remove(index);
+    }
+
+    public void removeRelation(Word word) {
+        relations.removeIf(relation -> relation.getWord().getWord().equals(word.getWord()));
     }
 }

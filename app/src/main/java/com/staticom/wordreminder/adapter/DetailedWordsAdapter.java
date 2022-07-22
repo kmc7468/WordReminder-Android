@@ -26,18 +26,13 @@ public class DetailedWordsAdapter extends SelectableAdapter {
         private final TextView word;
         private boolean hasPronunciations;
         private final TextView pronunciations;
-        private final Animation pronunciationsOpenAnimation, pronunciationsCloseAnimation;
 
         private final ConstraintLayout meaningsAndExamples;
         private final Animation meaningsAndExamplesOpenAnimation, meaningsAndExamplesCloseAnimation;
 
         private final TextView meanings;
-        private boolean hasExamples;
-        private final TextView examples;
-        private final Animation examplesOpenAnimation, examplesCloseAnimation;
-        private boolean hasRelation;
-        private final TextView relations;
-        private final Animation relationsOpenAnimation, relationsCloseAnimation;
+        private boolean hasExamples, hasRelation;
+        private final TextView examples, relations;
 
         public ViewHolder(Context applicationContext, View view) {
             super(view);
@@ -48,8 +43,6 @@ public class DetailedWordsAdapter extends SelectableAdapter {
 
             word = view.findViewById(R.id.word);
             pronunciations = view.findViewById(R.id.pronunciations);
-            pronunciationsOpenAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.tv_open);
-            pronunciationsCloseAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.tv_close);
 
             meaningsAndExamples = view.findViewById(R.id.meaningsAndExamples);
             meaningsAndExamplesOpenAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.tv_open);
@@ -57,11 +50,7 @@ public class DetailedWordsAdapter extends SelectableAdapter {
 
             meanings = view.findViewById(R.id.meanings);
             examples = view.findViewById(R.id.examples);
-            examplesOpenAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.tv_open);
-            examplesCloseAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.tv_close);
             relations = view.findViewById(R.id.relations);
-            relationsOpenAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.tv_open);
-            relationsCloseAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.tv_close);
         }
     }
 
@@ -186,24 +175,18 @@ public class DetailedWordsAdapter extends SelectableAdapter {
                 boolean shouldNotify = false;
 
                 if (myViewHolder.hasPronunciations) {
-                    myViewHolder.pronunciations.startAnimation(shouldHideHints ?
-                            myViewHolder.pronunciationsCloseAnimation : myViewHolder.pronunciationsOpenAnimation);
                     myViewHolder.pronunciations.setVisibility(shouldHideMeanings ? View.GONE : View.VISIBLE);
 
                     shouldNotify = true;
                 }
 
                 if (myViewHolder.hasExamples) {
-                    myViewHolder.examples.startAnimation(shouldHideHints ?
-                            myViewHolder.examplesCloseAnimation : myViewHolder.examplesOpenAnimation);
                     myViewHolder.examples.setVisibility(shouldHideMeanings ? View.GONE : View.VISIBLE);
 
                     shouldNotify = true;
                 }
 
                 if (myViewHolder.hasRelation) {
-                    myViewHolder.relations.startAnimation(shouldHideHints ?
-                            myViewHolder.relationsCloseAnimation : myViewHolder.relationsOpenAnimation);
                     myViewHolder.relations.setVisibility(shouldHideMeanings ? View.GONE : View.VISIBLE);
 
                     shouldNotify = true;

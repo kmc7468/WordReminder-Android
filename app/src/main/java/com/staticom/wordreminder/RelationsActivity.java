@@ -23,12 +23,14 @@ import com.staticom.wordreminder.core.Relation;
 import com.staticom.wordreminder.core.Vocabulary;
 import com.staticom.wordreminder.core.VocabularyMetadata;
 import com.staticom.wordreminder.core.Word;
+import com.staticom.wordreminder.utility.AlertDialog;
 import com.staticom.wordreminder.utility.RecyclerViewEmptyObserver;
 
 public class RelationsActivity extends AppCompatActivity {
 
     private Menu menu;
     private boolean isEdited = false;
+    private ActivityResultLauncher<Intent> changeRelatedWordResult;
 
     private Vocabulary vocabulary;
     private Word selectedWord;
@@ -52,6 +54,22 @@ public class RelationsActivity extends AppCompatActivity {
         }
 
         finish();
+    }
+
+    private void changeRelatedWord(ActivityResult result) {
+        if (result.getResultCode() != RESULT_OK) return;
+
+        final Intent intent = result.getData();
+        final Word selectedWord = vocabulary.findWord(intent.getStringExtra("selectedWord"));
+
+        selectedRelation.getWord().removeRelation(this.selectedWord);
+        selectedRelation.setWord(selectedWord);
+        selectedWord.addRelation(this.selectedWord, selectedRelation.getRelation());
+
+        relationsAdapter.notifyItemChanged(relationsAdapter.getSelectedIndex());
+
+        updateCount();
+        edited();
     }
 
     private void updateCount() {
@@ -99,6 +117,8 @@ public class RelationsActivity extends AppCompatActivity {
                 setResultAndFinish();
             }
         });
+
+        changeRelatedWordResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::changeRelatedWord);
 
         vocabulary = (Vocabulary)getIntent().getSerializableExtra("vocabulary");
         selectedWord = vocabulary.getWord(getIntent().getIntExtra("selectedWord", -1));
@@ -160,26 +180,35 @@ public class RelationsActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            setResultAndFinish();
+    private void deleteRelation() {
+        final AlertDialog dialog = new AlertDialog(this,
+                R.string.relations_activity_delete_relation,
+                R.string.relations_activity_ask_delete_relation);
 
-            return true;
-        }
+        dialog.setPositiveButton(R.string.delete, true, () -> {
+            final int selectedIndex = relationsAdapter.getSelectedIndex();
 
-        return super.onOptionsItemSelected(item);
+            selectedWord.removeRelation(selectedIndex);
+            selectedRelation.getWord().removeRelation(selectedWord);
+
+            relationsAdapter.notifyItemRemoved(selectedIndex);
+            relationsAdapter.setSelectedIndex(-1);
+
+            if (relationsAdapter.getItemCount() > selectedIndex) {
+                relationsAdapter.setSelectedIndex(selectedIndex);
+            } else if (relationsAdapter.getItemCount() > 0) {
+                relationsAdapter.setSelectedIndex(relationsAdapter.getItemCount() - 1);
+            } else {
+                selectedRelation = null;
+
+                menu.setGroupVisible(R.id.relationEditMenus, false);
+            }
+
+            edited();
+        }).setNegativeButton(R.string.cancel).show();
     }
 
-    public void onAddClick(View view) {
-        final String relation = this.relation.getText().toString().trim();
-        if (relation.isEmpty()) {
-            Toast.makeText(getApplicationContext(),
-                    R.string.relations_activity_error_empty_relation, Toast.LENGTH_SHORT).show();
-
-            return;
-        }
-
+    private Intent createIntentToSelectWord(String relation) {
         final Intent intent = new Intent(this, VocabularyViewerActivity.class);
 
         intent.putExtra("title", String.format(
@@ -204,6 +233,67 @@ public class RelationsActivity extends AppCompatActivity {
 
         intent.putExtra("vocabulary", vocabulary.serialize());
 
-        selectWordResult.launch(intent);
+        return intent;
+    }
+
+    private void renameRelation() {
+        final AlertDialog dialog = new AlertDialog(this,
+                R.string.relations_activity_rename_relation,
+                R.string.relations_activity_require_relation);
+
+        dialog.addEdit(selectedRelation.getRelation());
+        dialog.setPositiveButton(R.string.change, false, () -> {
+            final String relation = dialog.getEditText().trim();
+            if (relation.isEmpty()) {
+                Toast.makeText(getApplicationContext(),
+                        R.string.relations_activity_error_empty_relation, Toast.LENGTH_SHORT).show();
+
+                return;
+            }
+
+            selectedRelation.setRelation(relation);
+            selectedRelation.getWord().findRelation(selectedWord).setRelation(relation);
+
+            relationsAdapter.notifyItemChanged(relationsAdapter.getSelectedIndex());
+
+            edited();
+
+            dialog.dismiss();
+        }).setNegativeButton(R.string.cancel).show();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            setResultAndFinish();
+
+            return true;
+        }
+
+        if (item.getItemId() == R.id.delete) {
+            deleteRelation();
+
+            return true;
+        } else if (item.getItemId() == R.id.changeWord) {
+            changeRelatedWordResult.launch(createIntentToSelectWord(selectedRelation.getRelation()));
+
+            return true;
+        } else if (item.getItemId() == R.id.rename) {
+            renameRelation();
+
+            return true;
+        } else return super.onOptionsItemSelected(item);
+    }
+
+    public void onAddClick(View view) {
+        final String relation = this.relation.getText().toString().trim();
+        if (relation.isEmpty()) {
+            Toast.makeText(getApplicationContext(),
+                    R.string.relations_activity_error_empty_relation, Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+
+        selectWordResult.launch(createIntentToSelectWord(relation));
     }
 }
