@@ -6,11 +6,13 @@ import com.staticom.wordreminder.adapter.CheckableAdapter;
 import com.staticom.wordreminder.core.Tag;
 import com.staticom.wordreminder.core.Vocabulary;
 
-import java.util.List;
-
 public class TagsSpinner {
 
-    public static CheckableAdapter initializeTags(Spinner tags, Vocabulary vocabulary, String defaultTitleText, String titleTextFormat) {
+    public static CheckableAdapter initializeTags(Spinner tags, Vocabulary vocabulary,
+                                                  String defaultTitleText, String titleTextFormat) {
+        final CheckableAdapter adapter = new CheckableAdapter(defaultTitleText, titleTextFormat,
+                vocabulary.getTags().stream().map(Tag::getTag).toArray(String[]::new));
+
         tags.setFocusable(true);
         tags.setFocusableInTouchMode(true);
         tags.setOnFocusChangeListener((view, hasFocus) -> {
@@ -18,16 +20,6 @@ public class TagsSpinner {
                 tags.performClick();
             }
         });
-
-        final List<Tag> tagList = vocabulary.getTags();
-        final String[] tagNames = new String[tagList.size()];
-
-        for (int i = 0; i < tagList.size(); ++i) {
-            tagNames[i] = tagList.get(i).getTag();
-        }
-
-        final CheckableAdapter adapter = new CheckableAdapter(defaultTitleText, titleTextFormat, tagNames);
-
         tags.setAdapter(adapter);
 
         return adapter;

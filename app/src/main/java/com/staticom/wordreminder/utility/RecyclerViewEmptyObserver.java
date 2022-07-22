@@ -1,5 +1,6 @@
 package com.staticom.wordreminder.utility;
 
+import android.content.Context;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -13,15 +14,16 @@ public class RecyclerViewEmptyObserver extends RecyclerView.AdapterDataObserver 
 
     private final RecyclerView recyclerView;
     private final TextView emptyTextView;
-
-    private final Animation tvOpen, tvClose;
+    private final Animation emptyTextViewOpenAnimation, emptyTextViewCloseAnimation;
 
     public RecyclerViewEmptyObserver(RecyclerView recyclerView, TextView emptyTextView) {
         this.recyclerView = recyclerView;
         this.emptyTextView = emptyTextView;
 
-        tvOpen = AnimationUtils.loadAnimation(recyclerView.getContext().getApplicationContext(), R.anim.tv_open);
-        tvClose = AnimationUtils.loadAnimation(recyclerView.getContext().getApplicationContext(), R.anim.tv_close);
+        final Context context = recyclerView.getContext().getApplicationContext();
+
+        emptyTextViewOpenAnimation = AnimationUtils.loadAnimation(context, R.anim.tv_open);
+        emptyTextViewCloseAnimation = AnimationUtils.loadAnimation(context, R.anim.tv_close);
 
         checkIsEmpty();
     }
@@ -30,12 +32,12 @@ public class RecyclerViewEmptyObserver extends RecyclerView.AdapterDataObserver 
         final boolean isEmpty = recyclerView.getAdapter().getItemCount() == 0;
 
         if (isEmpty && emptyTextView.getVisibility() == View.GONE) {
-            emptyTextView.startAnimation(tvOpen);
+            emptyTextView.startAnimation(emptyTextViewOpenAnimation);
 
             recyclerView.setVisibility(View.INVISIBLE);
             emptyTextView.setVisibility(View.VISIBLE);
         } else if (!isEmpty && emptyTextView.getVisibility() == View.VISIBLE) {
-            emptyTextView.startAnimation(tvClose);
+            emptyTextView.startAnimation(emptyTextViewCloseAnimation);
 
             recyclerView.setVisibility(View.VISIBLE);
             emptyTextView.setVisibility(View.GONE);
