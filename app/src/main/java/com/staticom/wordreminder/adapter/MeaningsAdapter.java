@@ -75,10 +75,6 @@ public class MeaningsAdapter extends SelectableAdapter {
         return word != null ? word.getMeanings().size() : 0;
     }
 
-    public Meaning getSelectedMeaning() {
-        return word.getMeaning(getSelectedIndex());
-    }
-
     @Override
     protected SelectableAdapter.ViewHolder createViewHolder(View view) {
         return new ViewHolder(view);
@@ -95,15 +91,18 @@ public class MeaningsAdapter extends SelectableAdapter {
         myViewHolder.pronunciation.setText(HtmlCompat.fromHtml(
                 String.format(
                         viewHolder.itemView.getContext().getString(R.string.meanings_adapter_pronunciation),
-                        meaning.getPronunciation()), HtmlCompat.FROM_HTML_MODE_LEGACY));
+                        meaning.getPronunciation()),
+                HtmlCompat.FROM_HTML_MODE_LEGACY));
         myViewHolder.example.setText(HtmlCompat.fromHtml(
                 String.format(
                         viewHolder.itemView.getContext().getString(R.string.meanings_adapter_example),
-                        meaning.getExample()), HtmlCompat.FROM_HTML_MODE_LEGACY));
+                        meaning.getExample()),
+                HtmlCompat.FROM_HTML_MODE_LEGACY));
         myViewHolder.example.setText(HtmlCompat.fromHtml(
                 String.format(
                         viewHolder.itemView.getContext().getString(R.string.meanings_adapter_example),
-                        meaning.getExample()), HtmlCompat.FROM_HTML_MODE_LEGACY));
+                        meaning.getExample()),
+                HtmlCompat.FROM_HTML_MODE_LEGACY));
         myViewHolder.tags.setText(HtmlCompat.fromHtml(
                 String.format(
                         viewHolder.itemView.getContext().getString(R.string.meanings_adapter_tags),
@@ -115,5 +114,9 @@ public class MeaningsAdapter extends SelectableAdapter {
         } else {
             myViewHolder.onHolderDeactivated(true);
         }
+    }
+
+    public Meaning getSelectedMeaning() {
+        return word.getMeaning(getSelectedIndex());
     }
 }

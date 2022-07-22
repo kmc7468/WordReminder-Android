@@ -30,19 +30,47 @@ public class CheckableAdapter extends BaseAdapter {
     }
 
     private final List<ViewHolder> viewHolders = new ArrayList<>();
-    private final String defaultTitleText, titleTextFormat;
     private String titleText;
+    private final String defaultTitleText, titleTextFormat;
 
     private final String[] array;
     private boolean[] isSelected;
 
     public CheckableAdapter(String defaultTitleText, String titleTextFormat, String[] array) {
+        this.titleText = defaultTitleText;
         this.defaultTitleText = defaultTitleText;
         this.titleTextFormat = titleTextFormat;
-        this.titleText = defaultTitleText;
 
         this.array = array;
         isSelected = new boolean[array.length];
+    }
+
+    public boolean[] getIsSelected() {
+        return Arrays.copyOf(isSelected, isSelected.length);
+    }
+
+    public void setIsSelected(boolean[] isSelected) {
+        this.isSelected = isSelected;
+
+        updateTitle();
+    }
+
+    public void resetIsSelected() {
+        Arrays.fill(isSelected, false);
+
+        updateTitle();
+    }
+
+    public List<String> getSelectedItems() {
+        final List<String> selectedItems = new ArrayList<>();
+
+        for (int i = 0; i < isSelected.length; ++i) {
+            if (isSelected[i]) {
+                selectedItems.add(array[i]);
+            }
+        }
+
+        return selectedItems;
     }
 
     @Override
@@ -61,37 +89,33 @@ public class CheckableAdapter extends BaseAdapter {
         return array.length + 1;
     }
 
-    private void updateTitleText() {
-        final List<String> selectedTags = new ArrayList<>();
-
-        for (int i = 0; i < isSelected.length; ++i) {
-            if (isSelected[i]) {
-                selectedTags.add(array[i]);
-            }
-        }
-
-        if (selectedTags.isEmpty()) {
+    private void updateTitle() {
+        final List<String> selectedItems = getSelectedItems();
+        if (selectedItems.isEmpty()) {
             titleText = defaultTitleText;
         } else {
-            titleText = String.format(titleTextFormat, String.join(", ", selectedTags));
+            titleText = String.format(titleTextFormat, String.join(", ", selectedItems));
         }
 
-        for (final ViewHolder vh : viewHolders) {
-            if (vh.position == 0) {
-                vh.title.setText(titleText);
+        for (final ViewHolder viewHolder : viewHolders) {
+            if (viewHolder.position == 0) {
+                viewHolder.title.setText(titleText);
+
+                break;
             }
         }
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
+        final ViewHolder viewHolder;
 
         if (convertView == null) {
             final Context context = parent.getContext();
             final LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             convertView = inflater.inflate(R.layout.item_checkable, parent, false);
+
             viewHolder = new ViewHolder(convertView);
 
             convertView.setTag(viewHolder);
@@ -113,32 +137,16 @@ public class CheckableAdapter extends BaseAdapter {
 
             viewHolder.checkBox.setVisibility(View.VISIBLE);
             viewHolder.checkBox.setText(array[position - 1]);
-            viewHolder.checkBox.setOnCheckedChangeListener(null);
 
+            viewHolder.checkBox.setOnCheckedChangeListener(null);
             viewHolder.checkBox.setChecked(isSelected[position - 1]);
             viewHolder.checkBox.setOnCheckedChangeListener((view, isChecked) -> {
                 isSelected[position - 1] = isChecked;
 
-                updateTitleText();
+                updateTitle();
             });
         }
 
         return convertView;
-    }
-
-    public boolean[] getIsSelected() {
-        return Arrays.copyOf(isSelected, isSelected.length);
-    }
-
-    public void setIsSelected(boolean[] isSelected) {
-        this.isSelected = isSelected;
-
-        updateTitleText();
-    }
-
-    public void reset() {
-        Arrays.fill(isSelected, false);
-
-        updateTitleText();
     }
 }

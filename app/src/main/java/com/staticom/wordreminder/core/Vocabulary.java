@@ -33,7 +33,7 @@ public class Vocabulary implements Serializable {
     private final List<Word> words = new ArrayList<>();
     private final List<Tag> tags = new ArrayList<>();
 
-    private boolean hasUnreadableContainers = false;
+    private boolean hasUnreadableContainers;
 
     public List<Word> getWords() {
         return Collections.unmodifiableList(words);
@@ -167,7 +167,7 @@ public class Vocabulary implements Serializable {
                 ++containerCount;
             }
 
-            if (word.hasRelation() && !needRelationContainer) {
+            if (word.hasRelations() && !needRelationContainer) {
                 needRelationContainer = true;
                 ++containerCount;
             }

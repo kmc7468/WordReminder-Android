@@ -31,7 +31,7 @@ public class WordsAdapter extends SelectableAdapter {
         public void onHolderActivated(boolean isBindMode) {
             final Word word = vocabulary.getVocabulary().getWord(getAdapterPosition());
 
-            relations.setVisibility(word.hasRelation() ? View.VISIBLE : View.GONE);
+            relations.setVisibility(word.hasRelations() ? View.VISIBLE : View.GONE);
         }
 
         @Override
@@ -63,10 +63,6 @@ public class WordsAdapter extends SelectableAdapter {
         return vocabulary != null ? vocabulary.getVocabulary().getWords().size() : 0;
     }
 
-    public Word getSelectedWord() {
-        return vocabulary.getVocabulary().getWord(getSelectedIndex());
-    }
-
     @Override
     protected SelectableAdapter.ViewHolder createViewHolder(View view) {
         return new ViewHolder(view);
@@ -81,11 +77,10 @@ public class WordsAdapter extends SelectableAdapter {
 
         myViewHolder.word.setText(word.getWord());
         myViewHolder.relations.setText(HtmlCompat.fromHtml(
-                word.getRelations().stream().map(relation -> {
-                    return String.format(
-                            viewHolder.itemView.getContext().getString(R.string.words_adapter_relation),
-                            relation.getWord().getWord(), relation.getRelation());
-                }).collect(Collectors.joining("<br>")),
+                word.getRelations().stream().map(relation -> String.format(
+                        viewHolder.itemView.getContext().getString(R.string.words_adapter_relation),
+                        relation.getWord().getWord(),
+                        relation.getRelation())).collect(Collectors.joining("<br>")),
                 HtmlCompat.FROM_HTML_MODE_LEGACY));
 
         if (myViewHolder.itemView.isActivated()) {
@@ -93,5 +88,9 @@ public class WordsAdapter extends SelectableAdapter {
         } else {
             myViewHolder.onHolderDeactivated(true);
         }
+    }
+
+    public Word getSelectedWord() {
+        return vocabulary.getVocabulary().getWord(getSelectedIndex());
     }
 }

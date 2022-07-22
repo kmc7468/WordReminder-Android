@@ -116,14 +116,14 @@ public class DetailedVocabularyActivity extends AppCompatActivity {
     }
 
     public void onHideWordClick(View view) {
-        wordsAdapter.setShouldHideWord(((CheckBox)view).isChecked());
+        wordsAdapter.setHideWord(((CheckBox)view).isChecked());
     }
 
     public void onHideMeaningsClick(View view) {
-        wordsAdapter.setShouldHideMeanings(((CheckBox)view).isChecked());
+        wordsAdapter.setHideMeanings(((CheckBox)view).isChecked());
     }
 
     public void onHideHintsClick(View view) {
-        wordsAdapter.setShouldHideHints(((CheckBox)view).isChecked());
+        wordsAdapter.setHideHints(((CheckBox)view).isChecked());
     }
 }

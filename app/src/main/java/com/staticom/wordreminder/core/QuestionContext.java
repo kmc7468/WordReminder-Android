@@ -21,9 +21,9 @@ public class QuestionContext {
     private final int meaningCount;
     private final List<QuestionType> usableTypes = new ArrayList<>();
 
-    private boolean displayPronunciation = false;
-    private boolean displayExample = false;
-    private boolean avoidDuplication = false;
+    private boolean displayPronunciation;
+    private boolean displayExample;
+    private boolean avoidDuplication;
 
     public QuestionContext(VocabularyMetadata vocabulary) {
         this.vocabulary = vocabulary;

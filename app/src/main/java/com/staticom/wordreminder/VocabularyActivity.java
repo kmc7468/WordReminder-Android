@@ -579,7 +579,7 @@ public class VocabularyActivity extends AppCompatActivity {
             example.setText("");
 
             if (tagsAdapter != null) {
-                tagsAdapter.reset();
+                tagsAdapter.resetIsSelected();
             }
 
             word.requestFocus();

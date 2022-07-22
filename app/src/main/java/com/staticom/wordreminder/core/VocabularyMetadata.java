@@ -34,7 +34,7 @@ public class VocabularyMetadata {
     private LocalDateTime time;
 
     private Vocabulary vocabulary;
-    private boolean shouldSave = false;
+    private boolean shouldSave;
 
     public VocabularyMetadata(String name, Path path, LocalDateTime time) {
         this.name = name;

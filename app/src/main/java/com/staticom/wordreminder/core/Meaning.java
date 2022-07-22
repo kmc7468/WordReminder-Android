@@ -19,7 +19,7 @@ public class Meaning implements Serializable {
     private String pronunciation;
     private String example = "";
 
-    private List<Tag> tags = new ArrayList<>();
+    private final List<Tag> tags = new ArrayList<>();
 
     public Meaning(String meaning, String pronunciation) {
         this.meaning = meaning;

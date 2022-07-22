@@ -23,8 +23,8 @@ public class RelationsAdapter extends SelectableAdapter {
 
         private final TextView word;
         private final TextView relation;
-        private final ImageButton select;
 
+        private final ImageButton select;
         private final Animation selectOpenAnimation, selectCloseAnimation;
 
         public ViewHolder(Context applicationContext, View view) {
@@ -32,8 +32,8 @@ public class RelationsAdapter extends SelectableAdapter {
 
             word = view.findViewById(R.id.word);
             relation = view.findViewById(R.id.relation);
-            select = view.findViewById(R.id.select);
 
+            select = view.findViewById(R.id.select);
             select.setOnClickListener(v -> {
                 if (onSearchButtonClickListener != null) {
                     onSearchButtonClickListener.onSearchButtonClick(getSelectedIndex());

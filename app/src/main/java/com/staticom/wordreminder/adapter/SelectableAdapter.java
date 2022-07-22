@@ -18,8 +18,8 @@ public abstract class SelectableAdapter extends RecyclerView.Adapter<SelectableA
         void onItemSelected(View view, int index);
     }
 
-    public interface OnViewHolderUpdatedListener {
-        void onViewHolderUpdated(ViewHolder viewHolder);
+    public interface ViewHolderUpdater {
+        void update(ViewHolder viewHolder);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -39,6 +39,7 @@ public abstract class SelectableAdapter extends RecyclerView.Adapter<SelectableA
         }
     }
 
+    @LayoutRes
     private final int itemId;
     private final List<ViewHolder> viewHolders = new ArrayList<>();
 
@@ -49,9 +50,9 @@ public abstract class SelectableAdapter extends RecyclerView.Adapter<SelectableA
         this.itemId = itemId;
     }
 
-    public void updateViewHolders(OnViewHolderUpdatedListener onViewHolderUpdatedListener) {
-        for (ViewHolder viewHolder : viewHolders) {
-            onViewHolderUpdatedListener.onViewHolderUpdated(viewHolder);
+    public void updateViewHolders(ViewHolderUpdater viewHolderUpdater) {
+        for (final ViewHolder viewHolder : viewHolders) {
+            viewHolderUpdater.update(viewHolder);
         }
     }
 

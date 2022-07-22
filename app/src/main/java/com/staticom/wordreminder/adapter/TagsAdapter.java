@@ -21,8 +21,8 @@ public class TagsAdapter extends SelectableAdapter {
 
         private final TextView tag;
         private final TextView count;
-        private final ImageButton list;
 
+        private final ImageButton list;
         private final Animation listOpenAnimation, listCloseAnimation;
 
         public ViewHolder(Context applicationContext, View view) {
@@ -30,8 +30,8 @@ public class TagsAdapter extends SelectableAdapter {
 
             tag = view.findViewById(R.id.tag);
             count = view.findViewById(R.id.count);
-            list = view.findViewById(R.id.list);
 
+            list = view.findViewById(R.id.list);
             list.setOnClickListener(v -> {
                 if (onListButtonClickListener != null) {
                     onListButtonClickListener.onListButtonClick(getSelectedIndex());
@@ -97,6 +97,7 @@ public class TagsAdapter extends SelectableAdapter {
         myViewHolder.tag.setText(tag.getTag());
         myViewHolder.count.setText(String.format(
                 viewHolder.itemView.getContext().getString(R.string.tags_adapter_count),
-                tag.getWords().size(), tag.getMeanings().size()));
+                tag.getWords().size(),
+                tag.getMeanings().size()));
     }
 }

@@ -21,8 +21,8 @@ public class VocabularyListAdapter extends SelectableAdapter {
 
         private final TextView name;
         private final TextView time;
-        private final ImageButton open;
 
+        private final ImageButton open;
         private final Animation openOpenAnimation, openCloseAnimation;
 
         public ViewHolder(Context applicationContext, View view) {
@@ -30,8 +30,8 @@ public class VocabularyListAdapter extends SelectableAdapter {
 
             name = view.findViewById(R.id.name);
             time = view.findViewById(R.id.time);
-            open = view.findViewById(R.id.open);
 
+            open = view.findViewById(R.id.open);
             open.setOnClickListener(v -> {
                 if (onOpenButtonClickListener != null) {
                     onOpenButtonClickListener.onOpenButtonClick(getSelectedIndex());
@@ -73,13 +73,13 @@ public class VocabularyListAdapter extends SelectableAdapter {
         this.vocabularyList = vocabularyList;
     }
 
+    public void setOnOpenButtonClickListener(OnOpenButtonClickListener onOpenButtonClickListener) {
+        this.onOpenButtonClickListener = onOpenButtonClickListener;
+    }
+
     @Override
     public int getItemCount() {
         return vocabularyList.getVocabularyList().size();
-    }
-
-    public void setOnOpenButtonClickListener(OnOpenButtonClickListener onOpenButtonClickListener) {
-        this.onOpenButtonClickListener = onOpenButtonClickListener;
     }
 
     @Override

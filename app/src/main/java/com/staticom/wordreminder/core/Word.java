@@ -127,7 +127,7 @@ public class Word implements Serializable {
         return Collections.unmodifiableList(relations);
     }
 
-    public boolean hasRelation() {
+    public boolean hasRelations() {
         return !relations.isEmpty();
     }
 
