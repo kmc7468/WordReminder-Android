@@ -24,6 +24,8 @@
     <string name="tags_adapter_count">단어 %1$d개, 뜻 %2$d개</string>
     <string name="tags_adapter_open_words">이 태그를 가진 단어/뜻 보기</string>
 
+    <string name="words_adapter_relation"><![CDATA[<i>(%2$s)</i> %1$s]]></string>
+
     <string name="question_type_word_to_meaning_message">다음 단어의 뜻은?</string>
     <string name="question_type_meaning_to_word_message">다음 뜻을 가진 단어는?</string>
     <string name="question_type_multiple_choice_error_empty_answer">정답을 선택해 주세요.</string>

@@ -3,20 +3,40 @@ package com.staticom.wordreminder.adapter;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.core.text.HtmlCompat;
+
 import com.staticom.wordreminder.R;
 import com.staticom.wordreminder.core.VocabularyMetadata;
 import com.staticom.wordreminder.core.Word;
+
+import java.util.stream.Collectors;
 
 public class WordsAdapter extends SelectableAdapter {
 
     private class ViewHolder extends SelectableAdapter.ViewHolder {
 
         private final TextView word;
+        private final TextView relations;
 
         public ViewHolder(View view) {
             super(view);
 
             word = view.findViewById(R.id.word);
+            relations = view.findViewById(R.id.relations);
+
+            onHolderDeactivated(true);
+        }
+
+        @Override
+        public void onHolderActivated(boolean isBindMode) {
+            final Word word = vocabulary.getVocabulary().getWord(getAdapterPosition());
+
+            relations.setVisibility(word.hasRelation() ? View.VISIBLE : View.GONE);
+        }
+
+        @Override
+        public void onHolderDeactivated(boolean isBindMode) {
+            relations.setVisibility(View.GONE);
         }
     }
 
@@ -60,5 +80,18 @@ public class WordsAdapter extends SelectableAdapter {
         final Word word = vocabulary.getVocabulary().getWord(position);
 
         myViewHolder.word.setText(word.getWord());
+        myViewHolder.relations.setText(HtmlCompat.fromHtml(
+                word.getRelations().stream().map(relation -> {
+                    return String.format(
+                            viewHolder.itemView.getContext().getString(R.string.words_adapter_relation),
+                            relation.getWord().getWord(), relation.getRelation());
+                }).collect(Collectors.joining("\n")),
+                HtmlCompat.FROM_HTML_MODE_LEGACY));
+
+        if (myViewHolder.itemView.isActivated()) {
+            myViewHolder.onHolderActivated(true);
+        } else {
+            myViewHolder.onHolderDeactivated(true);
+        }
     }
 }
