@@ -19,6 +19,8 @@
     <string name="meanings_adapter_example"><![CDATA[<b>예문:</b> %1$s]]></string>
     <string name="meanings_adapter_tags"><![CDATA[<b>태그:</b> %1$s]]></string>
 
+    <string name="relations_adapter_relation"><![CDATA[<b>관계:</b> %1$s]]></string>
+
     <string name="tags_adapter_count">단어 %1$d개, 뜻 %2$d개</string>
     <string name="tags_adapter_open_words">이 태그를 가진 단어/뜻 보기</string>
 

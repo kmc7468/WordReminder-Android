@@ -1,12 +1,13 @@
 package com.staticom.wordreminder.adapter;
 
 import android.content.Context;
-import android.util.Pair;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import androidx.core.text.HtmlCompat;
 
 import com.staticom.wordreminder.R;
 import com.staticom.wordreminder.core.Relation;
@@ -96,6 +97,10 @@ public class RelationsAdapter extends SelectableAdapter {
         final Relation relation = word.getRelation(position);
 
         myViewHolder.word.setText(relation.getWord().getWord());
-        myViewHolder.relation.setText(relation.getRelation());
+        myViewHolder.relation.setText(HtmlCompat.fromHtml(
+                String.format(
+                        viewHolder.itemView.getContext().getString(R.string.relations_adapter_relation),
+                        relation.getRelation()),
+                HtmlCompat.FROM_HTML_MODE_LEGACY));
     }
 }
