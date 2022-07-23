@@ -55,7 +55,7 @@ public class DetailedVocabularyActivity extends AppCompatActivity {
         this.vocabulary.setVocabulary(vocabulary.getVocabulary());
         //this.vocabulary.setTime(vocabulary.getTime()); TODO
 
-        wordsAdapter.notifyDataSetChanged();
+        wordsAdapter.setVocabulary(vocabulary.getVocabulary());
 
         isEdited = true;
     }
