@@ -142,6 +142,8 @@ public class RelationsActivity extends AppCompatActivity {
         relationsAdapter.setOnItemSelectedListener((view, index) -> {
             selectedRelation = selectedWord.getRelation(index);
 
+            relation.setText(selectedRelation.getRelation());
+
             if (menu != null) {
                 menu.setGroupVisible(R.id.relationEditMenus, true);
             }

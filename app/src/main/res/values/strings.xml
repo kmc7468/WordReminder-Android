@@ -26,7 +26,7 @@
 
     <string name="vocabulary_list_adapter_open">단어장 보기</string>
 
-    <string name="words_adapter_relation"><![CDATA[<b>%1$s:</b> %2$s]]></string>
+    <string name="words_adapter_relation"><![CDATA[<i>(%2$s)</i> <b>%1$s</b>]]></string>
 
     <string name="question_type_word_to_meaning_message">다음 단어의 뜻은?</string>
     <string name="question_type_meaning_to_word_message">다음 뜻을 가진 단어는?</string>
@@ -35,6 +35,8 @@
 
     <string name="detailed_vocabulary_activity_title">단어장 보기</string>
     <string name="detailed_vocabulary_activity_empty_words">단어장이 비어있습니다.</string>
+    <string name="detailed_vocabulary_activity_search">단어 검색하기</string>
+    <string name="detailed_vocabulary_activity_search_hint">검색...</string>
     <string name="detailed_vocabulary_activity_edit_vocabulary">단어장 수정하기</string>
     <string name="detailed_vocabulary_activity_hide_word">단어 가리기</string>
     <string name="detailed_vocabulary_activity_hide_meanings">뜻 가리기</string>

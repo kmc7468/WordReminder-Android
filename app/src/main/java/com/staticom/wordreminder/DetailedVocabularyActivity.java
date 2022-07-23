@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.SearchView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResult;
@@ -17,13 +18,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.staticom.wordreminder.adapter.DetailedWordsAdapter;
+import com.staticom.wordreminder.core.Vocabulary;
 import com.staticom.wordreminder.core.VocabularyMetadata;
+import com.staticom.wordreminder.core.Word;
 import com.staticom.wordreminder.utility.RecyclerViewEmptyObserver;
 
 public class DetailedVocabularyActivity extends AppCompatActivity {
 
     private VocabularyMetadata vocabulary;
     private boolean isEdited = false;
+    private RecyclerView words;
     private DetailedWordsAdapter wordsAdapter;
 
     private ActivityResultLauncher<Intent> editVocabularyResult;
@@ -79,9 +83,9 @@ public class DetailedVocabularyActivity extends AppCompatActivity {
             }
         }
 
-        wordsAdapter = new DetailedWordsAdapter(vocabulary);
+        wordsAdapter = new DetailedWordsAdapter(vocabulary.getVocabulary());
 
-        final RecyclerView words = findViewById(R.id.words);
+        words = findViewById(R.id.words);
 
         words.setLayoutManager(new LinearLayoutManager(this));
         words.setAdapter(wordsAdapter);
@@ -113,9 +117,54 @@ public class DetailedVocabularyActivity extends AppCompatActivity {
         savedInstanceState.putInt("selectedWord", wordsAdapter.getSelectedIndex());
     }
 
+    public void setVocabulary(Vocabulary vocabulary) {
+        Word selectedWord = null;
+
+        if (wordsAdapter.getSelectedIndex() != -1) {
+            selectedWord = wordsAdapter.getSelectedWord();
+        }
+
+        wordsAdapter.setVocabulary(vocabulary);
+
+        if (selectedWord != null) {
+            if (vocabulary.getWords().contains(selectedWord)) {
+                final int selectedWordNewIndex = vocabulary.getWords().indexOf(selectedWord);
+
+                words.scrollToPosition(selectedWordNewIndex);
+                wordsAdapter.setSelectedIndex(selectedWordNewIndex);
+            } else {
+                wordsAdapter.setSelectedIndex(-1);
+            }
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_detailed_vocabulary_activity, menu);
+
+        final SearchView searchWord = (SearchView)menu.findItem(R.id.searchWord).getActionView();
+
+        searchWord.setQueryHint(getString(R.string.detailed_vocabulary_activity_search_hint));
+        searchWord.setMaxWidth(Integer.MAX_VALUE);
+        searchWord.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                setVocabulary(vocabulary.getVocabulary().search(query.trim()));
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        searchWord.setOnCloseListener(() -> {
+            setVocabulary(vocabulary.getVocabulary());
+
+            return true;
+        });
+        searchWord.setIconified(false);
 
         return true;
     }

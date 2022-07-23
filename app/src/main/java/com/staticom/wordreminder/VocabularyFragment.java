@@ -120,6 +120,8 @@ public class VocabularyFragment extends Fragment {
                 final int selectedWordNewIndex = vocabulary.getVocabulary().getWords().indexOf(selectedWord);
                 final int selectedMeaningIndex = getSelectedMeaningIndex();
 
+                words.scrollToPosition(selectedWordNewIndex);
+
                 wordsAdapter.setSelectedIndex(selectedWordNewIndex);
                 meaningsAdapter.setSelectedIndex(selectedMeaningIndex);
             } else {
@@ -208,6 +210,10 @@ public class VocabularyFragment extends Fragment {
         meaningsAdapter.setSelectedIndex(-1);
 
         updateCount();
+    }
+
+    public void notifyWordsUpdated() {
+        wordsAdapter.notifyDataSetChanged();
     }
 
     public void setWordsTextFormat(String wordsTextFormat) {

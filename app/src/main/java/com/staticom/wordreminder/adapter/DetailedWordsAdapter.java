@@ -11,7 +11,7 @@ import androidx.core.text.HtmlCompat;
 
 import com.staticom.wordreminder.R;
 import com.staticom.wordreminder.core.Meaning;
-import com.staticom.wordreminder.core.VocabularyMetadata;
+import com.staticom.wordreminder.core.Vocabulary;
 import com.staticom.wordreminder.core.Word;
 
 import java.util.stream.Collectors;
@@ -54,18 +54,24 @@ public class DetailedWordsAdapter extends SelectableAdapter {
         }
     }
 
-    private final VocabularyMetadata vocabulary;
+    private Vocabulary vocabulary;
 
     private boolean hideWord = false, hideMeanings = false, hideHints = false;
 
-    public DetailedWordsAdapter(VocabularyMetadata vocabulary) {
+    public DetailedWordsAdapter(Vocabulary vocabulary) {
         super(R.layout.item_detailed_word);
 
         this.vocabulary = vocabulary;
     }
 
-    public VocabularyMetadata getVocabulary() {
+    public Vocabulary getVocabulary() {
         return vocabulary;
+    }
+
+    public void setVocabulary(Vocabulary vocabulary) {
+        this.vocabulary = vocabulary;
+
+        notifyDataSetChanged();
     }
 
     public void setHideWord(boolean hideWord) {
@@ -124,7 +130,7 @@ public class DetailedWordsAdapter extends SelectableAdapter {
 
     @Override
     public int getItemCount() {
-        return vocabulary.getVocabulary().getWords().size();
+        return vocabulary.getWords().size();
     }
 
     @Override
@@ -141,7 +147,7 @@ public class DetailedWordsAdapter extends SelectableAdapter {
         myViewHolder.header.clearAnimation();
         myViewHolder.body.clearAnimation();
 
-        final Word word = vocabulary.getVocabulary().getWord(position);
+        final Word word = vocabulary.getWord(position);
         final Meaning mergedMeaning = word.mergeMeanings(", ", ", ", "\n");
 
         myViewHolder.word.setText(word.getWord());
@@ -181,5 +187,9 @@ public class DetailedWordsAdapter extends SelectableAdapter {
 
         myViewHolder.header.setVisibility(hideWord ? View.INVISIBLE : View.VISIBLE);
         myViewHolder.body.setVisibility(hideMeanings ? View.INVISIBLE : View.VISIBLE);
+    }
+
+    public Word getSelectedWord() {
+        return vocabulary.getWord(getSelectedIndex());
     }
 }

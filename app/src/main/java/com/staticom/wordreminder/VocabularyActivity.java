@@ -159,12 +159,14 @@ public class VocabularyActivity extends AppCompatActivity {
 
         updateVocabulary(result);
 
+        vocabularyFragment.notifyWordsUpdated();
+
         final Intent intent = result.getData();
         final int relatedWord = intent.getIntExtra("relatedWord", -1);
 
         if (relatedWord != -1) {
-            this.vocabularyFragment.setSelectedWordAndScroll(relatedWord);
-            this.vocabularyFragment.notifyMeaningsUpdated();
+            vocabularyFragment.setSelectedWordAndScroll(relatedWord);
+            vocabularyFragment.notifyMeaningsUpdated();
         }
     }
 
