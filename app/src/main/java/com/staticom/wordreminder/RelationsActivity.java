@@ -110,7 +110,7 @@ public class RelationsActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_relations);
         setTitle(R.string.relations_activity_title);
@@ -125,6 +125,15 @@ public class RelationsActivity extends AppCompatActivity {
         changeRelatedWordResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::changeRelatedWord);
 
         vocabulary = (Vocabulary)getIntent().getSerializableExtra("vocabulary");
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getBoolean("isEdited")) {
+                vocabulary = (Vocabulary)savedInstanceState.getSerializable("vocabulary");
+
+                edited();
+            }
+        }
+
         selectedWord = vocabulary.getWord(getIntent().getIntExtra("selectedWord", -1));
 
         relationsText = findViewById(R.id.relationsText);
@@ -152,6 +161,26 @@ public class RelationsActivity extends AppCompatActivity {
         selectWordResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::addRelation);
 
         updateCount();
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        relationsAdapter.setSelectedIndex(savedInstanceState.getInt("selectedRelation"));
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        savedInstanceState.putBoolean("isEdited", isEdited);
+
+        if (isEdited) {
+            savedInstanceState.putSerializable("vocabulary", vocabulary);
+        }
+
+        savedInstanceState.putInt("selectedRelation", relationsAdapter.getSelectedIndex());
     }
 
     @Override

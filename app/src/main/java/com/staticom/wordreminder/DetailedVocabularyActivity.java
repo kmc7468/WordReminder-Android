@@ -57,12 +57,10 @@ public class DetailedVocabularyActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_vocabulary);
         setTitle(R.string.detailed_vocabulary_activity_title);
-
-        //Toast.makeText(getApplicationContext(), "onCreated호출" + LocalDateTime.now().toString(), Toast.LENGTH_SHORT).show();
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -72,7 +70,14 @@ public class DetailedVocabularyActivity extends AppCompatActivity {
         });
 
         vocabulary = VocabularyMetadata.deserialize(getIntent().getSerializableExtra("vocabulary"));
-        //Toast.makeText(getApplicationContext(), "단어장저장완료" + LocalDateTime.now().toString(), Toast.LENGTH_SHORT).show();
+
+        if (savedInstanceState != null) {
+            isEdited = savedInstanceState.getBoolean("isEdited");
+
+            if (isEdited) {
+                vocabulary = VocabularyMetadata.deserialize(savedInstanceState.getSerializable("vocabulary"));
+            }
+        }
 
         wordsAdapter = new DetailedWordsAdapter(vocabulary);
 
@@ -86,6 +91,26 @@ public class DetailedVocabularyActivity extends AppCompatActivity {
                 new RecyclerViewEmptyObserver(words, findViewById(R.id.emptyWordsText)));
 
         editVocabularyResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::updateVocabulary);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        wordsAdapter.setSelectedIndex(savedInstanceState.getInt("selectedWord"));
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        savedInstanceState.putBoolean("isEdited", isEdited);
+
+        if (isEdited) {
+            savedInstanceState.putSerializable("vocabulary", vocabulary.serialize());
+        }
+
+        savedInstanceState.putInt("selectedWord", wordsAdapter.getSelectedIndex());
     }
 
     @Override

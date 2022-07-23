@@ -31,7 +31,7 @@ public class VocabularyViewerActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         final Intent intent = getIntent();
 
         super.onCreate(savedInstanceState);
@@ -71,7 +71,9 @@ public class VocabularyViewerActivity extends AppCompatActivity {
             isSelectMode = true;
 
             this.vocabularyFragment.setOnWordSelectedListener((view, index) -> {
-                menu.findItem(R.id.select).setVisible(true);
+                if (menu != null) {
+                    menu.findItem(R.id.select).setVisible(true);
+                }
             });
         }
     }
@@ -86,6 +88,10 @@ public class VocabularyViewerActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_vocabulary_viewer_activity, menu);
 
         this.menu = menu;
+
+        if (vocabularyFragment.getSelectedWordIndex() != -1) {
+            menu.findItem(R.id.select).setVisible(true);
+        }
 
         final SearchView searchWord = (SearchView)menu.findItem(R.id.searchWord).getActionView();
 

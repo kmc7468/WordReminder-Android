@@ -76,6 +76,12 @@ public class ShortAnswerFragment extends Fragment implements AnswerFragment {
     }
 
     @Override
+    public void restoreQuestion(QuestionContext context, Question question) {
+        this.context = context;
+        this.question = question;
+    }
+
+    @Override
     public boolean isEmptyAnswer() {
         return answer.getText().toString().trim().isEmpty();
     }

@@ -262,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle(R.string.main_activity_title);
@@ -282,15 +282,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             vocabularyListAdapter.setOnOpenButtonClickListener(index -> {
-                //Toast.makeText(this, "이벤트인식" + LocalDateTime.now().toString(), Toast.LENGTH_SHORT).show();
-
                 if (!loadVocabulary(selectedVocabulary)) return;
 
                 final Intent intent = new Intent(this, DetailedVocabularyActivity.class);
 
-                //Toast.makeText(this, "인텐트생성완료" + LocalDateTime.now().toString(), Toast.LENGTH_SHORT).show();
                 intent.putExtra("vocabulary", selectedVocabulary.serialize());
-                //Toast.makeText(this, "인텐트탑재완료" + LocalDateTime.now().toString(), Toast.LENGTH_SHORT).show();
 
                 openVocabularyResult.launch(intent);
             });
@@ -449,7 +445,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
 
         writeVocabularyList();

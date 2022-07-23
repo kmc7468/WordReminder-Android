@@ -139,7 +139,7 @@ public class QuestionActivity extends AppCompatActivity {
         }
     }
 
-    private void updatedQuestion() {
+    private void updatedQuestion(boolean restoreMode) {
         final QuestionType type = question.getType();
 
         message.setText(type.getMessage(this));
@@ -163,29 +163,35 @@ public class QuestionActivity extends AppCompatActivity {
 
         hint.setText(HtmlCompat.fromHtml(hintTextBuilder.toString(), HtmlCompat.FROM_HTML_MODE_LEGACY));
 
-        if (question.getType().getAnswerType() == QuestionType.AnswerType.MULTIPLE_CHOICE) {
-            answerFragment = new MultipleChoiceFragment(context, question);
-        } else {
-            answerFragment = new ShortAnswerFragment(context, question);
-        }
-
         final FragmentManager manager = getSupportFragmentManager();
-        final FragmentTransaction transaction = manager.beginTransaction();
 
-        transaction.replace(R.id.answerFragmentContainer, (Fragment)answerFragment);
-        transaction.commit();
+        if (restoreMode) {
+            answerFragment = (AnswerFragment)manager.findFragmentByTag("answerFragment");
+            answerFragment.restoreQuestion(context, question);
+        } else {
+            if (question.getType().getAnswerType() == QuestionType.AnswerType.MULTIPLE_CHOICE) {
+                answerFragment = new MultipleChoiceFragment(context, question);
+            } else {
+                answerFragment = new ShortAnswerFragment(context, question);
+            }
+
+            final FragmentTransaction transaction = manager.beginTransaction();
+
+            transaction.replace(R.id.answerFragmentContainer, (Fragment)answerFragment, "answerFragment");
+            transaction.commit();
+        }
     }
 
     private boolean createQuestionAndUpdate() {
         if (createQuestion()) {
-            updatedQuestion();
+            updatedQuestion(false);
 
             return true;
         } else return false;
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question);
         setTitle(R.string.question_activity_title);
@@ -203,19 +209,16 @@ public class QuestionActivity extends AppCompatActivity {
         main = findViewById(R.id.main);
         hint = findViewById(R.id.hint);
 
-        if (!createQuestionAndUpdate()) {
-            finish();
+        if (savedInstanceState == null) {
+            if (!createQuestionAndUpdate()) {
+                finish();
+            }
+        } else {
+            question = (Question)savedInstanceState.getSerializable("question");
+            wrongAnswers = (List<Meaning>)savedInstanceState.getSerializable("wrongAnswers");
+
+            updatedQuestion(true);
         }
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        question = (Question)savedInstanceState.getSerializable("question");
-        wrongAnswers = (List<Meaning>)savedInstanceState.getSerializable("wrongAnswers");
-
-        updatedQuestion();
     }
 
     @Override

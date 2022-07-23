@@ -37,14 +37,14 @@ public class DetailedWordsAdapter extends SelectableAdapter {
         public ViewHolder(Context applicationContext, View view) {
             super(view);
 
-            header = view.findViewById(R.id.wordAndPronunciations);
+            header = view.findViewById(R.id.header);
             headerOpenAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.tv_open);
             headerCloseAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.tv_close);
 
             word = view.findViewById(R.id.word);
             pronunciations = view.findViewById(R.id.pronunciations);
 
-            body = view.findViewById(R.id.meaningsAndExamples);
+            body = view.findViewById(R.id.body);
             bodyOpenAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.tv_open);
             bodyCloseAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.tv_close);
 

@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.staticom.wordreminder.adapter.TagsAdapter;
 import com.staticom.wordreminder.core.Meaning;
 import com.staticom.wordreminder.core.Tag;
-import com.staticom.wordreminder.core.Vocabulary;
 import com.staticom.wordreminder.core.VocabularyMetadata;
 import com.staticom.wordreminder.core.Word;
 import com.staticom.wordreminder.utility.AlertDialog;
@@ -48,7 +47,7 @@ public class TagManagerActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tag_manager);
         setTitle(R.string.tag_manager_activity_title);
@@ -61,6 +60,14 @@ public class TagManagerActivity extends AppCompatActivity {
         });
 
         vocabulary = VocabularyMetadata.deserialize(getIntent().getSerializableExtra("vocabulary"));
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getBoolean("isEdited")) {
+                vocabulary = VocabularyMetadata.deserialize(savedInstanceState.getSerializable("vocabulary"));
+
+                edited();
+            }
+        }
 
         final TextView tagsText = findViewById(R.id.tagsText);
 
@@ -110,15 +117,18 @@ public class TagManagerActivity extends AppCompatActivity {
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        final int selectedTag = savedInstanceState.getInt("selectedTag");
-        if (selectedTag != -1) {
-            tagsAdapter.setSelectedIndex(selectedTag);
-        }
+        tagsAdapter.setSelectedIndex(savedInstanceState.getInt("selectedTag"));
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
+
+        savedInstanceState.putBoolean("isEdited", isEdited);
+
+        if (isEdited) {
+            savedInstanceState.putSerializable("vocabulary", vocabulary.serialize());
+        }
 
         savedInstanceState.putInt("selectedTag", tagsAdapter.getSelectedIndex());
     }

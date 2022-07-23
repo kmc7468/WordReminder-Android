@@ -74,6 +74,12 @@ public class MultipleChoiceFragment extends Fragment implements AnswerFragment {
     }
 
     @Override
+    public void restoreQuestion(QuestionContext context, Question question) {
+        this.context = context;
+        this.question = question;
+    }
+
+    @Override
     public boolean isEmptyAnswer() {
         for (final RadioButton choice : choices) {
             if (choice.isChecked()) return false;

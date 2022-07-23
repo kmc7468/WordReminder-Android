@@ -117,7 +117,10 @@ public class VocabularyActivity extends AppCompatActivity {
     private void edited() {
         setTitle(R.string.vocabulary_activity_title_edited);
 
-        save.setVisible(true);
+        if (save != null) {
+            save.setVisible(true);
+        }
+
         isEdited = true;
     }
 
@@ -166,7 +169,7 @@ public class VocabularyActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vocabulary);
         setTitle(R.string.vocabulary_activity_title);
@@ -181,6 +184,14 @@ public class VocabularyActivity extends AppCompatActivity {
                 }
             }
         });
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getBoolean("isEdited")) {
+                edited();
+            }
+
+            isSaved = savedInstanceState.getBoolean("isSaved");
+        }
 
         final FragmentManager manager = getSupportFragmentManager();
         final Fragment vocabularyFragment = manager.findFragmentByTag("vocabularyFragment");
@@ -218,14 +229,6 @@ public class VocabularyActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        isEdited = savedInstanceState.getBoolean("isEdited");
-        isSaved = savedInstanceState.getBoolean("isSaved");
-    }
-
-    @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 
@@ -244,6 +247,10 @@ public class VocabularyActivity extends AppCompatActivity {
 
         this.menu = menu;
         save = menu.findItem(R.id.save);
+
+        if (isEdited) {
+            save.setVisible(true);
+        }
 
         updateMenusVisibility();
 

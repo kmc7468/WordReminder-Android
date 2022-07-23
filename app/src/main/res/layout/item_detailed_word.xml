@@ -7,7 +7,7 @@
     android:background="@drawable/bg_item">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/wordAndPronunciations"
+        android:id="@+id/header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -47,7 +47,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/meaningsAndExamples"
+        android:id="@+id/body"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginStart="16dp"
@@ -56,7 +56,7 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/wordAndPronunciations"
+        app:layout_constraintStart_toEndOf="@+id/header"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
