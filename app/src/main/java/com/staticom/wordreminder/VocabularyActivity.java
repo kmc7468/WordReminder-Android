@@ -159,8 +159,6 @@ public class VocabularyActivity extends AppCompatActivity {
 
         updateVocabulary(result);
 
-        vocabularyFragment.notifyWordsUpdated();
-
         final Intent intent = result.getData();
         final int relatedWord = intent.getIntExtra("relatedWord", -1);
 

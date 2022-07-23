@@ -60,19 +60,22 @@ public class RelationsActivity extends AppCompatActivity {
         finish();
     }
 
+    private void edited() {
+        setTitle(R.string.relations_activity_title_edited);
+
+        isEdited = true;
+    }
+
     private void changeRelatedWord(ActivityResult result) {
         if (result.getResultCode() != RESULT_OK) return;
 
         final Intent intent = result.getData();
         final Word selectedWord = vocabulary.findWord(intent.getStringExtra("selectedWord"));
 
-        selectedRelation.getWord().removeRelation(this.selectedWord);
         selectedRelation.setWord(selectedWord);
-        selectedWord.addRelation(this.selectedWord, selectedRelation.getRelation());
 
         relationsAdapter.notifyItemChanged(relationsAdapter.getSelectedIndex());
 
-        updateCount();
         edited();
     }
 
@@ -84,12 +87,6 @@ public class RelationsActivity extends AppCompatActivity {
                 HtmlCompat.FROM_HTML_MODE_LEGACY));
     }
 
-    private void edited() {
-        setTitle(R.string.relations_activity_title_edited);
-
-        isEdited = true;
-    }
-
     private void addRelation(ActivityResult result) {
         if (result.getResultCode() != RESULT_OK) return;
 
@@ -98,7 +95,6 @@ public class RelationsActivity extends AppCompatActivity {
         final String relation = this.relation.getText().toString().trim();
 
         this.selectedWord.addRelation(selectedWord, relation);
-        selectedWord.addRelation(this.selectedWord, relation);
 
         relationsAdapter.notifyItemInserted(this.selectedWord.getRelations().size());
         relationsAdapter.setSelectedIndex(this.selectedWord.getRelations().size() - 1);
@@ -207,7 +203,6 @@ public class RelationsActivity extends AppCompatActivity {
             final int selectedIndex = relationsAdapter.getSelectedIndex();
 
             selectedWord.removeRelation(selectedIndex);
-            selectedRelation.getWord().removeRelation(selectedWord);
 
             relationsAdapter.notifyItemRemoved(selectedIndex);
             relationsAdapter.setSelectedIndex(-1);
@@ -222,6 +217,7 @@ public class RelationsActivity extends AppCompatActivity {
                 menu.setGroupVisible(R.id.relationEditMenus, false);
             }
 
+            updateCount();
             edited();
         }).setNegativeButton(R.string.cancel).show();
     }
@@ -270,7 +266,6 @@ public class RelationsActivity extends AppCompatActivity {
             }
 
             selectedRelation.setRelation(relation);
-            selectedRelation.getWord().findRelation(selectedWord).setRelation(relation);
 
             relationsAdapter.notifyItemChanged(relationsAdapter.getSelectedIndex());
 

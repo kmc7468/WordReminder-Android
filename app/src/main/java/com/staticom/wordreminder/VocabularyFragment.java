@@ -212,10 +212,6 @@ public class VocabularyFragment extends Fragment {
         updateCount();
     }
 
-    public void notifyWordsUpdated() {
-        wordsAdapter.notifyDataSetChanged();
-    }
-
     public void setWordsTextFormat(String wordsTextFormat) {
         this.wordsTextFormat = wordsTextFormat;
 
