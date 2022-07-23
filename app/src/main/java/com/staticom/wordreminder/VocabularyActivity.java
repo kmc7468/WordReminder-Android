@@ -553,6 +553,8 @@ public class VocabularyActivity extends AppCompatActivity {
         if (selectedWord != -1) {
             this.vocabularyFragment.setSelectedWordAndScroll(selectedWord);
             this.vocabularyFragment.notifyMeaningsUpdated();
+
+            getIntent().putExtra("selectedWord", -1);
         }
     }
 
