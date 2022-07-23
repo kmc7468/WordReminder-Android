@@ -1,6 +1,8 @@
 package com.staticom.wordreminder;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.view.ContentInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -61,14 +64,16 @@ public class VocabularyFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_vocabulary, container, false);
+        final Context context = view.getContext();
 
         wordsText = view.findViewById(R.id.wordsText);
         words = view.findViewById(R.id.words);
 
         final RecyclerView meanings = view.findViewById(R.id.meanings);
 
-        words.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        words.setLayoutManager(new LinearLayoutManager(context));
         words.setAdapter(wordsAdapter);
+        //words.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
 
         wordsAdapter.registerAdapterDataObserver(
                 new RecyclerViewEmptyObserver(words, view.findViewById(R.id.emptyWordsText)));
@@ -87,6 +92,7 @@ public class VocabularyFragment extends Fragment {
 
         meanings.setLayoutManager(new LinearLayoutManager(view.getContext()));
         meanings.setAdapter(meaningsAdapter);
+        //meanings.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
 
         meaningsAdapter.registerAdapterDataObserver(
                 new RecyclerViewEmptyObserver(meanings, view.findViewById(R.id.emptyMeaningsText)));

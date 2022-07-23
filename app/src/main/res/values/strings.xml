@@ -26,6 +26,7 @@
 
     <string name="vocabulary_list_adapter_open">단어장 보기</string>
 
+    <string name="words_adapter_relations"><![CDATA[<b>관계:</b> %1$s]]></string>
     <string name="words_adapter_relation"><![CDATA[<i>(%2$s)</i> <b>%1$s</b>]]></string>
 
     <string name="question_type_word_to_meaning_message">다음 단어의 뜻은?</string>

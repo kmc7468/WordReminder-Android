@@ -28,27 +28,14 @@ public class MeaningsAdapter extends SelectableAdapter {
             pronunciation = view.findViewById(R.id.pronunciation);
             example = view.findViewById(R.id.example);
             tags = view.findViewById(R.id.tags);
-
-            onHolderDeactivated(true);
         }
 
-        private void setOptionalViewsVisibility(boolean pronunciationVisibility, boolean exampleVisibility,
-                                                boolean tagsVisibility) {
-            pronunciation.setVisibility(pronunciationVisibility ? View.VISIBLE : View.GONE);
-            example.setVisibility(exampleVisibility ? View.VISIBLE : View.GONE);
-            tags.setVisibility(tagsVisibility ? View.VISIBLE : View.GONE);
-        }
-
-        @Override
-        public void onHolderActivated(boolean isBindMode) {
+        public void updateOptionalViewsVisibility() {
             final Meaning meaning = word.getMeaning(getAdapterPosition());
 
-            setOptionalViewsVisibility(meaning.hasPronunciation(), meaning.hasExample(), !meaning.getTags().isEmpty());
-        }
-
-        @Override
-        public void onHolderDeactivated(boolean isBindMode) {
-            setOptionalViewsVisibility(false, false, false);
+            pronunciation.setVisibility(meaning.hasPronunciation() ? View.VISIBLE : View.GONE);
+            example.setVisibility(meaning.hasExample() ? View.VISIBLE : View.GONE);
+            tags.setVisibility(meaning.getTags().isEmpty() ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -109,11 +96,7 @@ public class MeaningsAdapter extends SelectableAdapter {
                         meaning.getTags().stream().map(Tag::getTag).collect(Collectors.joining(", "))),
                 HtmlCompat.FROM_HTML_MODE_LEGACY));
 
-        if (myViewHolder.itemView.isActivated()) {
-            myViewHolder.onHolderActivated(true);
-        } else {
-            myViewHolder.onHolderDeactivated(true);
-        }
+        myViewHolder.updateOptionalViewsVisibility();
     }
 
     public Meaning getSelectedMeaning() {

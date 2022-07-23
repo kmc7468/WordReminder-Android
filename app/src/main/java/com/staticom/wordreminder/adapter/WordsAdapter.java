@@ -23,20 +23,12 @@ public class WordsAdapter extends SelectableAdapter {
 
             word = view.findViewById(R.id.word);
             relations = view.findViewById(R.id.relations);
-
-            onHolderDeactivated(true);
         }
 
-        @Override
-        public void onHolderActivated(boolean isBindMode) {
+        public void updateOptionalViewsVisibility() {
             final Word word = vocabulary.getVocabulary().getWord(getAdapterPosition());
 
             relations.setVisibility(word.hasRelations() ? View.VISIBLE : View.GONE);
-        }
-
-        @Override
-        public void onHolderDeactivated(boolean isBindMode) {
-            relations.setVisibility(View.GONE);
         }
     }
 
@@ -77,17 +69,15 @@ public class WordsAdapter extends SelectableAdapter {
 
         myViewHolder.word.setText(word.getWord());
         myViewHolder.relations.setText(HtmlCompat.fromHtml(
-                word.getRelations().stream().map(relation -> String.format(
-                        viewHolder.itemView.getContext().getString(R.string.words_adapter_relation),
-                        relation.getWord().getWord(),
-                        relation.getRelation())).collect(Collectors.joining("<br>")),
+                String.format(
+                        viewHolder.itemView.getContext().getString(R.string.words_adapter_relations),
+                        word.getRelations().stream().map(relation -> String.format(
+                                viewHolder.itemView.getContext().getString(R.string.words_adapter_relation),
+                                relation.getWord().getWord(),
+                                relation.getRelation())).collect(Collectors.joining(",   "))),
                 HtmlCompat.FROM_HTML_MODE_LEGACY));
 
-        if (myViewHolder.itemView.isActivated()) {
-            myViewHolder.onHolderActivated(true);
-        } else {
-            myViewHolder.onHolderDeactivated(true);
-        }
+        myViewHolder.updateOptionalViewsVisibility();
     }
 
     public Word getSelectedWord() {
