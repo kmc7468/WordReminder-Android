@@ -1,33 +1,20 @@
-package com.staticom.wordreminder.presenter
+package com.staticom.wordreminder.presenters
 
 import android.widget.Toast
 import com.staticom.wordreminder.R
+import com.staticom.wordreminder.contracts.MainContract
 import com.staticom.wordreminder.core.VocabularyList
 import com.staticom.wordreminder.core.VocabularyMetadata
 import org.json.JSONArray
-import java.net.URI
+import java.io.FileOutputStream
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.exists
 
-interface MainContract {
-
-    interface View : com.staticom.wordreminder.view.View {
-
-        fun updateVocabularyList(vocabularyList: VocabularyList)
-    }
-
-    interface Presenter {
-
-        fun initialize(): Boolean
-
-        fun exportVocabulary(uri: URI?)
-    }
-}
-
 class MainPresenter(
-        private val rootPath: Path,
-        private val view: MainContract.View) : MainContract.Presenter {
+    private val rootPath: Path,
+    private val view: MainContract.View
+) : MainContract.Presenter {
 
     private lateinit var vocabularyList: VocabularyList
     var selectedVocabulary: VocabularyMetadata? = null
@@ -42,16 +29,14 @@ class MainPresenter(
         return true
     }
 
-    override fun exportVocabulary(uri: URI?) {
-        if (uri == null) return
-
+    override fun exportVocabulary(stream: FileOutputStream) {
         try {
             val vocabulary = selectedVocabulary!!
             if (!vocabulary.hasVocabulary()) {
                 vocabulary.loadVocabulary()
             }
 
-            // TODO: 파일 내보내기
+            vocabulary.vocabulary.writeToFileStream(stream);
 
             view.showToast(R.string.main_activity_success_export_vocabulary, Toast.LENGTH_SHORT)
         } catch (e: Exception) {

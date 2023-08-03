@@ -1,4 +1,4 @@
-package com.staticom.wordreminder.view
+package com.staticom.wordreminder.contracts
 
 import androidx.annotation.StringRes
 
