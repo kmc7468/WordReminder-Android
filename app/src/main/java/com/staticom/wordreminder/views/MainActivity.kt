@@ -10,6 +10,8 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
+import android.widget.Spinner
+import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -19,17 +21,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.staticom.wordreminder.BuildConfig
 import com.staticom.wordreminder.DetailedVocabularyActivity
+import com.staticom.wordreminder.QuestionActivity
 import com.staticom.wordreminder.R
+import com.staticom.wordreminder.adapter.CheckableAdapter
 import com.staticom.wordreminder.adapter.VocabularyListAdapter
 import com.staticom.wordreminder.contracts.MainContract
 import com.staticom.wordreminder.core.Vocabulary
 import com.staticom.wordreminder.core.VocabularyList
 import com.staticom.wordreminder.core.VocabularyMetadata
+import com.staticom.wordreminder.core.Word
 import com.staticom.wordreminder.databinding.ActivityMainBinding
 import com.staticom.wordreminder.presenters.MainPresenter
 import com.staticom.wordreminder.utility.AlertDialog
 import com.staticom.wordreminder.utility.CustomDialog
 import com.staticom.wordreminder.utility.RecyclerViewEmptyObserver
+import com.staticom.wordreminder.utility.TagsSpinner
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
@@ -40,6 +46,9 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         const val KEY_SELECTED_VOCABULARY = "selectedVocabulary"
         const val KEY_RESULT_VOCABULARY = "vocabulary"
         const val KEY_INPUT_VOCABULARY = "vocabulary"
+
+        const val LINK_DEVELOPER_BLOG =
+            "https://blog.naver.com/PostList.naver?blogId=kmc7468&from=postList&categoryNo=521"
     }
 
     private lateinit var binding: ActivityMainBinding
@@ -144,7 +153,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         }
 
         R.id.about -> {
-            // TODO: ABOUT 구현
+            showAboutDialog()
 
             true
         }
@@ -209,6 +218,8 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         if (newIndex >= 0) {
             vocabularyListAdapter.selectedIndex = newIndex
         } else {
+            presenter.changeSelectedVocabulary(-1)
+            
             toggleStartFab()
         }
     }
@@ -310,7 +321,13 @@ class MainActivity : AppCompatActivity(), MainContract.View {
             toggleCreateFab()
         }
         binding.start.setOnClickListener {
-            // TODO: 단어 암기
+            if (isCreateFabOpen) {
+                toggleCreateFab()
+            }
+
+            if (presenter.loadSelectedVocabulary()) {
+                showQuestionContextDialog()
+            }
         }
     }
 
@@ -385,5 +402,160 @@ class MainActivity : AppCompatActivity(), MainContract.View {
             View.INVISIBLE
         }
         binding.start.isClickable = isStartFabOpen
+    }
+
+    private fun showAboutDialog() {
+        val dialog = CustomDialog(this, R.layout.dialog_about)
+        val version = dialog.findViewById<TextView>(R.id.version)
+        val developerBlog = dialog.findViewById<Button>(R.id.developerBlog)
+        val close = dialog.findViewById<Button>(R.id.close)
+
+        val currentVersion = getString(R.string.main_activity_current_version)
+        val versionName = BuildConfig.VERSION_NAME
+        val buildType = BuildConfig.BUILD_TYPE
+
+        version.text = "$currentVersion: $versionName $buildType"
+
+        developerBlog.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(LINK_DEVELOPER_BLOG)))
+            dialog.dismiss()
+        }
+
+        close.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun showQuestionContextDialog() {
+        val dialog = CustomDialog(this, R.layout.dialog_question_context)
+
+        val wordToMeaning = dialog.findViewById<Switch>(R.id.word_to_meaning)
+        val wordToMeaningSA = dialog.findViewById<Switch>(R.id.word_to_meaning_sa)
+        val meaningToWord = dialog.findViewById<Switch>(R.id.meaning_to_word)
+        val meaningToWordSA = dialog.findViewById<Switch>(R.id.meaning_to_word_sa)
+
+        val displayPronunciation = dialog.findViewById<Switch>(R.id.display_pronunciation)
+        val displayExample = dialog.findViewById<Switch>(R.id.display_example)
+        val disableDuplication = dialog.findViewById<Switch>(R.id.disableDuplication)
+
+        val preferences = getPreferences(MODE_PRIVATE)
+
+        wordToMeaning.isChecked = preferences.getBoolean("wordToMeaning", false)
+        wordToMeaningSA.isChecked = preferences.getBoolean("wordToMeaningSA", false)
+        meaningToWord.isChecked = preferences.getBoolean("meaningToWord", false)
+        meaningToWordSA.isChecked = preferences.getBoolean("meaningToWordSA", false)
+
+        displayPronunciation.isChecked = preferences.getBoolean("displayPronunciation", false)
+        displayExample.isChecked = preferences.getBoolean("displayExample", false)
+        disableDuplication.isChecked = preferences.getBoolean("disableDuplication", false)
+
+        val selectTags = dialog.findViewById<Switch>(R.id.selectTags)
+        val tagsAdapter = if (presenter.selectedVocabulary!!.vocabulary.tags.isNotEmpty()) {
+            val tags = dialog.findViewById<Spinner>(R.id.tags)
+
+            selectTags.setOnCheckedChangeListener { _, isChecked ->
+                tags.visibility = if (isChecked) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+            }
+            selectTags.visibility = View.VISIBLE
+
+            TagsSpinner.initializeTags(
+                tags,
+                presenter.selectedVocabulary!!.vocabulary,
+                getString(R.string.main_activity_tags_hint),
+                getString(R.string.main_activity_selected_tags)
+            )
+        } else {
+            null
+        }
+
+        val cancel = dialog.findViewById<Button>(R.id.cancel)
+        val start = dialog.findViewById<Button>(R.id.start)
+
+        cancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        start.setOnClickListener {
+            if (true in setOf(
+                    wordToMeaning.isChecked, wordToMeaningSA.isChecked,
+                    meaningToWord.isChecked, meaningToWordSA.isChecked
+                )
+            ) {
+                val intent = Intent(this, QuestionActivity::class.java)
+
+                intent.putExtra("vocabulary", makeVocabulary(selectTags, tagsAdapter).serialize())
+                intent.putExtra("wordToMeaning", wordToMeaning.isChecked)
+                intent.putExtra("wordToMeaningSA", wordToMeaningSA.isChecked)
+                intent.putExtra("meaningToWord", meaningToWord.isChecked)
+                intent.putExtra("meaningToWordSA", meaningToWordSA.isChecked)
+                intent.putExtra("displayPronunciation", displayPronunciation.isChecked)
+                intent.putExtra("displayExample", displayExample.isChecked)
+                intent.putExtra("disableDuplication", disableDuplication.isChecked)
+
+                startResult.launch(intent)
+
+                val editor = preferences.edit()
+
+                editor.putBoolean("wordToMeaning", wordToMeaning.isChecked)
+                editor.putBoolean("wordToMeaningSA", wordToMeaningSA.isChecked)
+                editor.putBoolean("meaningToWord", meaningToWord.isChecked)
+                editor.putBoolean("meaningToWordSA", meaningToWordSA.isChecked)
+                editor.putBoolean("displayPronunciation", displayPronunciation.isChecked)
+                editor.putBoolean("displayExample", displayExample.isChecked)
+                editor.putBoolean("disableDuplication", disableDuplication.isChecked)
+
+                editor.apply()
+
+                dialog.dismiss()
+            } else {
+                showInfoToast(R.string.main_activity_question_error_not_selected_question_types)
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun makeVocabulary(
+        selectTags: Switch,
+        tagsAdapter: CheckableAdapter?
+    ): VocabularyMetadata {
+        if (!selectTags.isChecked) return presenter.selectedVocabulary!!
+
+        val selectedTags = tagsAdapter!!.isSelected
+            .mapIndexed { index, isSelected ->
+                if (isSelected) presenter.selectedVocabulary!!.vocabulary.getTag(index) else null
+            }
+            .filterNotNull()
+
+        val vocabulary = VocabularyMetadata(presenter.selectedVocabulary!!.name, null, null)
+        val taggedVocabulary = Vocabulary()
+
+        presenter.selectedVocabulary!!.vocabulary.tags.forEach {
+            taggedVocabulary.addTag(it)
+        }
+
+        for (word in presenter.selectedVocabulary!!.vocabulary.words) {
+            val wordRef = Word(word.word)
+
+            for (meaning in word.meanings) {
+                if (meaning.containsTag(selectedTags)) {
+                    wordRef.addMeaningRef(meaning)
+                }
+            }
+
+            if (wordRef.meanings.isNotEmpty()) {
+                taggedVocabulary.addWord(wordRef)
+            }
+        }
+
+        vocabulary.vocabulary = taggedVocabulary
+
+        return vocabulary
     }
 }

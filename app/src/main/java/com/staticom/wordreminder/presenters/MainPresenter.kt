@@ -93,6 +93,7 @@ class MainPresenter(
 
     override fun renameSelectedVocabulary(name: String) {
         selectedVocabulary!!.name = name
+        view.onSelectedVocabularyUpdate()
     }
 
     override fun createVocabulary(name: String, vocabulary: Vocabulary) {
