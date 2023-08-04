@@ -30,6 +30,10 @@ android {
         jvmTarget = '17'
     }
     namespace 'com.staticom.wordreminder'
+
+    viewBinding {
+        enabled = true
+    }
 }
 
 dependencies {

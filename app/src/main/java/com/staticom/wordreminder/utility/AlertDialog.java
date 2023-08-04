@@ -12,6 +12,11 @@ public class AlertDialog {
         void onButtonClick();
     }
 
+    public interface OnButtonClickWithArgument {
+
+        void onButtonClick(AlertDialog dialog);
+    }
+
     private final Context context;
     private final androidx.appcompat.app.AlertDialog.Builder builder;
     private androidx.appcompat.app.AlertDialog dialog;
@@ -28,7 +33,7 @@ public class AlertDialog {
         builder.setMessage(messageId);
     }
 
-    public void addEdit(String text) {
+    public AlertDialog addEdit(String text) {
         edit = new EditText(context);
 
         edit.setText(text);
@@ -42,6 +47,8 @@ public class AlertDialog {
         });
 
         builder.setView(edit);
+
+        return this;
     }
 
     public String getEditText() {
@@ -53,6 +60,20 @@ public class AlertDialog {
 
         this.onPositiveButtonClick = () -> {
             onPositiveButtonClick.onButtonClick();
+
+            if (dismiss) {
+                dialog.dismiss();
+            }
+        };
+
+        return this;
+    }
+
+    public AlertDialog setPositiveButton(@StringRes int textId, boolean dismiss, OnButtonClickWithArgument onPositiveButtonClick) {
+        builder.setPositiveButton(textId, null);
+
+        this.onPositiveButtonClick = () -> {
+            onPositiveButtonClick.onButtonClick(this);
 
             if (dismiss) {
                 dialog.dismiss();
@@ -77,6 +98,20 @@ public class AlertDialog {
 
         this.onNegativeButtonClick = () -> {
             onNegativeButtonClick.onButtonClick();
+
+            if (dismiss) {
+                dialog.dismiss();
+            }
+        };
+
+        return this;
+    }
+
+    public AlertDialog setNegativeButton(@StringRes int textId, boolean dismiss, OnButtonClickWithArgument onNegativeButtonClick) {
+        builder.setNegativeButton(textId, null);
+
+        this.onNegativeButtonClick = () -> {
+            onNegativeButtonClick.onButtonClick(this);
 
             if (dismiss) {
                 dialog.dismiss();

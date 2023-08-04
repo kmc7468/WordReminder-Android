@@ -1,5 +1,6 @@
 package com.staticom.wordreminder.contracts
 
+import com.staticom.wordreminder.core.Vocabulary
 import com.staticom.wordreminder.core.VocabularyList
 import com.staticom.wordreminder.core.VocabularyMetadata
 import java.io.FileInputStream
@@ -27,10 +28,14 @@ interface MainContract {
         fun finish()
 
         fun changeSelectedVocabulary(index: Int)
+        fun loadSelectedVocabulary(): Boolean
         fun exportSelectedVocabulary(stream: FileOutputStream)
         fun updateSelectedVocabulary(vocabulary: VocabularyMetadata)
         fun deleteSelectedVocabulary()
+        fun renameSelectedVocabulary(name: String)
 
+        fun createVocabulary(name: String, vocabulary: Vocabulary)
         fun importVocabulary(stream: FileInputStream, name: String)
+        fun checkVocabularyNameValidity(name: String, allowDuplicate: Boolean): Boolean
     }
 }

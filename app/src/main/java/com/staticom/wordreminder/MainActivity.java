@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
             return true;
         } catch (final Exception e) {
-            Toast.makeText(this, R.string.main_activity_load_vocabulary_error, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.main_activity_import_vocabulary_error, Toast.LENGTH_LONG).show();
 
             e.printStackTrace();
             return false;
@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
 
         final String filename = getFilenameFromUri(uri).replaceFirst("[.][^.]+$", "");
 
-        requireVocabularyName(R.string.main_activity_load_vocabulary, R.string.add, false, filename, name -> {
+        requireVocabularyName(R.string.main_activity_import_vocabulary, R.string.add, false, filename, name -> {
             final Path path = rootPath.resolve(UUID.randomUUID().toString() + ".kv");
             final LocalDateTime time = LocalDateTime.now();
 
@@ -243,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             } catch (final Exception e) {
-                Toast.makeText(getApplicationContext(), R.string.main_activity_load_vocabulary_error, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), R.string.main_activity_import_vocabulary_error, Toast.LENGTH_LONG).show();
 
                 e.printStackTrace();
             }

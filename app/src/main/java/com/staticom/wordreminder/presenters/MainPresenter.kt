@@ -47,6 +47,22 @@ class MainPresenter(
         view.onSelectedVocabularyChange(index != -1)
     }
 
+    override fun loadSelectedVocabulary(): Boolean {
+        val vocabulary = selectedVocabulary!!
+        if (vocabulary.hasVocabulary()) return true
+
+        return try {
+            vocabulary.loadVocabulary()
+
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            view.showErrorToast(R.string.main_activity_import_vocabulary_error)
+
+            false
+        }
+    }
+
     override fun exportSelectedVocabulary(stream: FileOutputStream) {
         try {
             val vocabulary = selectedVocabulary!!
@@ -75,32 +91,56 @@ class MainPresenter(
         view.onSelectedVocabularyDelete()
     }
 
-    override fun importVocabulary(stream: FileInputStream, name: String) {
+    override fun renameSelectedVocabulary(name: String) {
+        selectedVocabulary!!.name = name
+    }
+
+    override fun createVocabulary(name: String, vocabulary: Vocabulary) {
         val path = generateRandomPath()
         val time = LocalDateTime.now()
-        val vocabulary = VocabularyMetadata(name, path, time)
+        val vocabularyMetadata = VocabularyMetadata(name, path, time)
 
+        vocabularyMetadata.vocabulary = vocabulary
+        vocabularyMetadata.setShouldSave(true)
+
+        vocabularyList.addVocabulary(vocabularyMetadata)
+        view.onVocabularyAdd()
+    }
+
+    override fun importVocabulary(stream: FileInputStream, name: String) {
         try {
-            vocabulary.vocabulary = Vocabulary.readFromFileStream(stream)
-            vocabulary.setShouldSave(true)
+            val vocabulary = Vocabulary.readFromFileStream(stream)
 
-            if (vocabulary.vocabulary.hasUnreadableContainers()) {
+            if (vocabulary.hasUnreadableContainers()) {
                 view.warnUnreadableContainers {
-                    addNewVocabulary(vocabulary)
+                    createVocabulary(name, vocabulary)
                 }
             } else {
-                addNewVocabulary(vocabulary)
+                createVocabulary(name, vocabulary)
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            view.showErrorToast(R.string.main_activity_load_vocabulary_error)
+            view.showErrorToast(R.string.main_activity_import_vocabulary_error)
         }
     }
+
+    override fun checkVocabularyNameValidity(name: String, allowDuplicate: Boolean): Boolean =
+        if (name.isEmpty()) {
+            view.showInfoToast(R.string.main_activity_error_empty_vocabulary_name)
+
+            false
+        } else if (vocabularyList.containsVocabulary(name) && (!allowDuplicate || selectedVocabulary!!.name != name)) {
+            view.showInfoToast(R.string.main_activity_error_duplicated_vocabulary_name)
+
+            false
+        } else {
+            true
+        }
 
     private fun readVocabularyList(): Boolean = try {
         vocabularyList = if (vocabularyListPath.exists()) {
             val jsonBytes = Files.readAllBytes(vocabularyListPath)
-            val jsonArray = JSONArray(jsonBytes.toString())
+            val jsonArray = JSONArray(String(jsonBytes))
 
             VocabularyList.loadFromJSONArray(jsonArray, rootPath)
         } else {
@@ -133,25 +173,4 @@ class MainPresenter(
         generateSequence { UUID.randomUUID().toString() }
             .map { rootPath.resolve("$it.kv") }
             .first { it.notExists() }
-
-    private fun addNewVocabulary(vocabulary: VocabularyMetadata) {
-        vocabularyList.addVocabulary(vocabulary)
-        view.onVocabularyAdd()
-    }
-
-    private fun loadSelectedVocabulary(): Boolean {
-        val vocabulary = selectedVocabulary!!
-        if (vocabulary.hasVocabulary()) return true
-
-        return try {
-            vocabulary.loadVocabulary()
-
-            true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            view.showErrorToast(R.string.main_activity_load_vocabulary_error)
-
-            false
-        }
-    }
 }

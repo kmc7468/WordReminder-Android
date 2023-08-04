@@ -61,7 +61,7 @@
             android:layout_marginBottom="8dp"
             android:backgroundTint="@color/white"
             android:clickable="false"
-            android:contentDescription="@string/main_activity_load_vocabulary"
+            android:contentDescription="@string/main_activity_import_vocabulary"
             android:onClick="onLoadClick"
             android:visibility="invisible"
             app:borderWidth="0dp"
