@@ -4,5 +4,6 @@ import androidx.annotation.StringRes
 
 interface View {
 
-    fun showToast(@StringRes resId: Int, duration: Int)
+    fun showInfoToast(@StringRes resId: Int)
+    fun showErrorToast(@StringRes resId: Int)
 }

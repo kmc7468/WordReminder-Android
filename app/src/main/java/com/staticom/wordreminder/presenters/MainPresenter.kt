@@ -1,15 +1,19 @@
 package com.staticom.wordreminder.presenters
 
-import android.widget.Toast
 import com.staticom.wordreminder.R
 import com.staticom.wordreminder.contracts.MainContract
+import com.staticom.wordreminder.core.Vocabulary
 import com.staticom.wordreminder.core.VocabularyList
 import com.staticom.wordreminder.core.VocabularyMetadata
 import org.json.JSONArray
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.nio.file.Files
 import java.nio.file.Path
+import java.time.LocalDateTime
+import java.util.UUID
 import kotlin.io.path.exists
+import kotlin.io.path.notExists
 
 class MainPresenter(
     private val rootPath: Path,
@@ -17,19 +21,33 @@ class MainPresenter(
 ) : MainContract.Presenter {
 
     private lateinit var vocabularyList: VocabularyList
-    var selectedVocabulary: VocabularyMetadata? = null
+    private val vocabularyListPath = rootPath.resolve("vocabularyList.json")
 
-    override fun initialize(): Boolean {
-        readVocabularyList()?.let {
-            vocabularyList = it
-        } ?: return false
+    override var selectedVocabulary: VocabularyMetadata? = null
 
-        view.updateVocabularyList(vocabularyList)
+    override fun start(): Boolean {
+        if (!readVocabularyList()) return false
+
+        view.onVocabularyListLoad(vocabularyList)
 
         return true
     }
 
-    override fun exportVocabulary(stream: FileOutputStream) {
+    override fun finish() {
+        writeVocabularyList()
+    }
+
+    override fun changeSelectedVocabulary(index: Int) {
+        selectedVocabulary = if (index != -1) {
+            vocabularyList.getVocabulary(index)
+        } else {
+            null
+        }
+
+        view.onSelectedVocabularyChange(index != -1)
+    }
+
+    override fun exportSelectedVocabulary(stream: FileOutputStream) {
         try {
             val vocabulary = selectedVocabulary!!
             if (!vocabulary.hasVocabulary()) {
@@ -38,27 +56,102 @@ class MainPresenter(
 
             vocabulary.vocabulary.writeToFileStream(stream);
 
-            view.showToast(R.string.main_activity_success_export_vocabulary, Toast.LENGTH_SHORT)
+            view.showInfoToast(R.string.main_activity_success_export_vocabulary)
         } catch (e: Exception) {
             e.printStackTrace()
-            view.showToast(R.string.main_activity_error_export_vocabulary, Toast.LENGTH_LONG)
+            view.showErrorToast(R.string.main_activity_error_export_vocabulary)
         }
     }
 
-    private fun readVocabularyList(): VocabularyList? = try {
-        val jsonPath = rootPath.resolve("vocabularyList.json")
-        if (jsonPath.exists()) {
-            val jsonBytes = Files.readAllBytes(jsonPath)
+    override fun updateSelectedVocabulary(vocabulary: VocabularyMetadata) {
+        selectedVocabulary!!.vocabulary = vocabulary.vocabulary
+        // TODO: 시간 구현
+
+        view.onSelectedVocabularyUpdate()
+    }
+
+    override fun deleteSelectedVocabulary() {
+        vocabularyList.removeVocabulary(selectedVocabulary)
+        view.onSelectedVocabularyDelete()
+    }
+
+    override fun importVocabulary(stream: FileInputStream, name: String) {
+        val path = generateRandomPath()
+        val time = LocalDateTime.now()
+        val vocabulary = VocabularyMetadata(name, path, time)
+
+        try {
+            vocabulary.vocabulary = Vocabulary.readFromFileStream(stream)
+            vocabulary.setShouldSave(true)
+
+            if (vocabulary.vocabulary.hasUnreadableContainers()) {
+                view.warnUnreadableContainers {
+                    addNewVocabulary(vocabulary)
+                }
+            } else {
+                addNewVocabulary(vocabulary)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            view.showErrorToast(R.string.main_activity_load_vocabulary_error)
+        }
+    }
+
+    private fun readVocabularyList(): Boolean = try {
+        vocabularyList = if (vocabularyListPath.exists()) {
+            val jsonBytes = Files.readAllBytes(vocabularyListPath)
             val jsonArray = JSONArray(jsonBytes.toString())
 
             VocabularyList.loadFromJSONArray(jsonArray, rootPath)
         } else {
             VocabularyList()
         }
+
+        true
     } catch (e: Exception) {
         e.printStackTrace()
-        view.showToast(R.string.main_activity_error_read_vocabulary_list, Toast.LENGTH_LONG)
+        view.showErrorToast(R.string.main_activity_error_read_vocabulary_list)
 
-        null
+        false
+    }
+
+    private fun writeVocabularyList() {
+        try {
+            vocabularyList.saveAndDeleteVocabulary()
+
+            val jsonArray = vocabularyList.saveToJSONArray()
+            val jsonBytes = jsonArray.toString().toByteArray()
+
+            Files.write(vocabularyListPath, jsonBytes)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            view.showErrorToast(R.string.main_activity_error_write_vocabulary_list)
+        }
+    }
+
+    private fun generateRandomPath(): Path =
+        generateSequence { UUID.randomUUID().toString() }
+            .map { rootPath.resolve("$it.kv") }
+            .first { it.notExists() }
+
+    private fun addNewVocabulary(vocabulary: VocabularyMetadata) {
+        vocabularyList.addVocabulary(vocabulary)
+        view.onVocabularyAdd()
+    }
+
+    private fun loadSelectedVocabulary(): Boolean {
+        val vocabulary = selectedVocabulary!!
+        if (vocabulary.hasVocabulary()) return true
+
+        return try {
+            vocabulary.loadVocabulary()
+
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            view.showErrorToast(R.string.main_activity_load_vocabulary_error)
+
+            false
+        }
     }
 }
