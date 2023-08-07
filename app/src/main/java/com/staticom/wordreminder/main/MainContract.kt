@@ -1,5 +1,6 @@
-package com.staticom.wordreminder.contracts
+package com.staticom.wordreminder.main
 
+import com.staticom.wordreminder.BaseView
 import com.staticom.wordreminder.core.Vocabulary
 import com.staticom.wordreminder.core.VocabularyList
 import com.staticom.wordreminder.core.VocabularyMetadata
@@ -8,7 +9,7 @@ import java.io.FileOutputStream
 
 interface MainContract {
 
-    interface View : com.staticom.wordreminder.contracts.View {
+    interface View : BaseView {
 
         fun onVocabularyListLoad(vocabularyList: VocabularyList)
         fun onSelectedVocabularyChange(isSelected: Boolean)

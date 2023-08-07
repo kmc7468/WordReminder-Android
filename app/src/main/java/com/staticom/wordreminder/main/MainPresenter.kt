@@ -1,7 +1,6 @@
-package com.staticom.wordreminder.presenters
+package com.staticom.wordreminder.main
 
 import com.staticom.wordreminder.R
-import com.staticom.wordreminder.contracts.MainContract
 import com.staticom.wordreminder.core.Vocabulary
 import com.staticom.wordreminder.core.VocabularyList
 import com.staticom.wordreminder.core.VocabularyMetadata

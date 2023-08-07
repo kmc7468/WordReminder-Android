@@ -1,4 +1,4 @@
-package com.staticom.wordreminder.views
+package com.staticom.wordreminder.main
 
 import android.content.Intent
 import android.net.Uri
@@ -25,13 +25,11 @@ import com.staticom.wordreminder.QuestionActivity
 import com.staticom.wordreminder.R
 import com.staticom.wordreminder.adapter.CheckableAdapter
 import com.staticom.wordreminder.adapter.VocabularyListAdapter
-import com.staticom.wordreminder.contracts.MainContract
 import com.staticom.wordreminder.core.Vocabulary
 import com.staticom.wordreminder.core.VocabularyList
 import com.staticom.wordreminder.core.VocabularyMetadata
 import com.staticom.wordreminder.core.Word
 import com.staticom.wordreminder.databinding.ActivityMainBinding
-import com.staticom.wordreminder.presenters.MainPresenter
 import com.staticom.wordreminder.utility.AlertDialog
 import com.staticom.wordreminder.utility.CustomDialog
 import com.staticom.wordreminder.utility.RecyclerViewEmptyObserver

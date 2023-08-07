@@ -1,8 +1,8 @@
-package com.staticom.wordreminder.contracts
+package com.staticom.wordreminder
 
 import androidx.annotation.StringRes
 
-interface View {
+interface BaseView {
 
     fun showInfoToast(@StringRes resId: Int)
     fun showErrorToast(@StringRes resId: Int)
